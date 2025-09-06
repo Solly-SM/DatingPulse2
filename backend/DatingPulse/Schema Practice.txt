@@ -1,0 +1,187 @@
+# Social/Dating App Entity Plan (with Attribute Descriptions)
+
+## User
+- **userID**: Unique identifier for the user (primary key).
+- **username**: Unique name chosen by the user for login/display.
+- **email**: User’s email address (must be unique).
+- **password**: User’s password (stored securely as a hash).
+- **phone**: User’s phone number (optional, unique).
+- **role**: Role type (admin, user).
+- **status**: Account status (e.g., active, suspended, banned).
+- **createdAt**: Date and time when the account was created.
+- **updatedAt**: Last time the account info was updated.
+- **lastLogin**: Last time the user logged in.
+- **isVerified**: Whether the user’s email/phone is verified.
+- **loginAttempt**: Number of login attempts (security, lockouts).
+
+## Admin
+- **adminID**: Unique ID for the admin (primary key).
+- **userId**: Reference to User (if admin is also a user).
+- **role**: Role type (superAdmin, moderator).
+- **permissions**: Array or JSON of backend permissions.
+
+## UserProfile
+- **userID**: Links profile to User (primary key).
+- **firstname**: User’s first name.
+- **lastname**: User’s last name.
+- **age**: User’s age.
+- **gender**: User’s gender (male, female, other).
+- **dob**: Date of birth.
+- **bio**: User’s biography/description.
+- **pp**: Profile picture URL.
+- **avatarThumbnail**: Thumbnail version of profile picture (URL, small size, fast loading).
+- **country/region/city**: Location details.
+- **latitude/longitude**: Exact geo-location.
+- **interests**: User interests (JSON or structured data).
+- **preferences**: User preferences (e.g., sexualOrientation).
+- **lastSeen**: Last active timestamp.
+- **education**: Education info.
+- **jobTitle**: Job title.
+- **relationship**: Relationship status (single, complicated, open).
+- **privacy**: Who can view profile (public, private, friends only).
+
+## Photo
+- **photoID**: Unique photo identifier.
+- **userID**: Owner of the photo.
+- **url**: Location of the photo file.
+- **uploadedAt**: When the photo was uploaded.
+- **isPrimary**: Is this the user’s main profile photo.
+- **status**: Photo status (active, flagged, deleted, hidden).
+- **visibility**: Who can see the photo (public, private, matches only).
+- **caption**: Optional caption or description.
+- **dimensions**: Image dimensions (e.g., 400x600).
+- **moderatedBy**: Admin who moderated this photo.
+- **order_index**: Photo display order.
+
+## Audio
+- **audioID**: Unique audio identifier.
+- **userID**: Owner of the audio.
+- **url**: Location of the audio file.
+- **duration**: Length of the audio (seconds).
+- **uploadedAt**: When audio was uploaded.
+- **status**: Audio status (active, flagged, deleted).
+
+## Like
+- **likeID**: Unique like/dislike identifier.
+- **senderID**: User sending the like/dislike.
+- **receiverID**: User receiving the like/dislike.
+- **type**: Like type (like, dislike, superlike).
+- **isSecret**: Is the like hidden from receiver?
+- **created**: When the like/dislike was created.
+- **status**: State of like (pending, matched, rejected).
+
+## **SwipeHistory**
+- **swipeID**: Unique swipe history identifier (primary key).
+- **userID**: User who performed the swipe.
+- **targetUserID**: User who was swiped on.
+- **swipeType**: Type of swipe ("like", "dislike", "superlike", etc.).
+- **isRewind**: Whether this swipe was a rewind/undo.
+- **createdAt**: When the swipe occurred.
+- **deviceType**: Device used for swiping (web, ios, android, etc.).
+- **appVersion**: App version string.
+- **location**: Location or geo-coordinates at time of swipe (optional).
+- **sessionID**: Session in which the swipe was made.
+
+## Match
+- **matchID**: Unique match identifier.
+- **userID1**: First user in the match.
+- **userID2**: Second user in the match.
+- **matchedAt**: When users matched.
+- **matchSource**: How the match occurred.
+- **isActive**: Is the match currently active?
+- **expiresAt**: When the match expires (optional).
+
+## Conversation
+- **conversationID**: Unique conversation identifier.
+- **matchID**: Related match for this conversation.
+- **startedAt**: When conversation started.
+- **lastMessageID**: Latest message’s ID in this conversation.
+- **deletedForUser1**: If user1 deleted the convo.
+- **deletedForUser2**: If user2 deleted the convo.
+
+## Message
+- **messageID**: Unique message ID.
+- **conversationID**: Which conversation this message belongs to.
+- **senderID**: User who sent the message.
+- **receiverID**: User receiving the message.
+- **content**: Message text or media link.
+- **type**: Message type (text, image, audio, video, system).
+- **sentAt**: When the message was sent.
+- **status**: Message status (sent, delivered, read).
+- **isEdited**: If message was edited.
+- **deletedForSender**: If sender deleted the message.
+- **deletedForReceiver**: If receiver deleted the message.
+
+## BlockedUser
+- **blockID**: Unique block identifier.
+- **blockerID**: User blocking another.
+- **blockedID**: User being blocked.
+- **reason**: Why the block was made.
+- **createdAt**: When the block was created.
+
+## Report
+- **reportID**: Unique report identifier.
+- **reporterID**: User submitting the report.
+- **reportedID**: User being reported.
+- **targetType**: What is being reported (user, photo, audio, message).
+- **targetID**: ID of the reported entity.
+- **reason**: Reason for report.
+- **status**: Report status (pending, under review, resolved, dismissed).
+- **created**: When the report was created.
+- **reviewedBy**: Admin reviewing the report.
+- **resolvedAt**: When the report was resolved.
+
+## Notification
+- **notificationID**: Unique notification ID.
+- **userID**: Who receives the notification.
+- **type**: Notification type (new like, new match, message, system alert).
+- **relatedID**: Linked entity (like, match, message).
+- **content**: Notification message/content.
+- **priority**: Notification priority.
+- **isRead**: Has the notification been read?
+- **createdAt**: When notification was created.
+
+## Grade
+- **gradeID**: Unique grade identifier.
+- **userGivenID**: User giving the grade.
+- **userReceivedID**: User receiving the grade.
+- **grade**: Numeric grade (e.g., 1-5 stars).
+
+## OTP
+- **otpID**: Unique OTP identifier.
+- **userID**: User for whom OTP is generated.
+- **code**: OTP code.
+- **type**: Purpose (login, signup, reset).
+- **expiresAt**: When the OTP expires.
+- **isUsed**: Whether the OTP has been used.
+- **createdAt**: When the OTP was generated.
+
+## Session / AuthToken
+- **sessionID**: Unique identifier for the session (primary key).
+- **userID**: Reference to the user who owns this session.
+- **token**: The session or authentication token (e.g., JWT, random string).
+- **deviceInfo**: (Optional) Details about the device/browser used for this session (e.g., user agent).
+- **expiresAt**: Timestamp when the session/token expires.
+- **createdAt**: Timestamp when the session/token was created.
+- **revokedAt**: (Optional) Timestamp when the session/token was revoked (if user logs out or security event).
+
+## Device
+- **deviceID**: Unique identifier for the device (primary key).
+- **userID**: Reference to the user who owns this device.
+- **type**: Device type (e.g., web, android, ios, desktop).
+- **pushToken**: Token for web push notifications (if supported).
+- **deviceInfo**: Details about the device/browser (e.g., user agent string, browser version).
+- **lastSeen**: Timestamp of the last time the device was active.
+- **createdAt**: Timestamp when the device was first registered.
+
+## ProfileVerification
+- **verificationID**: Unique identifier for verification request (primary key).
+- **userID**: Reference to the User.
+- **type**: Type of verification (photo, ID, social, etc.).
+- **status**: Status (pending, approved, rejected, expired).
+- **requestedAt**: Request timestamp.
+- **verifiedAt**: Verified timestamp.
+- **rejectedAt**: Rejection timestamp (optional).
+- **documentURL**: Uploaded document/image URL (optional).
+- **reviewerID**: Admin/staff reviewer (optional).
+- **notes**: Reviewer notes (optional).
