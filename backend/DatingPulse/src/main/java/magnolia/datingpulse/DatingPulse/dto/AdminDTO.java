@@ -13,8 +13,8 @@ public class AdminDTO {
     private Long userID;
     
     @NotBlank(message = "Admin role is required")
-    @Pattern(regexp = "^(SUPER_ADMIN|ADMIN|MODERATOR)$", 
-             message = "Role must be one of: SUPER_ADMIN, ADMIN, MODERATOR")
+    @Pattern(regexp = "^(ADMIN|SUPER_ADMIN)$", 
+             message = "Role must be one of: ADMIN, SUPER_ADMIN")
     private String role;
     
     private Set<@Positive(message = "Permission ID must be positive") Long> permissionIDs;

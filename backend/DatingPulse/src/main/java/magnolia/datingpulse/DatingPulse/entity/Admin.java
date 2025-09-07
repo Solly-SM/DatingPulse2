@@ -20,7 +20,7 @@ public class Admin {
     private User user;
 
     @Column(nullable = false)
-    private String role; // superAdmin, moderator
+    private String role; // ADMIN, SUPER_ADMIN
 
 
     @ManyToMany(fetch = FetchType.EAGER)
