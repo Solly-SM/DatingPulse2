@@ -8,6 +8,7 @@ import magnolia.datingpulse.DatingPulse.dto.AdminDTO;
 import magnolia.datingpulse.DatingPulse.service.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<AdminDTO> createAdmin(@Valid @RequestBody AdminDTO adminDTO) {
         try {
             AdminDTO createdAdmin = adminService.createAdmin(adminDTO);
@@ -32,6 +34,7 @@ public class AdminController {
     }
 
     @GetMapping("/{adminId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AdminDTO> getAdminById(
             @PathVariable @Positive(message = "Admin ID must be positive") Long adminId) {
         try {
@@ -43,6 +46,7 @@ public class AdminController {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AdminDTO> getAdminByUserId(
             @PathVariable @Positive(message = "User ID must be positive") Long userId) {
         try {
@@ -54,6 +58,7 @@ public class AdminController {
     }
 
     @GetMapping("/role/{role}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AdminDTO>> getAdminsByRole(
             @PathVariable @NotBlank(message = "Role cannot be blank") String role) {
         try {
@@ -65,12 +70,14 @@ public class AdminController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AdminDTO>> getAllAdmins() {
         List<AdminDTO> admins = adminService.getAllAdmins();
         return ResponseEntity.ok(admins);
     }
 
     @PutMapping("/{adminId}")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<AdminDTO> updateAdmin(
             @PathVariable @Positive(message = "Admin ID must be positive") Long adminId,
             @Valid @RequestBody AdminDTO adminDTO) {
@@ -83,6 +90,7 @@ public class AdminController {
     }
 
     @PostMapping("/{adminId}/permissions/{permissionId}")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<Void> addPermission(
             @PathVariable @Positive(message = "Admin ID must be positive") Long adminId,
             @PathVariable @Positive(message = "Permission ID must be positive") Long permissionId) {
@@ -95,6 +103,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/{adminId}/permissions/{permissionId}")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<Void> removePermission(
             @PathVariable @Positive(message = "Admin ID must be positive") Long adminId,
             @PathVariable @Positive(message = "Permission ID must be positive") Long permissionId) {
@@ -107,6 +116,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/{adminId}")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<Void> deleteAdmin(
             @PathVariable @Positive(message = "Admin ID must be positive") Long adminId) {
         try {
@@ -118,6 +128,7 @@ public class AdminController {
     }
 
     @GetMapping("/{adminId}/permissions/{permissionName}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Boolean> hasPermission(
             @PathVariable @Positive(message = "Admin ID must be positive") Long adminId,
             @PathVariable @NotBlank(message = "Permission name cannot be blank") String permissionName) {
@@ -126,6 +137,7 @@ public class AdminController {
     }
 
     @GetMapping("/check-user/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Boolean> isUserAdmin(
             @PathVariable @Positive(message = "User ID must be positive") Long userId) {
         boolean isAdmin = adminService.isUserAdmin(userId);

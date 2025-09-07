@@ -41,8 +41,8 @@ public class User {
 
     @Column(nullable = false, length = 20)
     @NotBlank(message = "Role is required")
-    @Pattern(regexp = "^(ADMIN|USER)$", message = "Role must be either ADMIN or USER")
-    private String role; // admin, user
+    @Pattern(regexp = "^(USER|ADMIN|SUPER_ADMIN)$", message = "Role must be USER, ADMIN, or SUPER_ADMIN")
+    private String role; // USER, ADMIN, SUPER_ADMIN
 
     @Column(nullable = false, length = 20)
     @NotBlank(message = "Status is required")
