@@ -4,9 +4,19 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import magnolia.datingpulse.DatingPulse.dto.UserDTO;
+import magnolia.datingpulse.DatingPulse.config.JwtUtil;
+import magnolia.datingpulse.DatingPulse.dto.*;
+import magnolia.datingpulse.DatingPulse.entity.User;
+import magnolia.datingpulse.DatingPulse.repositories.UserRepository;
 import magnolia.datingpulse.DatingPulse.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,64 +28,124 @@ import java.util.Map;
 public class AuthController {
     
     private final UserService userService;
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
     
     @PostMapping("/register")
     @Operation(summary = "Register new user", description = "Create a new user account with email and password")
-    public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO) {
-        // TODO: Implement user registration
-        // 1. Hash the password using BCrypt
-        // 2. Save user to database
-        // 3. Generate JWT token
-        // 4. Return token response
-        
-        // For now, just return a success message
-        return ResponseEntity.ok(Map.of(
-            "message", "Registration endpoint created successfully!",
-            "user", userDTO.getUsername(),
-            "next_step", "Implement password hashing and JWT token generation"
-        ));
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        try {
+            // Check if username or email already exists
+            if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Username already exists"));
+            }
+            if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Email already exists"));
+            }
+            
+            // Create user
+            User user = User.builder()
+                    .username(registerRequest.getUsername())
+                    .email(registerRequest.getEmail())
+                    .password(passwordEncoder.encode(registerRequest.getPassword()))
+                    .phone(registerRequest.getPhone())
+                    .role("USER")
+                    .status("ACTIVE")
+                    .isVerified(false)
+                    .loginAttempt(0)
+                    .build();
+            
+            User savedUser = userRepository.save(user);
+            
+            // Generate JWT token
+            String token = jwtUtil.generateToken(savedUser.getUsername());
+            
+            // Create response
+            AuthResponse authResponse = AuthResponse.builder()
+                    .token(token)
+                    .userId(savedUser.getUserID())
+                    .username(savedUser.getUsername())
+                    .email(savedUser.getEmail())
+                    .role(savedUser.getRole())
+                    .message("Registration successful")
+                    .build();
+            
+            return ResponseEntity.ok(authResponse);
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Registration failed: " + e.getMessage()));
+        }
     }
     
     @PostMapping("/login")
     @Operation(summary = "User login", description = "Authenticate user with email/username and password")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        // TODO: Implement user login
-        // 1. Validate user credentials
-        // 2. Check password against hashed password
-        // 3. Generate JWT token
-        // 4. Return token and user info
-        
-        // For now, just return a success message
-        return ResponseEntity.ok(Map.of(
-            "message", "Login endpoint created successfully!",
-            "username", loginRequest.getUsername(),
-            "next_step", "Implement credential validation and JWT token generation"
-        ));
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        try {
+            // Authenticate user
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()
+                    )
+            );
+            
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            
+            // Find user in database
+            User user = userRepository.findByUsername(userDetails.getUsername())
+                    .or(() -> userRepository.findByEmail(userDetails.getUsername()))
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            
+            // Update last login
+            user.setLastLogin(java.time.LocalDateTime.now());
+            user.setLoginAttempt(0); // Reset login attempts on successful login
+            userRepository.save(user);
+            
+            // Generate JWT token
+            String token = jwtUtil.generateToken(userDetails);
+            
+            // Create response
+            AuthResponse authResponse = AuthResponse.builder()
+                    .token(token)
+                    .userId(user.getUserID())
+                    .username(user.getUsername())
+                    .email(user.getEmail())
+                    .role(user.getRole())
+                    .message("Login successful")
+                    .build();
+            
+            return ResponseEntity.ok(authResponse);
+            
+        } catch (BadCredentialsException e) {
+            // Handle failed login attempt
+            userRepository.findByUsername(loginRequest.getUsername())
+                    .or(() -> userRepository.findByEmail(loginRequest.getUsername()))
+                    .ifPresent(user -> {
+                        user.setLoginAttempt(user.getLoginAttempt() + 1);
+                        userRepository.save(user);
+                    });
+            
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Invalid username or password"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Login failed: " + e.getMessage()));
+        }
     }
     
     @PostMapping("/logout")
     @Operation(summary = "User logout", description = "Invalidate user session and JWT token")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
-        // TODO: Implement logout
-        // 1. Extract JWT token from Authorization header
-        // 2. Add token to blacklist/invalidate
-        // 3. Return success response
-        
+        // For now, just return success message
+        // In a production app, you would add the token to a blacklist
         return ResponseEntity.ok(Map.of(
-            "message", "Logout endpoint created successfully!",
-            "next_step", "Implement JWT token blacklisting"
+            "message", "Logout successful",
+            "note", "Client should discard the JWT token"
         ));
-    }
-    
-    // Simple DTO for login requests - you can move this to a separate file later
-    public static class LoginRequest {
-        private String username;
-        private String password;
-        
-        // Getters and setters
-        public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
     }
 }
