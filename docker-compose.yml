@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: datingpulse-postgres
+    environment:
+      POSTGRES_DB: datingpulse
+      POSTGRES_USER: datingpulse
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - datingpulse-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: datingpulse-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@datingpulse.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - datingpulse-network
+
+volumes:
+  postgres_data:
+
+networks:
+  datingpulse-network:
+    driver: bridge
