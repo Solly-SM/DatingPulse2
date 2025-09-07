@@ -68,20 +68,6 @@ public class GradeController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/by-value/{gradeValue}")
-    public ResponseEntity<List<GradeDTO>> getGradesByValue(
-            @PathVariable @Min(value = 1, message = "Grade value must be at least 1") 
-            @Max(value = 5, message = "Grade value must not exceed 5") Integer gradeValue) {
-        List<GradeDTO> grades = gradeService.getGradesByValue(gradeValue);
-        return ResponseEntity.ok(grades);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<GradeDTO>> getAllGrades() {
-        List<GradeDTO> grades = gradeService.getAllGrades();
-        return ResponseEntity.ok(grades);
-    }
-
     @PutMapping("/{gradeId}")
     public ResponseEntity<GradeDTO> updateGrade(
             @PathVariable @Positive(message = "Grade ID must be positive") Long gradeId,
@@ -94,37 +80,11 @@ public class GradeController {
         }
     }
 
-    @PutMapping("/update-or-create")
-    public ResponseEntity<GradeDTO> updateOrCreateGrade(
-            @RequestParam @NotNull @Positive(message = "User given ID must be positive") Long userGivenId,
-            @RequestParam @NotNull @Positive(message = "User received ID must be positive") Long userReceivedId,
-            @RequestParam @NotNull @Min(value = 1, message = "Grade value must be at least 1") 
-            @Max(value = 5, message = "Grade value must not exceed 5") Integer gradeValue) {
-        try {
-            GradeDTO grade = gradeService.updateOrCreateGrade(userGivenId, userReceivedId, gradeValue);
-            return ResponseEntity.ok(grade);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @DeleteMapping("/{gradeId}")
     public ResponseEntity<Void> deleteGrade(
             @PathVariable @Positive(message = "Grade ID must be positive") Long gradeId) {
         try {
             gradeService.deleteGrade(gradeId);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @DeleteMapping("/between-users")
-    public ResponseEntity<Void> deleteGradeBetweenUsers(
-            @RequestParam @NotNull @Positive(message = "User given ID must be positive") Long userGivenId,
-            @RequestParam @NotNull @Positive(message = "User received ID must be positive") Long userReceivedId) {
-        try {
-            gradeService.deleteGradeBetweenUsers(userGivenId, userReceivedId);
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -148,14 +108,6 @@ public class GradeController {
     public ResponseEntity<Long> getGradeCountForUser(
             @PathVariable @Positive(message = "User ID must be positive") Long userReceivedId) {
         long count = gradeService.getGradeCountForUser(userReceivedId);
-        return ResponseEntity.ok(count);
-    }
-
-    @GetMapping("/count/by-value/{gradeValue}")
-    public ResponseEntity<Long> getGradeCountByValue(
-            @PathVariable @Min(value = 1, message = "Grade value must be at least 1") 
-            @Max(value = 5, message = "Grade value must not exceed 5") Integer gradeValue) {
-        long count = gradeService.getGradeCountByValue(gradeValue);
         return ResponseEntity.ok(count);
     }
 

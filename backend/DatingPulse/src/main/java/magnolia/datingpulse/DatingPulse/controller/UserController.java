@@ -103,28 +103,6 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{userId}/last-login")
-    public ResponseEntity<Void> updateLastLogin(
-            @PathVariable @Positive(message = "User ID must be positive") Long userId) {
-        try {
-            userService.updateLastLogin(userId);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PutMapping("/{userId}/increment-login-attempts")
-    public ResponseEntity<Void> incrementLoginAttempts(
-            @PathVariable @Positive(message = "User ID must be positive") Long userId) {
-        try {
-            userService.incrementLoginAttempts(userId);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
     @PutMapping("/{userId}/suspend")
     public ResponseEntity<Void> suspendUser(
             @PathVariable @Positive(message = "User ID must be positive") Long userId,
@@ -143,28 +121,6 @@ public class UserController {
             @RequestParam @NotBlank(message = "Reason is required") String reason) {
         try {
             userService.banUser(userId, reason);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PutMapping("/{userId}/activate")
-    public ResponseEntity<Void> activateUser(
-            @PathVariable @Positive(message = "User ID must be positive") Long userId) {
-        try {
-            userService.activateUser(userId);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PutMapping("/{userId}/verify")
-    public ResponseEntity<Void> verifyUser(
-            @PathVariable @Positive(message = "User ID must be positive") Long userId) {
-        try {
-            userService.verifyUser(userId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
