@@ -17,11 +17,15 @@ public class Like {
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
-    private User user; // The user who liked
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "likedUserID", nullable = false)
-    private User likedUser; // The user who was liked
+    private User likedUser;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LikeType type; // NEW FIELD
 
     @Column(nullable = false)
     private LocalDateTime likedAt;

@@ -20,13 +20,24 @@ public class Audio {
     private UserProfile userProfile;
 
     @Column(nullable = false)
-    private String url; // Link to audio file
+    private String url;
 
-    private String description; // Optional caption or context for the audio
+    private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Boolean isPublic; // Whether audio is public or private
+    private AudioVisibility visibility;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AudioStatus status; // Moderation status
+
+    @Column
+    private Integer duration;
 
     @Column(nullable = false)
     private LocalDateTime uploadedAt;
+
+    @Column
+    private LocalDateTime updatedAt; // Audit timestamp
 }

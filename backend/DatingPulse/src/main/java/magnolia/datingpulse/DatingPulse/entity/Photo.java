@@ -1,10 +1,12 @@
 package magnolia.datingpulse.DatingPulse.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "photos")
+@Table(
+        name = "photos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,8 +32,20 @@ public class Photo {
     @Column(nullable = false)
     private Boolean isPrivate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PhotoVisibility visibility;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PhotoStatus status; // Moderation status
+
     @Column(nullable = false)
     private LocalDateTime uploadedAt;
 
+    @Column
+    private LocalDateTime updatedAt; // Audit timestamp
 
+    @Column
+    private Integer orderIndex; // For manual gallery ordering
 }
