@@ -1,5 +1,12 @@
 package magnolia.datingpulse.DatingPulse.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -17,12 +24,24 @@ import java.util.List;
 @RequestMapping("/api/interests")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Interest Management", description = "Operations for managing user interests and hobbies")
 public class InterestController {
 
     private final InterestService interestService;
 
     @PostMapping
-    public ResponseEntity<InterestDTO> createInterest(@Valid @RequestBody InterestDTO interestDTO) {
+    @Operation(summary = "Create a new interest", 
+               description = "Creates a new interest category that users can select")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Interest created successfully",
+                    content = @Content(mediaType = "application/json", 
+                    schema = @Schema(implementation = InterestDTO.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data or interest already exists",
+                    content = @Content)
+    })
+    public ResponseEntity<InterestDTO> createInterest(
+            @Parameter(description = "Interest information", required = true)
+            @Valid @RequestBody InterestDTO interestDTO) {
         try {
             InterestDTO createdInterest = interestService.createInterest(interestDTO);
             return new ResponseEntity<>(createdInterest, HttpStatus.CREATED);
