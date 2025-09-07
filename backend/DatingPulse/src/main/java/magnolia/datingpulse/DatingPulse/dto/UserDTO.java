@@ -17,8 +17,8 @@ public class UserDTO {
     @Email(message = "Email should be valid")
     @Size(max = 255, message = "Email must not exceed 255 characters")
     private String email;
-    
-    @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "Phone number must be valid E.164 format")
+
+    @Pattern(regexp = "^(0[1-9][0-9]{8}|\\+27[1-9][0-9]{8})$", message = "Phone number must be in South African format (e.g., 0821234567 or +27821234567)")
     private String phone;
     
     private String role;
