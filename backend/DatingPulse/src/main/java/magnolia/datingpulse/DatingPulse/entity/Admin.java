@@ -1,6 +1,7 @@
 package magnolia.datingpulse.DatingPulse.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import java.util.Set;
 
@@ -17,9 +18,13 @@ public class Admin {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "userID")
+    @NotNull(message = "User is required")
     private User user;
 
     @Column(nullable = false)
+    @NotBlank(message = "Admin role is required")
+    @Pattern(regexp = "^(ADMIN|SUPER_ADMIN)$", 
+             message = "Role must be one of: ADMIN, SUPER_ADMIN")
     private String role; // ADMIN, SUPER_ADMIN
 
 
