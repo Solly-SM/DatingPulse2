@@ -115,6 +115,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**", "/auth/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
+                // WebSocket endpoints
+                .requestMatchers("/ws/**").permitAll()
                 // Admin endpoints
                 .requestMatchers("/api/admin/**", "/admin/**").hasRole("ADMIN")
                 // All other endpoints require authentication
