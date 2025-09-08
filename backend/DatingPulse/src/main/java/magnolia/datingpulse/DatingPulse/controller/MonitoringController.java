@@ -1,7 +1,6 @@
 package magnolia.datingpulse.DatingPulse.controller;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import lombok.RequiredArgsConstructor;
 import magnolia.datingpulse.DatingPulse.config.MetricsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -18,13 +17,19 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/monitoring")
-@RequiredArgsConstructor
 public class MonitoringController {
 
     private final MeterRegistry meterRegistry;
-    @Autowired(required = false)
     private final CacheManager cacheManager;
     private final MetricsConfig.DatingPulseMetrics datingPulseMetrics;
+
+    public MonitoringController(MeterRegistry meterRegistry, 
+                               @Autowired(required = false) CacheManager cacheManager,
+                               MetricsConfig.DatingPulseMetrics datingPulseMetrics) {
+        this.meterRegistry = meterRegistry;
+        this.cacheManager = cacheManager;
+        this.datingPulseMetrics = datingPulseMetrics;
+    }
 
     /**
      * Get application performance metrics
