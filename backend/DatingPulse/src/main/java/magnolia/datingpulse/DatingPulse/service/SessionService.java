@@ -7,6 +7,8 @@ import magnolia.datingpulse.DatingPulse.entity.User;
 import magnolia.datingpulse.DatingPulse.mapper.SessionMapper;
 import magnolia.datingpulse.DatingPulse.repositories.SessionRepository;
 import magnolia.datingpulse.DatingPulse.repositories.UserRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +54,7 @@ public class SessionService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "sessions", key = "#sessionId")
     public SessionDTO getSessionById(String sessionId) {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("Session not found with ID: " + sessionId));
@@ -59,6 +62,7 @@ public class SessionService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "sessions", key = "#token")
     public SessionDTO getSessionByToken(String token) {
         Session session = sessionRepository.findByToken(token)
                 .orElseThrow(() -> new IllegalArgumentException("Session not found with token"));

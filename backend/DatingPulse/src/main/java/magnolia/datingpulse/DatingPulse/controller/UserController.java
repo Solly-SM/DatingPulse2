@@ -15,6 +15,10 @@ import magnolia.datingpulse.DatingPulse.dto.UserDTO;
 import magnolia.datingpulse.DatingPulse.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -103,14 +107,25 @@ public class UserController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all users", 
-               description = "Retrieves a list of all users in the system")
+    @Operation(summary = "Get all users with pagination", 
+               description = "Retrieves a paginated list of all users in the system")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "List of users retrieved successfully",
                     content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = userService.getAllUsers();
+    public ResponseEntity<Page<UserDTO>> getAllUsers(
+            @Parameter(description = "Page number (0-based)", example = "0")
+            @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Page size", example = "20")
+            @RequestParam(defaultValue = "20") int size,
+            @Parameter(description = "Sort field", example = "userId")
+            @RequestParam(defaultValue = "userId") String sortBy,
+            @Parameter(description = "Sort direction", example = "asc")
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        
+        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Page<UserDTO> users = userService.getAllUsers(pageable);
         return ResponseEntity.ok(users);
     }
 
