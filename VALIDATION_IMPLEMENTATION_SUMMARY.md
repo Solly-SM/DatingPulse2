@@ -12,14 +12,15 @@ This document summarizes the comprehensive validation implementation across the 
 - **Effective Coverage**: 100% of non-enum entities
 
 ### DTO Validation Coverage
-- **Total DTOs**: 24
-- **DTOs with Validation**: 15
-- **Coverage**: 62.5%
+- **Total DTOs**: 27
+- **DTOs with Validation**: 26
+- **Coverage**: 96.3%
 
 ### Test Coverage
-- **Individual Entity Validation Tests**: 9
+- **Individual Entity Validation Tests**: 19
+- **Individual DTO Validation Tests**: 2
 - **Integration Tests**: 1 comprehensive test
-- **Total Validation Tests**: 10
+- **Total Validation Tests**: 22
 
 ## Validated Entities
 
@@ -132,6 +133,10 @@ The `GlobalExceptionHandler` provides:
 
 ## Test Coverage
 
+### Individual DTO Tests
+1. `ChatMessageDTOValidationTest` - WebSocket message validation
+2. `PreferenceDTOValidationTest` - Dating preference validation
+
 ### Individual Entity Tests
 1. `GradeValidationTest` - Grade constraints and relationships
 2. `DeviceValidationTest` - Device types and validation
@@ -176,6 +181,64 @@ The `GlobalExceptionHandler` provides:
 - Performance-optimized validation
 - Internationalization-ready error messages
 - Comprehensive edge case coverage
+
+## Recently Added DTO Validations
+
+### Comprehensive DTO Validation Implementation
+The following DTOs were enhanced with comprehensive validation annotations:
+
+1. **PreferenceDTO** - Dating preferences with business rule validation:
+   - Gender preference patterns (MALE, FEMALE, ALL, NON_BINARY)
+   - Age range validation (18-100)
+   - Distance constraints (1-1000 km)
+   - Relationship type patterns
+   - Height, body type, and lifestyle preferences
+
+2. **ChatMessageDTO** - WebSocket message validation:
+   - Message type patterns for real-time features
+   - Content length limits (2000 characters)
+   - Required user identification fields
+   - Timestamp validation
+
+3. **OtpDTO** - One-time password validation:
+   - 6-digit code pattern validation
+   - OTP type constraints (LOGIN, SIGNUP, RESET, VERIFICATION)
+   - Future expiry date validation
+   - User relationship validation
+
+4. **NotificationDTO** - Notification system validation:
+   - Notification type patterns (MATCH, MESSAGE, LIKE, etc.)
+   - Priority levels (LOW, MEDIUM, HIGH, URGENT)
+   - Content length limits (title: 100, content: 1000 chars)
+   - User relationship validation
+
+5. **BlockedUserDTO** - User blocking validation:
+   - Required user relationship fields
+   - Positive ID validation
+   - Timestamp constraints
+
+6. **TypingIndicatorDTO** - Real-time typing validation:
+   - User identification validation
+   - Username pattern constraints
+   - Timestamp validation
+
+7. **ProfileVerificationDTO** - Identity verification validation:
+   - Verification type patterns (PHOTO, ID, SOCIAL, etc.)
+   - Status validation (PENDING, APPROVED, REJECTED, EXPIRED)
+   - Document URL HTTPS validation with file type constraints
+   - Reviewer notes length limits
+
+8. **SessionDTO** - User session validation:
+   - Session ID length constraints
+   - Token validation requirements
+   - Future expiry date validation
+   - Device info length limits
+
+9. **SwipeHistoryDTO** - Swipe tracking validation:
+   - Swipe type patterns (LIKE, DISLIKE, SUPER_LIKE, PASS)
+   - Required user relationships
+   - Device and session tracking validation
+   - App version constraints
 
 ## Future Enhancements
 
