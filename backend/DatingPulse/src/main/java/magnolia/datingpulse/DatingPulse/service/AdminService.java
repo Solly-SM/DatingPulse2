@@ -9,6 +9,10 @@ import magnolia.datingpulse.DatingPulse.mapper.AdminMapper;
 import magnolia.datingpulse.DatingPulse.repositories.AdminRepository;
 import magnolia.datingpulse.DatingPulse.repositories.PermissionRepository;
 import magnolia.datingpulse.DatingPulse.repositories.UserRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +67,7 @@ public class AdminService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "admins", key = "#adminId")
     public AdminDTO getAdminById(Long adminId) {
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new IllegalArgumentException("Admin not found with ID: " + adminId));
@@ -70,6 +75,7 @@ public class AdminService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "admins", key = "#userId")
     public AdminDTO getAdminByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
@@ -97,6 +103,12 @@ public class AdminService {
         return admins.stream()
                 .map(adminMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AdminDTO> getAllAdmins(Pageable pageable) {
+        Page<Admin> admins = adminRepository.findAll(pageable);
+        return admins.map(adminMapper::toDTO);
     }
 
     @Transactional
