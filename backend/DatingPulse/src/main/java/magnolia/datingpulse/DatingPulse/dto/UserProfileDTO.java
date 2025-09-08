@@ -61,4 +61,7 @@ public class UserProfileDTO {
     private String jobTitle;
     private String relationship;
     private String privacy;
+    
+    // Compatibility score for matching purposes (not persisted)
+    private Double compatibilityScore;
 }
