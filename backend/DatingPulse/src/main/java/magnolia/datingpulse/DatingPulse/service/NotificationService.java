@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +22,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final NotificationMapper notificationMapper;
+    private final PushNotificationService pushNotificationService;
 
     @Transactional
     public NotificationDTO createNotification(NotificationDTO notificationDTO) {
@@ -44,7 +47,28 @@ public class NotificationService {
         }
 
         Notification saved = notificationRepository.save(notification);
-        return notificationMapper.toDTO(saved);
+        NotificationDTO result = notificationMapper.toDTO(saved);
+        
+        // Send push notification
+        try {
+            Map<String, String> data = new HashMap<>();
+            data.put("type", notificationDTO.getType());
+            if (notificationDTO.getRelatedID() != null) {
+                data.put("relatedId", notificationDTO.getRelatedID().toString());
+            }
+            
+            pushNotificationService.sendPushNotificationToUser(
+                user, 
+                notificationDTO.getTitle(), 
+                notificationDTO.getContent(), 
+                data
+            );
+        } catch (Exception e) {
+            // Log error but don't fail the notification creation
+            System.err.println("Failed to send push notification for notification " + saved.getNotificationID() + ": " + e.getMessage());
+        }
+        
+        return result;
     }
 
     @Transactional

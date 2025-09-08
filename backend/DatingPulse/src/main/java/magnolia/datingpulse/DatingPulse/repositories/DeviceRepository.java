@@ -19,5 +19,8 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
     long countByType(String type);
     long countByLastSeenAfter(LocalDateTime dateTime);
     long countByUser(User user);
+    
+    // For push notifications
+    List<Device> findByUserAndPushTokenIsNotNull(User user);
 }
 
