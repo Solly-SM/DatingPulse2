@@ -171,6 +171,13 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+        <!-- Firebase Admin SDK for FCM push notifications -->
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>9.3.0</version>
+        </dependency>
+
         <!-- AWS S3 for Cloud Storage -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
