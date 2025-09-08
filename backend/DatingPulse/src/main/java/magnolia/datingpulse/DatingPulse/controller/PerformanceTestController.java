@@ -21,13 +21,19 @@ import java.util.concurrent.TimeUnit;
  */
 @RestController
 @RequestMapping("/api/performance")
-@RequiredArgsConstructor
 public class PerformanceTestController {
 
     private final UserService userService;
-    @Autowired(required = false)
     private final CacheManager cacheManager;
     private final MetricsConfig.DatingPulseMetrics datingPulseMetrics;
+
+    public PerformanceTestController(UserService userService, 
+                                   @Autowired(required = false) CacheManager cacheManager,
+                                   MetricsConfig.DatingPulseMetrics datingPulseMetrics) {
+        this.userService = userService;
+        this.cacheManager = cacheManager;
+        this.datingPulseMetrics = datingPulseMetrics;
+    }
 
     /**
      * Test caching performance by fetching the same user multiple times
