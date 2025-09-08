@@ -3,6 +3,7 @@ package magnolia.datingpulse.DatingPulse.controller;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import magnolia.datingpulse.DatingPulse.config.MetricsConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class MonitoringController {
 
     private final MeterRegistry meterRegistry;
+    @Autowired(required = false)
     private final CacheManager cacheManager;
     private final MetricsConfig.DatingPulseMetrics datingPulseMetrics;
 
@@ -54,12 +56,16 @@ public class MonitoringController {
     public ResponseEntity<Map<String, Object>> getCacheStats() {
         Map<String, Object> cacheStats = new HashMap<>();
         
-        cacheManager.getCacheNames().forEach(cacheName -> {
-            Map<String, Object> stats = new HashMap<>();
-            stats.put("name", cacheName);
-            // Add more detailed cache statistics if available
-            cacheStats.put(cacheName, stats);
-        });
+        if (cacheManager != null) {
+            cacheManager.getCacheNames().forEach(cacheName -> {
+                Map<String, Object> stats = new HashMap<>();
+                stats.put("name", cacheName);
+                // Add more detailed cache statistics if available
+                cacheStats.put(cacheName, stats);
+            });
+        } else {
+            cacheStats.put("message", "Cache manager not available");
+        }
         
         return ResponseEntity.ok(cacheStats);
     }
