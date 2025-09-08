@@ -11,4 +11,5 @@ public interface SwipeHistoryRepository extends JpaRepository<SwipeHistory, Long
     List<SwipeHistory> findByUser(User user);
     List<SwipeHistory> findByUserAndSwipeType(User user, String swipeType);
     Optional<SwipeHistory> findTopByUserOrderByCreatedAtDesc(User user);
+    Optional<SwipeHistory> findByUserAndTargetUser(User user, User targetUser);
 }
