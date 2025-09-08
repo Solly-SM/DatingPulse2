@@ -23,7 +23,7 @@ public class UserDTO {
     @Schema(description = "User's email address", example = "john.doe@example.com", format = "email")
     private String email;
 
-    @Pattern(regexp = "^(0[1-9][0-9]{8}|\\+27[1-9][0-9]{8})$", message = "Phone number must be in South African format (e.g., 0821234567 or +27821234567)")
+    @Pattern(regexp = "^$|^(0[1-9][0-9]{8}|\\+27[1-9][0-9]{8})$", message = "Phone number must be in South African format (e.g., 0821234567 or +27821234567)")
     @Schema(description = "User's phone number in South African format", example = "0821234567")
     private String phone;
     
