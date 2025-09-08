@@ -1,7 +1,7 @@
 package magnolia.datingpulse.DatingPulse.entity;
 
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -18,15 +18,22 @@ public class Conversation {
 
     @ManyToOne
     @JoinColumn(name = "matchID", nullable = false)
+    @NotNull(message = "Match is required")
     private Match match; // Related match for this conversation
 
     @Column(nullable = false)
+    @NotNull(message = "Start timestamp is required")
     private LocalDateTime startedAt;
 
     @OneToOne
     @JoinColumn(name = "lastMessageID")
     private Message lastMessage; // Latest message’s ID in this conversation
 
-    private Boolean deletedForUser1; // If user1 deleted the convo
-    private Boolean deletedForUser2; // If user2 deleted the convo
+    @NotNull(message = "Deleted status for user1 is required")
+    @Builder.Default
+    private Boolean deletedForUser1 = false; // If user1 deleted the convo
+    
+    @NotNull(message = "Deleted status for user2 is required")
+    @Builder.Default
+    private Boolean deletedForUser2 = false; // If user2 deleted the convo
 }
