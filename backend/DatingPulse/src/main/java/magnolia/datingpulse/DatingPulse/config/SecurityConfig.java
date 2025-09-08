@@ -19,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -105,7 +107,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
+            .csrf(csrf -> csrf
+                // Enable CSRF for state-changing operations but disable for API endpoints
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .ignoringRequestMatchers("/api/**", "/auth/**", "/ws/**")
+                .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+            )
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
@@ -115,8 +122,15 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**", "/auth/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
+                // Actuator endpoints
+                .requestMatchers("/actuator/health", "/actuator/prometheus").permitAll()
+                .requestMatchers("/actuator/**").hasRole("ADMIN")
                 // WebSocket endpoints
                 .requestMatchers("/ws/**").permitAll()
+                // GDPR endpoints
+                .requestMatchers("/api/gdpr/export/**", "/api/gdpr/delete-account", "/api/gdpr/cancel-deletion", 
+                               "/api/gdpr/data-processing-info", "/api/gdpr/consent").hasRole("USER")
+                .requestMatchers("/api/gdpr/admin/**").hasRole("ADMIN")
                 // Admin endpoints
                 .requestMatchers("/api/admin/**", "/admin/**").hasRole("ADMIN")
                 // All other endpoints require authentication
@@ -125,7 +139,13 @@ public class SecurityConfig {
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             // Allow H2 console frames for development
-            .headers(headers -> headers.frameOptions().sameOrigin());
+            .headers(headers -> headers
+                .frameOptions().sameOrigin()
+                .httpStrictTransportSecurity(hstsConfig -> hstsConfig
+                    .maxAgeInSeconds(31536000)
+                    .includeSubDomains(true)
+                )
+            );
             
         return http.build();
     }
