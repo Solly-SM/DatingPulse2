@@ -261,4 +261,136 @@ class ProjectValidationIntegrationTest {
                 v.getPropertyPath().toString().equals("loginAttempt")),
                 "Excessive login attempts should be caught by validation");
     }
+
+    @Test
+    void testDTOValidationIntegration() {
+        // Test RegisterRequest with comprehensive validation
+        magnolia.datingpulse.DatingPulse.dto.RegisterRequest registerRequest = 
+            magnolia.datingpulse.DatingPulse.dto.RegisterRequest.builder()
+                .username("new_user")
+                .email("new.user@example.com")
+                .password("SecurePass123!")
+                .phone("0821234567")
+                .build();
+
+        Set<ConstraintViolation<magnolia.datingpulse.DatingPulse.dto.RegisterRequest>> registerViolations = 
+            validator.validate(registerRequest);
+        assertTrue(registerViolations.isEmpty(), "Valid registration request should not have violations");
+
+        // Test LoginRequest validation
+        magnolia.datingpulse.DatingPulse.dto.LoginRequest loginRequest = 
+            magnolia.datingpulse.DatingPulse.dto.LoginRequest.builder()
+                .username("testuser")
+                .password("anypassword")
+                .build();
+
+        Set<ConstraintViolation<magnolia.datingpulse.DatingPulse.dto.LoginRequest>> loginViolations = 
+            validator.validate(loginRequest);
+        assertTrue(loginViolations.isEmpty(), "Valid login request should not have violations");
+
+        // Test UserDTO validation
+        magnolia.datingpulse.DatingPulse.dto.UserDTO userDTO = new magnolia.datingpulse.DatingPulse.dto.UserDTO();
+        userDTO.setUsername("dto_user");
+        userDTO.setEmail("dto.user@example.com");
+        userDTO.setPhone("0731234567");
+
+        Set<ConstraintViolation<magnolia.datingpulse.DatingPulse.dto.UserDTO>> userDtoViolations = 
+            validator.validate(userDTO);
+        assertTrue(userDtoViolations.isEmpty(), "Valid user DTO should not have violations");
+    }
+
+    @Test
+    void testCrossEntityValidationWorkflow() {
+        // Test a complete workflow that involves multiple entities and DTOs
+        
+        // 1. Start with valid user registration (DTO validation)
+        magnolia.datingpulse.DatingPulse.dto.RegisterRequest request = 
+            magnolia.datingpulse.DatingPulse.dto.RegisterRequest.builder()
+                .username("workflow_user")
+                .email("workflow@example.com")
+                .password("WorkflowPass123!")
+                .phone("0821234567")
+                .build();
+
+        Set<ConstraintViolation<magnolia.datingpulse.DatingPulse.dto.RegisterRequest>> requestViolations = 
+            validator.validate(request);
+        assertTrue(requestViolations.isEmpty(), "Registration request should be valid");
+
+        // 2. Create user entity from DTO data
+        User workflowUser = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") // Valid BCrypt hash
+                .role("USER")
+                .status("ACTIVE")
+                .isVerified(false)
+                .loginAttempt(0)
+                .build();
+
+        Set<ConstraintViolation<User>> userViolations = validator.validate(workflowUser);
+        assertTrue(userViolations.isEmpty(), "User entity should be valid");
+
+        // 3. Create admin for workflow management
+        magnolia.datingpulse.DatingPulse.dto.AdminDTO adminDTO = new magnolia.datingpulse.DatingPulse.dto.AdminDTO();
+        adminDTO.setUserID(1L);
+        adminDTO.setRole("ADMIN");
+
+        Set<ConstraintViolation<magnolia.datingpulse.DatingPulse.dto.AdminDTO>> adminViolations = 
+            validator.validate(adminDTO);
+        assertTrue(adminViolations.isEmpty(), "Admin DTO should be valid");
+
+        // 4. Create match scenario
+        magnolia.datingpulse.DatingPulse.dto.MatchDTO matchDTO = new magnolia.datingpulse.DatingPulse.dto.MatchDTO();
+        matchDTO.setUserOneID(1L);
+        matchDTO.setUserTwoID(2L);
+        matchDTO.setMatchSource("MUTUAL_LIKE");
+
+        Set<ConstraintViolation<magnolia.datingpulse.DatingPulse.dto.MatchDTO>> matchViolations = 
+            validator.validate(matchDTO);
+        assertTrue(matchViolations.isEmpty(), "Match DTO should be valid");
+
+        // 5. Verify all components work together
+        assertTrue(requestViolations.isEmpty() && userViolations.isEmpty() && 
+                   adminViolations.isEmpty() && matchViolations.isEmpty(),
+                   "Complete workflow should have no validation violations");
+    }
+
+    @Test
+    void testValidationErrorHandlingWorkflow() {
+        // Test that validation properly catches errors across different entity types
+        
+        // Invalid registration request
+        magnolia.datingpulse.DatingPulse.dto.RegisterRequest invalidRequest = 
+            magnolia.datingpulse.DatingPulse.dto.RegisterRequest.builder()
+                .username("ab")  // too short
+                .email("invalid-email")  // invalid format
+                .password("weak")  // doesn't meet complexity requirements
+                .phone("123")  // invalid format
+                .build();
+
+        Set<ConstraintViolation<magnolia.datingpulse.DatingPulse.dto.RegisterRequest>> requestViolations = 
+            validator.validate(invalidRequest);
+        assertFalse(requestViolations.isEmpty(), "Invalid registration should have violations");
+        assertTrue(requestViolations.size() >= 4, "Should have violations for all invalid fields");
+
+        // Invalid user entity
+        User invalidUser = User.builder()
+                .username("ab")  // too short
+                .email("invalid")  // invalid format
+                .password("")  // blank
+                .role("INVALID_ROLE")  // invalid role
+                .status("INVALID_STATUS")  // invalid status
+                .loginAttempt(-1)  // negative
+                .build();
+
+        Set<ConstraintViolation<User>> userViolations = validator.validate(invalidUser);
+        assertFalse(userViolations.isEmpty(), "Invalid user should have violations");
+        assertTrue(userViolations.size() >= 6, "Should have violations for all invalid fields");
+
+        // Verify that validation catches all the expected issues
+        assertTrue(requestViolations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("username")));
+        assertTrue(requestViolations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("email")));
+        assertTrue(requestViolations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("password")));
+        assertTrue(requestViolations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("phone")));
+    }
 }
