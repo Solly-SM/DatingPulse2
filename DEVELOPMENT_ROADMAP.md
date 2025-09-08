@@ -146,17 +146,51 @@
 - `src/main/java/magnolia/datingpulse/DatingPulse/config/WebSocketConfig.java`
 - `src/main/java/magnolia/datingpulse/DatingPulse/controller/ChatWebSocketController.java`
 
-### Priority 6: Photo/Media Management
+### Priority 6: Photo/Media Management ✅ COMPLETED
 **Implementation Steps**:
-1. **File Upload System** (2-3 days)
-   - Integrate with cloud storage (AWS S3, Cloudinary)
-   - Add image resizing and optimization
-   - Implement profile photo management
+1. **File Upload System** (2-3 days) ✅
+   - ✅ Integrate with cloud storage (AWS S3, Cloudinary)
+   - ✅ Add image resizing and optimization
+   - ✅ Implement profile photo management
 
-2. **Content Moderation** (2 days)
-   - Add automatic content filtering
-   - Implement photo approval workflow
-   - Create reporting system for inappropriate content
+2. **Content Moderation** (2 days) ✅
+   - ✅ Add automatic content filtering
+   - ✅ Implement photo approval workflow
+   - ✅ Create reporting system for inappropriate content
+
+**Files Created**:
+- ✅ `src/main/java/magnolia/datingpulse/DatingPulse/service/FileUploadService.java`
+- ✅ `src/main/java/magnolia/datingpulse/DatingPulse/service/ContentModerationService.java`
+- ✅ `src/main/java/magnolia/datingpulse/DatingPulse/service/PhotoReportService.java`
+- ✅ `src/main/java/magnolia/datingpulse/DatingPulse/controller/ModerationController.java`
+- ✅ `src/main/java/magnolia/datingpulse/DatingPulse/controller/PhotoReportController.java`
+- ✅ `src/main/java/magnolia/datingpulse/DatingPulse/entity/PhotoReport.java`
+- ✅ `src/main/java/magnolia/datingpulse/DatingPulse/entity/ReportType.java`
+- ✅ `src/main/java/magnolia/datingpulse/DatingPulse/entity/ReportStatus.java`
+- ✅ `src/main/java/magnolia/datingpulse/DatingPulse/config/S3Config.java`
+
+**Features Implemented**:
+- Multi-part file upload with automatic image resizing and optimization
+- AWS S3 cloud storage integration with configurable settings
+- Profile photo management with square cropping
+- Automatic content moderation with keyword filtering
+- Photo approval/rejection workflow for administrators
+- User reporting system for inappropriate content
+- Bulk moderation operations for efficiency
+- Comprehensive validation and error handling
+
+**API Endpoints**:
+- `POST /api/photos/upload` - Upload photo files (multipart/form-data)
+- `POST /api/photos/upload/profile` - Upload profile photos
+- `PUT /api/photos/{photoId}/profile` - Set photo as profile picture
+- `GET /api/photos/user/{userId}/active` - Get approved photos only
+- `GET /api/moderation/pending` - Get photos pending moderation (Admin)
+- `GET /api/moderation/flagged` - Get flagged photos (Admin)
+- `PUT /api/moderation/photos/{photoId}/approve` - Approve photo (Admin)
+- `PUT /api/moderation/photos/{photoId}/reject` - Reject photo (Admin)
+- `POST /api/reports` - Report inappropriate content
+- `GET /api/reports/pending` - Get pending reports (Admin)
+- `PUT /api/reports/{reportId}/resolve` - Resolve report (Admin)
 
 ## Phase 3: Production Readiness (2-3 Weeks) 🚀
 

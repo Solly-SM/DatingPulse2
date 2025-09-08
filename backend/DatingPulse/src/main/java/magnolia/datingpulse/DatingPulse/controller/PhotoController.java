@@ -7,10 +7,13 @@ import lombok.RequiredArgsConstructor;
 import magnolia.datingpulse.DatingPulse.dto.PhotoDTO;
 import magnolia.datingpulse.DatingPulse.service.PhotoService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -31,6 +34,43 @@ public class PhotoController {
         }
     }
 
+    /**
+     * Upload photo file (multipart/form-data)
+     */
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PhotoDTO> uploadPhotoFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("userId") @Positive(message = "User ID must be positive") Long userId,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "isProfilePhoto", defaultValue = "false") Boolean isProfilePhoto) {
+        try {
+            PhotoDTO uploadedPhoto = photoService.uploadPhoto(file, userId, description, isProfilePhoto);
+            return new ResponseEntity<>(uploadedPhoto, HttpStatus.CREATED);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    /**
+     * Upload profile photo file
+     */
+    @PostMapping(value = "/upload/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PhotoDTO> uploadProfilePhoto(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("userId") @Positive(message = "User ID must be positive") Long userId,
+            @RequestParam(value = "description", required = false) String description) {
+        try {
+            PhotoDTO uploadedPhoto = photoService.uploadPhoto(file, userId, description, true);
+            return new ResponseEntity<>(uploadedPhoto, HttpStatus.CREATED);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
     @GetMapping("/{photoId}")
     public ResponseEntity<PhotoDTO> getPhotoById(
             @PathVariable @Positive(message = "Photo ID must be positive") Long photoId) {
@@ -47,6 +87,31 @@ public class PhotoController {
             @PathVariable @Positive(message = "User ID must be positive") Long userId) {
         List<PhotoDTO> photos = photoService.getPhotosByUser(userId);
         return ResponseEntity.ok(photos);
+    }
+
+    /**
+     * Get active photos for a user (only approved photos)
+     */
+    @GetMapping("/user/{userId}/active")
+    public ResponseEntity<List<PhotoDTO>> getActivePhotosByUser(
+            @PathVariable @Positive(message = "User ID must be positive") Long userId) {
+        List<PhotoDTO> photos = photoService.getActivePhotosByUser(userId);
+        return ResponseEntity.ok(photos);
+    }
+
+    /**
+     * Set a photo as profile photo
+     */
+    @PutMapping("/{photoId}/profile")
+    public ResponseEntity<PhotoDTO> setAsProfilePhoto(
+            @PathVariable @Positive(message = "Photo ID must be positive") Long photoId,
+            @RequestParam("userId") @Positive(message = "User ID must be positive") Long userId) {
+        try {
+            PhotoDTO profilePhoto = photoService.setAsProfilePhoto(photoId, userId);
+            return ResponseEntity.ok(profilePhoto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @PutMapping("/{photoId}")
