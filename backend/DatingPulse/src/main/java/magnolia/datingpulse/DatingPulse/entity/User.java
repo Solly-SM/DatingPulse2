@@ -70,4 +70,30 @@ public class User {
     @Max(value = 10, message = "Maximum login attempts exceeded")
     @Builder.Default
     private Integer loginAttempt = 0;
+
+    // GDPR Compliance fields
+    @Column(name = "deletion_requested_at")
+    private LocalDateTime deletionRequestedAt;
+
+    @Column(name = "deletion_completed_at")
+    private LocalDateTime deletionCompletedAt;
+
+    @Column(name = "deletion_reason", length = 500)
+    private String deletionReason;
+
+    @Column(name = "account_status", length = 50)
+    @Builder.Default
+    private String accountStatus = "ACTIVE"; // ACTIVE, DELETION_PENDING, DELETED
+
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
+
+    // Helper methods for entity access
+    public Long getId() {
+        return userID;
+    }
+
+    public void setId(Long id) {
+        this.userID = id;
+    }
 }
