@@ -9,11 +9,15 @@ import magnolia.datingpulse.DatingPulse.entity.User;
 import magnolia.datingpulse.DatingPulse.repositories.UserRepository;
 import magnolia.datingpulse.DatingPulse.service.ConversationService;
 import magnolia.datingpulse.DatingPulse.service.MessageService;
+import magnolia.datingpulse.DatingPulse.service.UserStatusService;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.messaging.SessionConnectedEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.security.Principal;
 import java.time.Instant;
@@ -30,6 +34,53 @@ public class ChatWebSocketController {
     private final MessageService messageService;
     private final ConversationService conversationService;
     private final UserRepository userRepository;
+    private final UserStatusService userStatusService;
+
+    /**
+     * Handle WebSocket connection events
+     */
+    @EventListener
+    public void handleWebSocketConnectListener(SessionConnectedEvent event) {
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.wrap(event.getMessage());
+        Principal user = headerAccessor.getUser();
+        
+        if (user != null) {
+            try {
+                User userEntity = userRepository.findByUsername(user.getName())
+                        .orElse(null);
+                
+                if (userEntity != null) {
+                    userStatusService.setUserOnline(userEntity.getUserID(), userEntity.getUsername());
+                    log.info("User {} connected to WebSocket", userEntity.getUsername());
+                }
+            } catch (Exception e) {
+                log.error("Error handling WebSocket connection: {}", e.getMessage(), e);
+            }
+        }
+    }
+
+    /**
+     * Handle WebSocket disconnection events
+     */
+    @EventListener
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.wrap(event.getMessage());
+        Principal user = headerAccessor.getUser();
+        
+        if (user != null) {
+            try {
+                User userEntity = userRepository.findByUsername(user.getName())
+                        .orElse(null);
+                
+                if (userEntity != null) {
+                    userStatusService.setUserOffline(userEntity.getUserID());
+                    log.info("User {} disconnected from WebSocket", userEntity.getUsername());
+                }
+            } catch (Exception e) {
+                log.error("Error handling WebSocket disconnection: {}", e.getMessage(), e);
+            }
+        }
+    }
 
     /**
      * Handle incoming chat messages via WebSocket
@@ -197,18 +248,17 @@ public class ChatWebSocketController {
             User user = userRepository.findByUsername(principal.getName())
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-            // Create status message
-            ChatMessageDTO response = ChatMessageDTO.builder()
-                    .type(statusMessage.getType()) // USER_ONLINE or USER_OFFLINE
-                    .senderId(user.getUserID())
-                    .senderUsername(user.getUsername())
-                    .timestamp(System.currentTimeMillis())
-                    .build();
+            // Update user status through UserStatusService
+            if ("USER_ONLINE".equals(statusMessage.getType())) {
+                userStatusService.setUserOnline(user.getUserID(), user.getUsername());
+            } else if ("USER_OFFLINE".equals(statusMessage.getType())) {
+                userStatusService.setUserOffline(user.getUserID());
+            } else {
+                // Update last seen for any activity
+                userStatusService.updateLastSeen(user.getUserID());
+            }
 
-            // Broadcast to general status topic (could be filtered by user's conversations)
-            messagingTemplate.convertAndSend("/topic/user-status", response);
-
-            log.debug("User status broadcasted: {} for user: {}", statusMessage.getType(), user.getUserID());
+            log.debug("User status updated: {} for user: {}", statusMessage.getType(), user.getUserID());
 
         } catch (Exception e) {
             log.error("Error handling user status: {}", e.getMessage(), e);
