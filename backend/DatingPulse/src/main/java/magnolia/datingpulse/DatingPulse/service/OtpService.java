@@ -21,6 +21,7 @@ public class OtpService {
     private final OtpRepository otpRepository;
     private final UserRepository userRepository;
     private final OtpMapper otpMapper;
+    private final EmailService emailService;
     private final SecureRandom secureRandom = new SecureRandom();
 
     @Transactional
@@ -51,6 +52,15 @@ public class OtpService {
                 .build();
 
         Otp saved = otpRepository.save(otp);
+        
+        // Send OTP via email
+        try {
+            emailService.sendOtpEmail(user.getEmail(), otpCode, type);
+        } catch (Exception e) {
+            // Log error but don't fail the OTP generation
+            System.err.println("Failed to send OTP email to " + user.getEmail() + ": " + e.getMessage());
+        }
+        
         return otpMapper.toDTO(saved);
     }
 
