@@ -17,13 +17,14 @@ class AudioValidationTest {
 
     private Validator validator;
     private UserProfile testUserProfile;
+    private User testUser; // Added as field
 
     @BeforeEach
     void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
         
-        User testUser = User.builder()
+        testUser = User.builder() // Remove 'User' declaration to make it use the field
                 .username("testuser")
                 .email("test@example.com")
                 .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
@@ -50,7 +51,7 @@ class AudioValidationTest {
                 .status(AudioStatus.APPROVED) // Changed to enum
                 .duration(60)
                 .uploadedAt(LocalDateTime.now())
-                .approvedAt(LocalDateTime.now())
+                // Remove approvedAt as it's not in the schema
                 .build();
 
         Set<ConstraintViolation<Audio>> violations = validator.validate(audio);

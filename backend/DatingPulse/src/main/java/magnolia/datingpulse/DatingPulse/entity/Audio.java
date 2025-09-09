@@ -29,13 +29,12 @@ public class Audio {
     private String url;
 
     @Column(name = "title")
-    @Size(max = 200, message = "Title must not exceed 200 characters")
+    @Size(max = 500, message = "Title must not exceed 500 characters")
     private String title;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @NotNull(message = "Visibility is required")
-    @Builder.Default
     private AudioVisibility visibility = AudioVisibility.PUBLIC; // Changed to enum
 
     @Column(name = "duration")
@@ -50,6 +49,5 @@ public class Audio {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @NotNull(message = "Status is required")
-    @Builder.Default
     private AudioStatus status = AudioStatus.PENDING; // Changed to enum as per schema
 }

@@ -59,7 +59,6 @@ public class Photo {
 
     @Column(name = "is_primary", nullable = false)
     @NotNull(message = "Primary photo status is required")
-    @Builder.Default
     private Boolean isPrimary = false; // Primary photo status as per schema
     
     @Column(name = "dimensions", length = 20)

@@ -91,11 +91,9 @@ public class UserProfile {
     private Integer maxDistance;
 
     @Column(name = "show_distance")
-    @Builder.Default
     private Boolean showDistance = true;
 
     @Column(name = "is_profile_complete")
-    @Builder.Default
     private Boolean isProfileComplete = false;
 
     @Column(name = "created_at")
@@ -135,6 +133,5 @@ public class UserProfile {
     @Enumerated(EnumType.STRING)
     @Column(name = "privacy", nullable = false)
     @NotNull(message = "Privacy level is required")
-    @Builder.Default
     private PrivacyLevel privacy = PrivacyLevel.PUBLIC; // Who can view profile as per schema
 }
