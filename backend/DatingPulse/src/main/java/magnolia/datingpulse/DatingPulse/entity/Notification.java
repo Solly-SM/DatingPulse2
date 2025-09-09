@@ -18,7 +18,7 @@ public class Notification {
     private Long notificationID;
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "User is required")
     private User user; // Who receives the notification
 
@@ -28,6 +28,7 @@ public class Notification {
              message = "Type must be LIKE, MATCH, MESSAGE, SYSTEM, VERIFICATION, REPORT, or ADMIN")
     private String type; // Notification type (new like, match, message, system alert)
 
+    @Column(name = "related_id")
     @Positive(message = "Related ID must be positive")
     private Long relatedID; // Linked entity (like, match, message, etc.)
 
