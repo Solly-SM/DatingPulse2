@@ -44,7 +44,7 @@ public class ContentModerationService {
         PhotoStatus status = performAutomaticModeration(description);
         
         photo.setStatus(status);
-        photo.setUpdatedAt(LocalDateTime.now());
+        
         photoRepository.save(photo);
 
         log.info("Photo {} moderated with status: {}", photoId, status);
@@ -99,7 +99,7 @@ public class ContentModerationService {
                 .orElseThrow(() -> new IllegalArgumentException("Photo not found with ID: " + photoId));
 
         photo.setStatus(PhotoStatus.ACTIVE);
-        photo.setUpdatedAt(LocalDateTime.now());
+        
         photoRepository.save(photo);
 
         log.info("Photo {} manually approved", photoId);
@@ -114,7 +114,7 @@ public class ContentModerationService {
                 .orElseThrow(() -> new IllegalArgumentException("Photo not found with ID: " + photoId));
 
         photo.setStatus(PhotoStatus.REJECTED);
-        photo.setUpdatedAt(LocalDateTime.now());
+        
         photoRepository.save(photo);
 
         log.info("Photo {} manually rejected. Reason: {}", photoId, reason);
@@ -129,7 +129,7 @@ public class ContentModerationService {
                 .orElseThrow(() -> new IllegalArgumentException("Photo not found with ID: " + photoId));
 
         photo.setStatus(PhotoStatus.FLAGGED);
-        photo.setUpdatedAt(LocalDateTime.now());
+        
         photoRepository.save(photo);
 
         log.info("Photo {} flagged by user {} for reason: {}", photoId, reporterId, reason);
@@ -160,7 +160,7 @@ public class ContentModerationService {
         
         for (Photo photo : photos) {
             photo.setStatus(PhotoStatus.ACTIVE);
-            photo.setUpdatedAt(LocalDateTime.now());
+            
         }
         
         photoRepository.saveAll(photos);
@@ -176,7 +176,7 @@ public class ContentModerationService {
         
         for (Photo photo : photos) {
             photo.setStatus(PhotoStatus.REJECTED);
-            photo.setUpdatedAt(LocalDateTime.now());
+            
         }
         
         photoRepository.saveAll(photos);

@@ -74,13 +74,13 @@ public class PhotoService {
         Photo photo = Photo.builder()
                 .user(user)
                 .url(photoUrl)
-                .description(description)
-                .isProfilePhoto(Boolean.TRUE.equals(isProfilePhoto))
-                .isPrivate(false)
+                .caption(description) // Changed from description to caption
+                .isPrimary(Boolean.TRUE.equals(isProfilePhoto)) // Changed from isProfilePhoto to isPrimary
+                // .isPrivate(false) // Field removed from entity
                 .visibility(magnolia.datingpulse.DatingPulse.entity.PhotoVisibility.PUBLIC)
                 .status(PhotoStatus.PENDING)
                 .uploadedAt(LocalDateTime.now())
-                .orderIndex(0)
+                .displayOrder(0) // Changed from orderIndex to displayOrder
                 .build();
 
         Photo saved = photoRepository.save(photo);

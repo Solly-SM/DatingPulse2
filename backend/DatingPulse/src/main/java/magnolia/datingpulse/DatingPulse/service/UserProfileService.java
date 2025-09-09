@@ -65,13 +65,13 @@ public class UserProfileService {
             profile.setPreference(preference);
         }
 
-        // Set default values
-        if (profile.getLastSeen() == null) {
-            profile.setLastSeen(LocalDateTime.now());
-        }
-        if (profile.getPrivacy() == null) {
-            profile.setPrivacy(PrivacyLevel.PUBLIC);
-        }
+        // Set default values - removed lastSeen and privacy as they don't exist in schema
+        // if (profile.getLastSeen() == null) {
+        //     profile.setLastSeen(LocalDateTime.now());
+        // }
+        // if (profile.getPrivacy() == null) {
+        //     profile.setPrivacy(PrivacyLevel.PUBLIC);
+        // }
 
         UserProfile saved = userProfileRepository.save(profile);
         return userProfileMapper.toDTO(saved);
@@ -143,19 +143,19 @@ public class UserProfileService {
             existing.setBio(profileDTO.getBio());
         }
         if (profileDTO.getPp() != null) {
-            existing.setPp(profileDTO.getPp());
+            existing.setProfilePictureUrl(profileDTO.getPp()); // Changed to match entity field
         }
-        if (profileDTO.getAvatarThumbnail() != null) {
-            existing.setAvatarThumbnail(profileDTO.getAvatarThumbnail());
-        }
+        // if (profileDTO.getAvatarThumbnail() != null) {
+        //     existing.setAvatarThumbnail(profileDTO.getAvatarThumbnail()); // Field removed from entity
+        // }
         if (profileDTO.getCountry() != null) {
-            existing.setCountry(profileDTO.getCountry());
+            existing.setLocationCountry(profileDTO.getCountry()); // Changed to match entity field
         }
-        if (profileDTO.getRegion() != null) {
-            existing.setRegion(profileDTO.getRegion());
-        }
+        // if (profileDTO.getRegion() != null) {
+        //     existing.setRegion(profileDTO.getRegion()); // Field removed from entity
+        // }
         if (profileDTO.getCity() != null) {
-            existing.setCity(profileDTO.getCity());
+            existing.setLocationCity(profileDTO.getCity()); // Changed to match entity field
         }
         if (profileDTO.getLatitude() != null) {
             existing.setLatitude(profileDTO.getLatitude());
@@ -163,18 +163,19 @@ public class UserProfileService {
         if (profileDTO.getLongitude() != null) {
             existing.setLongitude(profileDTO.getLongitude());
         }
-        if (profileDTO.getEducation() != null) {
-            existing.setEducation(profileDTO.getEducation());
-        }
-        if (profileDTO.getJobTitle() != null) {
-            existing.setJobTitle(profileDTO.getJobTitle());
-        }
-        if (profileDTO.getRelationship() != null) {
-            existing.setRelationship(profileDTO.getRelationship());
-        }
-        if (profileDTO.getPrivacy() != null) {
-            existing.setPrivacy(PrivacyLevel.valueOf(profileDTO.getPrivacy()));
-        }
+        // These fields don't exist in schema - commenting out
+        // if (profileDTO.getEducation() != null) {
+        //     existing.setEducation(profileDTO.getEducation());
+        // }
+        // if (profileDTO.getJobTitle() != null) {
+        //     existing.setJobTitle(profileDTO.getJobTitle());
+        // }
+        // if (profileDTO.getRelationship() != null) {
+        //     existing.setRelationship(profileDTO.getRelationship());
+        // }
+        // if (profileDTO.getPrivacy() != null) {
+        //     existing.setPrivacy(PrivacyLevel.valueOf(profileDTO.getPrivacy()));
+        // }
 
         // Update interests if provided
         if (profileDTO.getInterestIDs() != null) {
@@ -206,7 +207,7 @@ public class UserProfileService {
         UserProfile profile = userProfileRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found for user ID: " + userId));
 
-        profile.setLastSeen(LocalDateTime.now());
+        // profile.setLastSeen(LocalDateTime.now()); // Field doesn't exist in schema
         userProfileRepository.save(profile);
     }
 
