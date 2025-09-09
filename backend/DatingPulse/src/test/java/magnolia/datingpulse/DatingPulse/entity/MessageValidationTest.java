@@ -68,7 +68,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content("Hello, how are you doing today?")
-                .type("TEXT")
+                .messageType("TEXT")
                 .status("SENT")
                 .build();
 
@@ -115,7 +115,7 @@ class MessageValidationTest {
         Message message = createMessageWithType("INVALID_TYPE");
         Set<ConstraintViolation<Message>> violations = validator.validate(message);
         assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("type") && 
+                v.getPropertyPath().toString().equals("messageType") && 
                 v.getMessage().contains("must be TEXT")),
                 "Invalid message type should be rejected");
     }
@@ -168,7 +168,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content("Test message")
-                .type("TEXT")
+                .messageType("TEXT")
                 .build();
 
         Set<ConstraintViolation<Message>> violations = validator.validate(message);
@@ -183,7 +183,7 @@ class MessageValidationTest {
                 .sender(null)
                 .receiver(testReceiver)
                 .content("Test message")
-                .type("TEXT")
+                .messageType("TEXT")
                 .build();
 
         violations = validator.validate(message);
@@ -198,7 +198,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(null)
                 .content("Test message")
-                .type("TEXT")
+                .messageType("TEXT")
                 .build();
 
         violations = validator.validate(message);
@@ -213,7 +213,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content("Test message")
-                .type("   ")
+                .messageType("   ")
                 .build();
 
         violations = validator.validate(message);
@@ -228,7 +228,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content("Test message")
-                .type(null)
+                .messageType(null)
                 .status("SENT")
                 .build();
 
@@ -244,7 +244,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content("Test message")
-                .type("TEXT")
+                .messageType("TEXT")
                 .status("   ")
                 .build();
 
@@ -260,7 +260,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content("Test message")
-                .type("TEXT")
+                .messageType("TEXT")
                 .status(null)
                 .build();
 
@@ -279,7 +279,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content("Hello there!")
-                .type("TEXT")
+                .messageType("TEXT")
                 .status("SENT")
                 .build();
 
@@ -292,7 +292,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content("https://example.com/image.jpg")
-                .type("IMAGE")
+                .messageType("IMAGE")
                 .status("DELIVERED")
                 .build();
 
@@ -305,7 +305,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content("User has left the conversation")
-                .type("SYSTEM")
+                .messageType("SYSTEM")
                 .status("READ")
                 .build();
 
@@ -344,7 +344,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content("Hey! Want to grab coffee sometime?")
-                .type("TEXT")
+                .messageType("TEXT")
                 .status("SENT")
                 .build();
 
@@ -365,7 +365,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content("Test message content")
-                .type(type)
+                .messageType(type)
                 .status("SENT")
                 .build();
     }
@@ -376,7 +376,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content(content)
-                .type("TEXT")
+                .messageType("TEXT")
                 .status("SENT")
                 .build();
     }
@@ -387,7 +387,7 @@ class MessageValidationTest {
                 .sender(testSender)
                 .receiver(testReceiver)
                 .content("Test message content")
-                .type("TEXT")
+                .messageType("TEXT")
                 .status(status)
                 .build();
     }
