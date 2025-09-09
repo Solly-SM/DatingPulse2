@@ -41,12 +41,12 @@ public class SessionService {
 
         // Create session entity
         Session session = Session.builder()
-                .sessionID(sessionId)
                 .user(user)
                 .token(token)
-                .deviceInfo(deviceInfo)
+                .userAgent(deviceInfo)
                 .expiresAt(expiresAt)
                 .createdAt(now)
+                .isActive(true)
                 .build();
 
         Session saved = sessionRepository.save(session);
@@ -55,7 +55,7 @@ public class SessionService {
 
     @Transactional(readOnly = true)
     @Cacheable(value = "sessions", key = "#sessionId")
-    public SessionDTO getSessionById(String sessionId) {
+    public SessionDTO getSessionById(Long sessionId) {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("Session not found with ID: " + sessionId));
         return sessionMapper.toDTO(session);
@@ -86,7 +86,7 @@ public class SessionService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
         
         LocalDateTime now = LocalDateTime.now();
-        List<Session> sessions = sessionRepository.findByUserAndRevokedAtIsNullAndExpiresAtAfter(user, now);
+        List<Session> sessions = sessionRepository.findByUserAndIsActiveAndExpiresAtAfter(user, true, now);
         return sessions.stream()
                 .map(sessionMapper::toDTO)
                 .collect(Collectors.toList());
@@ -95,28 +95,28 @@ public class SessionService {
     @Transactional(readOnly = true)
     public List<SessionDTO> getExpiredSessions() {
         LocalDateTime now = LocalDateTime.now();
-        List<Session> sessions = sessionRepository.findByExpiresAtBeforeAndRevokedAtIsNull(now);
+        List<Session> sessions = sessionRepository.findByExpiresAtBeforeAndIsActive(now, true);
         return sessions.stream()
                 .map(sessionMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<SessionDTO> getRevokedSessions() {
-        List<Session> sessions = sessionRepository.findByRevokedAtIsNotNull();
+    public List<SessionDTO> getInactiveSessions() {
+        List<Session> sessions = sessionRepository.findByIsActive(false);
         return sessions.stream()
                 .map(sessionMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public SessionDTO extendSession(String sessionId, int additionalDays) {
+    public SessionDTO extendSession(Long sessionId, int additionalDays) {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("Session not found with ID: " + sessionId));
 
         // Check if session is active
-        if (session.getRevokedAt() != null) {
-            throw new IllegalArgumentException("Cannot extend revoked session");
+        if (!Boolean.TRUE.equals(session.getIsActive())) {
+            throw new IllegalArgumentException("Cannot extend inactive session");
         }
 
         if (session.getExpiresAt().isBefore(LocalDateTime.now())) {
@@ -130,12 +130,12 @@ public class SessionService {
     }
 
     @Transactional
-    public void revokeSession(String sessionId) {
+    public void revokeSession(Long sessionId) {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("Session not found with ID: " + sessionId));
 
-        if (session.getRevokedAt() == null) {
-            session.setRevokedAt(LocalDateTime.now());
+        if (Boolean.TRUE.equals(session.getIsActive())) {
+            session.setIsActive(false);
             sessionRepository.save(session);
         }
     }
@@ -145,26 +145,24 @@ public class SessionService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-        List<Session> activeSessions = sessionRepository.findByUserAndRevokedAtIsNull(user);
-        LocalDateTime now = LocalDateTime.now();
+        List<Session> activeSessions = sessionRepository.findByUserAndIsActive(user, true);
 
         for (Session session : activeSessions) {
-            session.setRevokedAt(now);
+            session.setIsActive(false);
             sessionRepository.save(session);
         }
     }
 
     @Transactional
-    public void revokeAllUserSessionsExcept(Long userId, String excludeSessionId) {
+    public void revokeAllUserSessionsExcept(Long userId, Long excludeSessionId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-        List<Session> activeSessions = sessionRepository.findByUserAndRevokedAtIsNull(user);
-        LocalDateTime now = LocalDateTime.now();
+        List<Session> activeSessions = sessionRepository.findByUserAndIsActive(user, true);
 
         for (Session session : activeSessions) {
             if (!session.getSessionID().equals(excludeSessionId)) {
-                session.setRevokedAt(now);
+                session.setIsActive(false);
                 sessionRepository.save(session);
             }
         }
@@ -181,8 +179,8 @@ public class SessionService {
         Session session = sessionOpt.get();
         LocalDateTime now = LocalDateTime.now();
 
-        // Check if session is revoked
-        if (session.getRevokedAt() != null) {
+        // Check if session is active
+        if (!Boolean.TRUE.equals(session.getIsActive())) {
             return false;
         }
 
@@ -195,13 +193,13 @@ public class SessionService {
     }
 
     @Transactional
-    public SessionDTO refreshSession(String sessionId) {
+    public SessionDTO refreshSession(Long sessionId) {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("Session not found with ID: " + sessionId));
 
         // Check if session is active
-        if (session.getRevokedAt() != null) {
-            throw new IllegalArgumentException("Cannot refresh revoked session");
+        if (!Boolean.TRUE.equals(session.getIsActive())) {
+            throw new IllegalArgumentException("Cannot refresh inactive session");
         }
 
         if (session.getExpiresAt().isBefore(LocalDateTime.now())) {
@@ -219,11 +217,11 @@ public class SessionService {
     @Transactional
     public void cleanupExpiredSessions() {
         LocalDateTime now = LocalDateTime.now();
-        List<Session> expiredSessions = sessionRepository.findByExpiresAtBeforeAndRevokedAtIsNull(now);
+        List<Session> expiredSessions = sessionRepository.findByExpiresAtBeforeAndIsActive(now, true);
         
-        // Mark expired sessions as revoked instead of deleting for audit purposes
+        // Mark expired sessions as inactive instead of deleting for audit purposes
         for (Session session : expiredSessions) {
-            session.setRevokedAt(now);
+            session.setIsActive(false);
             sessionRepository.save(session);
         }
     }
@@ -241,7 +239,7 @@ public class SessionService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
         
         LocalDateTime now = LocalDateTime.now();
-        return sessionRepository.existsByUserAndRevokedAtIsNullAndExpiresAtAfter(user, now);
+        return sessionRepository.existsByUserAndIsActiveAndExpiresAtAfter(user, true, now);
     }
 
     @Transactional(readOnly = true)
@@ -252,7 +250,7 @@ public class SessionService {
     @Transactional(readOnly = true)
     public long getActiveSessionCount() {
         LocalDateTime now = LocalDateTime.now();
-        return sessionRepository.countByRevokedAtIsNullAndExpiresAtAfter(now);
+        return sessionRepository.countByIsActiveAndExpiresAtAfter(true, now);
     }
 
     @Transactional(readOnly = true)
@@ -269,7 +267,7 @@ public class SessionService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
         
         LocalDateTime now = LocalDateTime.now();
-        return sessionRepository.countByUserAndRevokedAtIsNullAndExpiresAtAfter(user, now);
+        return sessionRepository.countByUserAndIsActiveAndExpiresAtAfter(user, true, now);
     }
 
     /**

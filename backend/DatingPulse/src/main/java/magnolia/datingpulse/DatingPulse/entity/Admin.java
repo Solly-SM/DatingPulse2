@@ -14,6 +14,7 @@ import java.util.Set;
 public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "admin_id")
     private Long adminID;
 
     @OneToOne
