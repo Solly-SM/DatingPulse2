@@ -155,11 +155,11 @@ public class ProfileVerificationService {
         ProfileVerification verification = profileVerificationRepository.findById(verificationId)
                 .orElseThrow(() -> new IllegalArgumentException("Verification not found with ID: " + verificationId));
 
-        if (!"pending".equals(verification.getStatus())) {
+        if (!"PENDING".equals(verification.getStatus())) {
             throw new IllegalArgumentException("Can only update documents for pending verifications");
         }
 
-        verification.setDocumentURL(documentURL);
+        // Document URL functionality removed as it's not in database schema
         ProfileVerification saved = profileVerificationRepository.save(verification);
         return profileVerificationMapper.toDTO(saved);
     }

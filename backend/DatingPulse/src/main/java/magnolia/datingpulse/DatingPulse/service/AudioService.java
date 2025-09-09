@@ -3,8 +3,6 @@ package magnolia.datingpulse.DatingPulse.service;
 import lombok.RequiredArgsConstructor;
 import magnolia.datingpulse.DatingPulse.dto.AudioDTO;
 import magnolia.datingpulse.DatingPulse.entity.Audio;
-import magnolia.datingpulse.DatingPulse.entity.AudioStatus;
-import magnolia.datingpulse.DatingPulse.entity.AudioVisibility;
 import magnolia.datingpulse.DatingPulse.entity.UserProfile;
 import magnolia.datingpulse.DatingPulse.mapper.AudioMapper;
 import magnolia.datingpulse.DatingPulse.repositories.AudioRepository;
@@ -38,13 +36,13 @@ public class AudioService {
 
         // Set default values
         if (audio.getStatus() == null) {
-            audio.setStatus(AudioStatus.ACTIVE); // Default status
+            audio.setStatus("PENDING"); // Default status
         }
         if (audio.getVisibility() == null) {
-            audio.setVisibility(AudioVisibility.PUBLIC);
+            audio.setVisibility("PUBLIC");
         }
         audio.setUploadedAt(LocalDateTime.now());
-        audio.setUpdatedAt(LocalDateTime.now());
+        audio.setApprovedAt(LocalDateTime.now());
 
         Audio saved = audioRepository.save(audio);
         return audioMapper.toDTO(saved);
@@ -74,7 +72,7 @@ public class AudioService {
             throw new IllegalArgumentException("Invalid audio status: " + status);
         }
         
-        AudioStatus audioStatus = AudioStatus.valueOf(status.toUpperCase());
+        String audioStatus = status.toUpperCase();
         List<Audio> audios = audioRepository.findByStatus(audioStatus);
         return audios.stream()
                 .map(audioMapper::toDTO)
@@ -87,7 +85,7 @@ public class AudioService {
             throw new IllegalArgumentException("Invalid audio visibility: " + visibility);
         }
         
-        AudioVisibility audioVisibility = AudioVisibility.valueOf(visibility.toUpperCase());
+        String audioVisibility = visibility.toUpperCase();
         List<Audio> audios = audioRepository.findByVisibility(audioVisibility);
         return audios.stream()
                 .map(audioMapper::toDTO)
@@ -127,19 +125,19 @@ public class AudioService {
             existing.setUrl(audioDTO.getUrl());
         }
         if (audioDTO.getDescription() != null) {
-            existing.setDescription(audioDTO.getDescription());
+            existing.setTitle(audioDTO.getDescription());
         }
         if (audioDTO.getVisibility() != null && isValidAudioVisibility(audioDTO.getVisibility())) {
-            existing.setVisibility(AudioVisibility.valueOf(audioDTO.getVisibility().toUpperCase()));
+            existing.setVisibility(audioDTO.getVisibility().toUpperCase());
         }
         if (audioDTO.getStatus() != null && isValidAudioStatus(audioDTO.getStatus())) {
-            existing.setStatus(AudioStatus.valueOf(audioDTO.getStatus().toUpperCase()));
+            existing.setStatus(audioDTO.getStatus().toUpperCase());
         }
         if (audioDTO.getDuration() != null) {
             existing.setDuration(audioDTO.getDuration());
         }
 
-        existing.setUpdatedAt(LocalDateTime.now());
+        existing.setApprovedAt(LocalDateTime.now());
 
         Audio updated = audioRepository.save(existing);
         return audioMapper.toDTO(updated);
@@ -150,8 +148,8 @@ public class AudioService {
         Audio audio = audioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Audio not found with ID: " + id));
 
-        audio.setStatus(AudioStatus.ACTIVE);
-        audio.setUpdatedAt(LocalDateTime.now());
+        audio.setStatus("APPROVED");
+        audio.setApprovedAt(LocalDateTime.now());
 
         Audio updated = audioRepository.save(audio);
         return audioMapper.toDTO(updated);
@@ -162,8 +160,8 @@ public class AudioService {
         Audio audio = audioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Audio not found with ID: " + id));
 
-        audio.setStatus(AudioStatus.REMOVED);
-        audio.setUpdatedAt(LocalDateTime.now());
+        audio.setStatus("REJECTED");
+        audio.setApprovedAt(LocalDateTime.now());
 
         Audio updated = audioRepository.save(audio);
         return audioMapper.toDTO(updated);
@@ -174,8 +172,8 @@ public class AudioService {
         Audio audio = audioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Audio not found with ID: " + id));
 
-        audio.setStatus(AudioStatus.FLAGGED);
-        audio.setUpdatedAt(LocalDateTime.now());
+        audio.setStatus("REJECTED");
+        audio.setApprovedAt(LocalDateTime.now());
 
         Audio updated = audioRepository.save(audio);
         return audioMapper.toDTO(updated);
@@ -198,7 +196,7 @@ public class AudioService {
             throw new IllegalArgumentException("Invalid audio status: " + status);
         }
         
-        AudioStatus audioStatus = AudioStatus.valueOf(status.toUpperCase());
+        String audioStatus = status.toUpperCase();
         List<Audio> audios = audioRepository.findByUserProfileAndStatus(userProfile, audioStatus);
         return audios.stream()
                 .map(audioMapper::toDTO)
@@ -214,7 +212,7 @@ public class AudioService {
             throw new IllegalArgumentException("Invalid audio visibility: " + visibility);
         }
         
-        AudioVisibility audioVisibility = AudioVisibility.valueOf(visibility.toUpperCase());
+        String audioVisibility = visibility.toUpperCase();
         List<Audio> audios = audioRepository.findByUserProfileAndVisibility(userProfile, audioVisibility);
         return audios.stream()
                 .map(audioMapper::toDTO)
@@ -232,7 +230,7 @@ public class AudioService {
             throw new IllegalArgumentException("Invalid audio status: " + status);
         }
         
-        AudioStatus audioStatus = AudioStatus.valueOf(status.toUpperCase());
+        String audioStatus = status.toUpperCase();
         return audioRepository.countByStatus(audioStatus);
     }
 
@@ -283,12 +281,8 @@ public class AudioService {
      */
     private boolean isValidAudioStatus(String status) {
         if (status == null) return false;
-        try {
-            AudioStatus.valueOf(status.toUpperCase());
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+        String upperStatus = status.toUpperCase();
+        return "PENDING".equals(upperStatus) || "APPROVED".equals(upperStatus) || "REJECTED".equals(upperStatus);
     }
 
     /**
@@ -296,12 +290,8 @@ public class AudioService {
      */
     private boolean isValidAudioVisibility(String visibility) {
         if (visibility == null) return false;
-        try {
-            AudioVisibility.valueOf(visibility.toUpperCase());
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+        String upperVisibility = visibility.toUpperCase();
+        return "PUBLIC".equals(upperVisibility) || "PRIVATE".equals(upperVisibility) || "MATCHES_ONLY".equals(upperVisibility);
     }
 
     /**

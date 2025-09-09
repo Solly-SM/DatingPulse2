@@ -29,18 +29,22 @@ public class Audio {
     private String url;
 
     @Column(name = "title")
-    @Size(max = 200, message = "Description must not exceed 200 characters")
-    private String description;
+    @Size(max = 200, message = "Title must not exceed 200 characters")
+    private String title;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @NotNull(message = "Visibility is required")
-    private AudioVisibility visibility;
+    @NotBlank(message = "Visibility is required")
+    @Pattern(regexp = "^(PUBLIC|PRIVATE|MATCHES_ONLY)$", 
+             message = "Visibility must be PUBLIC, PRIVATE, or MATCHES_ONLY")
+    @Builder.Default
+    private String visibility = "PUBLIC";
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @NotNull(message = "Status is required")
-    private AudioStatus status; // Moderation status
+    @NotBlank(message = "Status is required")
+    @Pattern(regexp = "^(PENDING|APPROVED|REJECTED)$", 
+             message = "Status must be PENDING, APPROVED, or REJECTED")
+    @Builder.Default
+    private String status = "PENDING"; // Moderation status
 
     @Column(name = "duration_seconds")
     @Min(value = 1, message = "Duration must be at least 1 second")
@@ -52,5 +56,5 @@ public class Audio {
     private LocalDateTime uploadedAt;
 
     @Column(name = "approved_at")
-    private LocalDateTime updatedAt; // Audit timestamp
+    private LocalDateTime approvedAt; // Audit timestamp
 }

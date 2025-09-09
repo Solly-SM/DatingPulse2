@@ -3,7 +3,7 @@ package magnolia.datingpulse.DatingPulse.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "admins")
@@ -22,19 +22,14 @@ public class Admin {
     @NotNull(message = "User is required")
     private User user;
 
-    @Column(nullable = false)
-    @NotBlank(message = "Admin role is required")
-    @Pattern(regexp = "^(ADMIN|SUPER_ADMIN)$", 
-             message = "Role must be one of: ADMIN, SUPER_ADMIN")
-    private String role; // ADMIN, SUPER_ADMIN
+    @Column
+    private String[] permissions; // Using array to match DB TEXT[]
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "admin_permissions",
-            joinColumns = @JoinColumn(name = "admin_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id")
-    )
-    private Set<Permission> permissions;
+    @Column(name = "is_active")
+    @Builder.Default
+    private Boolean isActive = true;
 
 }
