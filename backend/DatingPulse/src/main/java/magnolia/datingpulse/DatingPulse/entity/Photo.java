@@ -23,42 +23,39 @@ public class Photo {
     @NotNull(message = "User is required")
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "url", nullable = false, length = 500)
     @NotBlank(message = "Photo URL is required")
     @Pattern(regexp = "^(https?://).*\\.(jpg|jpeg|png|gif|webp)$", 
              message = "URL must be a valid image file URL (jpg, jpeg, png, gif, webp)")
     private String url;
 
-    @Column
-    @Size(max = 500, message = "Description must not exceed 500 characters")
-    private String description;
+    @Column(name = "caption", columnDefinition = "TEXT")
+    @Size(max = 500, message = "Caption must not exceed 500 characters")
+    private String caption; // Changed from description to match schema
 
-    @Column(nullable = false)
-    @NotNull(message = "Profile photo status is required")
-    private Boolean isProfilePhoto;
+    @Column(name = "display_order")
+    @Min(value = 0, message = "Display order cannot be negative")
+    private Integer displayOrder; // Changed from orderIndex to match schema
 
-    @Column(nullable = false)
-    @NotNull(message = "Private status is required")
-    private Boolean isPrivate;
-
+    @Column(name = "status", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    @NotNull(message = "Visibility is required")
-    private PhotoVisibility visibility;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     @NotNull(message = "Status is required")
     private PhotoStatus status; // Moderation status
 
-    @Column(nullable = false)
+    @Column(name = "visibility", nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Visibility is required")
+    private PhotoVisibility visibility;
+
+    @Column(name = "uploaded_at", nullable = false)
     @NotNull(message = "Upload date is required")
     private LocalDateTime uploadedAt;
 
-    @Column
-    private LocalDateTime updatedAt; // Audit timestamp
+    @Column(name = "approved_at")
+    private LocalDateTime approvedAt;
 
-    @Column
-    @Min(value = 0, message = "Order index cannot be negative")
-    private Integer orderIndex; // For manual gallery ordering
+    @Column(name = "is_primary", nullable = false)
+    @NotNull(message = "Primary photo status is required")
+    @Builder.Default
+    private Boolean isPrimary = false; // Changed from isProfilePhoto to match schema
 }

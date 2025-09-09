@@ -3,6 +3,9 @@ package magnolia.datingpulse.DatingPulse.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "preferences")
@@ -17,24 +20,34 @@ public class Preference {
 
     @Pattern(regexp = "^(MALE|FEMALE|BOTH|NON_BINARY)$", 
              message = "Gender preference must be MALE, FEMALE, BOTH, or NON_BINARY")
-    @Column(name = "preferred_gender")
-    private String genderPreference;
+    @Column(name = "preferred_gender", length = 20)
+    private String preferredGender; // Changed from genderPreference to match schema
     
     @Min(value = 18, message = "Minimum age must be at least 18")
     @Max(value = 100, message = "Minimum age must not exceed 100")
     @Column(name = "min_age")
-    private Integer ageMin;
+    private Integer minAge; // Changed from ageMin to match schema
     
     @Min(value = 18, message = "Maximum age must be at least 18")
     @Max(value = 100, message = "Maximum age must not exceed 100")
     @Column(name = "max_age")
-    private Integer ageMax;
+    private Integer maxAge; // Changed from ageMax to match schema
     
     @Min(value = 1, message = "Maximum distance must be at least 1")
     @Max(value = 1000, message = "Maximum distance must not exceed 1000")
     @Column(name = "max_distance")
     private Integer maxDistance;
-    
+
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    // Note: Following fields don't exist in current schema - removing for now
+    /*
     @Pattern(regexp = "^(CASUAL|SERIOUS|MARRIAGE|FRIENDSHIP|HOOKUP)$", 
              message = "Relationship type must be CASUAL, SERIOUS, MARRIAGE, FRIENDSHIP, or HOOKUP")
     @Transient
@@ -128,6 +141,7 @@ public class Preference {
              message = "Family plans must be valid value")
     @Transient
     private String familyPlans;        // "wants_kids", "no_kids", etc.
+    */
 
     @OneToOne
     @JoinColumn(name = "user_profile_id")

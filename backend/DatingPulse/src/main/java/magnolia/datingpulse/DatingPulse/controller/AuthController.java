@@ -55,8 +55,9 @@ public class AuthController {
                     .phone(registerRequest.getPhone())
                     .role("USER")
                     .status("ACTIVE")
-                    .isVerified(false)
-                    .loginAttempt(0)
+                    .emailVerified(false)
+                    .phoneVerified(false)
+                    // .loginAttempt(0) // Field removed from entity
                     .build();
             
             User savedUser = userRepository.save(user);
@@ -103,7 +104,7 @@ public class AuthController {
             
             // Update last login
             user.setLastLogin(java.time.LocalDateTime.now());
-            user.setLoginAttempt(0); // Reset login attempts on successful login
+            // user.setLoginAttempt(0); // Field removed from entity
             userRepository.save(user);
             
             // Generate JWT token
@@ -122,13 +123,13 @@ public class AuthController {
             return ResponseEntity.ok(authResponse);
             
         } catch (BadCredentialsException e) {
-            // Handle failed login attempt
-            userRepository.findByUsername(loginRequest.getUsername())
-                    .or(() -> userRepository.findByEmail(loginRequest.getUsername()))
-                    .ifPresent(user -> {
-                        user.setLoginAttempt(user.getLoginAttempt() + 1);
-                        userRepository.save(user);
-                    });
+            // Handle failed login attempt - field removed from entity
+            // userRepository.findByUsername(loginRequest.getUsername())
+            //         .or(() -> userRepository.findByEmail(loginRequest.getUsername()))
+            //         .ifPresent(user -> {
+            //             user.setLoginAttempt(user.getLoginAttempt() + 1);
+            //             userRepository.save(user);
+            //         });
             
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Invalid username or password"));

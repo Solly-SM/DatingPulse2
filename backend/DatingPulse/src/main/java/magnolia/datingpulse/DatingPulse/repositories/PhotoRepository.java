@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface PhotoRepository extends JpaRepository<Photo, Long> {
     List<Photo> findByUser(User user);
-    List<Photo> findByIsProfilePhotoTrueAndUser(User user);
+    List<Photo> findByIsPrimaryTrueAndUser(User user); // Changed to match entity field
     List<Photo> findByStatus(PhotoStatus status);
     List<Photo> findByUserAndStatus(User user, PhotoStatus status);
 }

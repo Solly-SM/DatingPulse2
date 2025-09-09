@@ -67,11 +67,12 @@ public class MessageService {
         message.setSender(sender);
         message.setReceiver(receiver);
         message.setSentAt(LocalDateTime.now());
-        message.setStatus("SENT");
-        message.setIsEdited(false);
-        message.setIsRead(false);
-        message.setDeletedForSender(false);
-        message.setDeletedForReceiver(false);
+        // Status and other fields removed from entity as they don't exist in schema
+        // message.setStatus("SENT");
+        // message.setIsEdited(false);
+        // message.setIsRead(false);
+        // message.setDeletedForSender(false);
+        // message.setDeletedForReceiver(false);
 
         // Validate message type
         if (!isValidMessageType(messageDTO.getType())) {
@@ -210,7 +211,8 @@ public class MessageService {
             throw new IllegalArgumentException("Invalid message status: " + status);
         }
 
-        message.setStatus(status);
+        // Status field removed from entity as it doesn't exist in schema
+        // message.setStatus(status);
         Message updated = messageRepository.save(message);
         return messageMapper.toDTO(updated);
     }

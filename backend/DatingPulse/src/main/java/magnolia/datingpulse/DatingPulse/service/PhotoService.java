@@ -48,7 +48,7 @@ public class PhotoService {
         Photo saved = photoRepository.save(photo);
         
         // Trigger automatic moderation
-        contentModerationService.moderatePhoto(saved.getPhotoID(), saved.getDescription());
+        contentModerationService.moderatePhoto(saved.getPhotoID(), saved.getCaption()); // Changed from description to caption
         
         return photoMapper.toDTO(saved);
     }
@@ -137,15 +137,15 @@ public class PhotoService {
 
         // Remove profile photo status from other photos
         User user = photo.getUser();
-        List<Photo> currentProfilePhotos = photoRepository.findByIsProfilePhotoTrueAndUser(user);
+        List<Photo> currentProfilePhotos = photoRepository.findByIsPrimaryTrueAndUser(user);
         for (Photo currentProfile : currentProfilePhotos) {
-            currentProfile.setIsProfilePhoto(false);
+            currentProfile.setIsPrimary(false);
         }
         photoRepository.saveAll(currentProfilePhotos);
 
         // Set this photo as profile photo
-        photo.setIsProfilePhoto(true);
-        photo.setUpdatedAt(LocalDateTime.now());
+        photo.setIsPrimary(true);
+        // photo.setUpdatedAt(LocalDateTime.now()); // Field doesn't exist in schema
         Photo updated = photoRepository.save(photo);
 
         return photoMapper.toDTO(updated);
@@ -164,21 +164,21 @@ public class PhotoService {
         }
 
         // Update other fields
-        existing.setDescription(photoDTO.getDescription());
-        existing.setIsProfilePhoto(photoDTO.getIsProfilePhoto());
-        existing.setIsPrivate(photoDTO.getIsPrivate());
+        existing.setCaption(photoDTO.getDescription()); // Changed from description to caption
+        existing.setIsPrimary(photoDTO.getIsProfilePhoto()); // Changed from isProfilePhoto to isPrimary
+        // existing.setIsPrivate(photoDTO.getIsPrivate()); // Field removed from entity
         if (photoDTO.getVisibility() != null)
             existing.setVisibility(magnolia.datingpulse.DatingPulse.entity.PhotoVisibility.valueOf(photoDTO.getVisibility()));
         if (photoDTO.getStatus() != null)
             existing.setStatus(magnolia.datingpulse.DatingPulse.entity.PhotoStatus.valueOf(photoDTO.getStatus()));
-        existing.setUpdatedAt(LocalDateTime.now());
-        existing.setOrderIndex(photoDTO.getOrderIndex());
+        // existing.setUpdatedAt(LocalDateTime.now()); // Field doesn't exist in schema
+        existing.setDisplayOrder(photoDTO.getOrderIndex()); // Changed from orderIndex to displayOrder
 
         Photo updated = photoRepository.save(existing);
         
         // Re-moderate if description changed
-        if (photoDTO.getDescription() != null && !photoDTO.getDescription().equals(existing.getDescription())) {
-            contentModerationService.moderatePhoto(updated.getPhotoID(), updated.getDescription());
+        if (photoDTO.getDescription() != null && !photoDTO.getDescription().equals(existing.getCaption())) {
+            contentModerationService.moderatePhoto(updated.getPhotoID(), updated.getCaption());
         }
         
         return photoMapper.toDTO(updated);
