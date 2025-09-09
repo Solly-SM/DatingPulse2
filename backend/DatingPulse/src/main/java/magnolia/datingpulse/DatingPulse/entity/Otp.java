@@ -18,7 +18,7 @@ public class Otp {
     private Long otpID;
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "User is required")
     private User user;
 
@@ -27,7 +27,7 @@ public class Otp {
     @Pattern(regexp = "^[0-9]{6}$", message = "OTP code must be exactly 6 digits")
     private String code;
 
-    @Column(nullable = false)
+    @Column(name = "purpose", nullable = false)
     @NotBlank(message = "OTP type is required")
     @Pattern(regexp = "^(LOGIN|SIGNUP|RESET|VERIFICATION)$", 
              message = "Type must be LOGIN, SIGNUP, RESET, or VERIFICATION")

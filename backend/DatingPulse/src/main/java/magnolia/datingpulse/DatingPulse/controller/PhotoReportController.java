@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reports")
+@RequestMapping("/api/reports/photos")
 @RequiredArgsConstructor
 @Validated
 public class PhotoReportController {
