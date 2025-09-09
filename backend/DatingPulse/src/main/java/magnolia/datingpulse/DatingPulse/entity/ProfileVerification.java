@@ -22,7 +22,7 @@ public class ProfileVerification {
     @NotNull(message = "User is required")
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "verification_type", nullable = false)
     @NotBlank(message = "Verification type is required")
     @Pattern(regexp = "^(PHOTO|ID|SOCIAL|PHONE|EMAIL|MANUAL)$", 
              message = "Type must be PHOTO, ID, SOCIAL, PHONE, EMAIL, or MANUAL")
@@ -30,26 +30,20 @@ public class ProfileVerification {
 
     @Column(nullable = false)
     @NotBlank(message = "Status is required")
-    @Pattern(regexp = "^(PENDING|APPROVED|REJECTED|EXPIRED)$", 
-             message = "Status must be PENDING, APPROVED, REJECTED, or EXPIRED")
+    @Pattern(regexp = "^(PENDING|VERIFIED|REJECTED)$", 
+             message = "Status must be PENDING, VERIFIED, or REJECTED")
     @Builder.Default
-    private String status = "PENDING"; // pending, approved, rejected, expired
+    private String status = "PENDING"; // pending, verified, rejected
 
-    @Column(nullable = false)
+    @Column(name = "submitted_at", nullable = false)
     @NotNull(message = "Request timestamp is required")
     private LocalDateTime requestedAt;
 
-    @Column
+    @Column(name = "reviewed_at")
     private LocalDateTime verifiedAt;
 
     @Column
     private LocalDateTime rejectedAt;
-
-    @Column
-    @Size(max = 500, message = "Document URL must not exceed 500 characters")
-    @Pattern(regexp = "^https?://.*\\.(jpg|jpeg|png|pdf)$", 
-             message = "Document URL must be a valid HTTPS URL ending in jpg, jpeg, png, or pdf")
-    private String documentURL;
 
     @ManyToOne
     @JoinColumn(name = "reviewer_id")

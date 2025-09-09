@@ -40,7 +40,6 @@ class ProfileVerificationValidationTest {
                 .type("PHOTO")
                 .status("PENDING")
                 .requestedAt(LocalDateTime.now())
-                .documentURL("https://example.com/document.jpg")
                 .notes("Initial verification request")
                 .build();
 
@@ -72,7 +71,7 @@ class ProfileVerificationValidationTest {
 
     @Test
     void testValidStatusValues() {
-        String[] validStatuses = {"PENDING", "APPROVED", "REJECTED", "EXPIRED"};
+        String[] validStatuses = {"PENDING", "VERIFIED", "REJECTED"};
         
         for (String status : validStatuses) {
             ProfileVerification verification = createVerificationWithStatus(status);
@@ -90,48 +89,6 @@ class ProfileVerificationValidationTest {
                 v.getPropertyPath().toString().equals("status") && 
                 v.getMessage().contains("must be PENDING")),
                 "Invalid status should be rejected");
-    }
-
-    @Test
-    void testDocumentURLValidation() {
-        // Valid document URLs
-        String[] validURLs = {
-                "https://example.com/document.jpg",
-                "http://example.com/document.jpg",   // HTTP is also allowed per pattern
-                "https://storage.com/verification.jpeg",
-                "https://secure.domain.com/files/id.png",
-                "https://cdn.example.org/docs/passport.pdf"
-        };
-
-        for (String url : validURLs) {
-            ProfileVerification verification = createVerificationWithDocumentURL(url);
-            Set<ConstraintViolation<ProfileVerification>> violations = validator.validate(verification);
-            assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("documentURL")),
-                    "Document URL '" + url + "' should be valid");
-        }
-
-        // Invalid document URLs
-        String[] invalidURLs = {
-                "https://example.com/document.txt", // Invalid extension
-                "https://example.com/document.doc", // Invalid extension
-                "ftp://example.com/document.jpg",   // Wrong protocol
-                "not-a-url",                        // Not a URL
-                "https://example.com/",             // No file extension
-                ""                                  // Empty string
-        };
-
-        for (String url : invalidURLs) {
-            ProfileVerification verification = createVerificationWithDocumentURL(url);
-            Set<ConstraintViolation<ProfileVerification>> violations = validator.validate(verification);
-            assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("documentURL")),
-                    "Document URL '" + url + "' should be invalid");
-        }
-
-        // Null document URL should be valid (optional field)
-        ProfileVerification verification = createVerificationWithDocumentURL(null);
-        Set<ConstraintViolation<ProfileVerification>> violations = validator.validate(verification);
-        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("documentURL")),
-                "Null document URL should be valid (optional field)");
     }
 
     @Test
@@ -258,10 +215,9 @@ class ProfileVerificationValidationTest {
         ProfileVerification verification = ProfileVerification.builder()
                 .user(testUser)
                 .type("ID")
-                .status("APPROVED")
+                .status("VERIFIED")
                 .requestedAt(LocalDateTime.now().minusHours(2))
                 .verifiedAt(LocalDateTime.now())
-                .documentURL("https://secure.example.com/verifications/id-doc.pdf")
                 .notes("ID document successfully verified")
                 .build();
 
@@ -300,16 +256,6 @@ class ProfileVerificationValidationTest {
                 .type("PHOTO")
                 .status(status)
                 .requestedAt(LocalDateTime.now())
-                .build();
-    }
-
-    private ProfileVerification createVerificationWithDocumentURL(String documentURL) {
-        return ProfileVerification.builder()
-                .user(testUser)
-                .type("PHOTO")
-                .status("PENDING")
-                .requestedAt(LocalDateTime.now())
-                .documentURL(documentURL)
                 .build();
     }
 

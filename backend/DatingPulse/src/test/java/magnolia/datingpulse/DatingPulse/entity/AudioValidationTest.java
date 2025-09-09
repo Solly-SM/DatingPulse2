@@ -44,11 +44,12 @@ class AudioValidationTest {
         Audio audio = Audio.builder()
                 .userProfile(testUserProfile)
                 .url("https://example.com/audio.mp3")
-                .description("Test audio")
-                .visibility(AudioVisibility.PUBLIC)
-                .status(AudioStatus.ACTIVE)
+                .title("Test audio")
+                .visibility("PUBLIC")
+                .status("APPROVED")
                 .duration(60)
                 .uploadedAt(LocalDateTime.now())
+                .approvedAt(LocalDateTime.now())
                 .build();
 
         Set<ConstraintViolation<Audio>> violations = validator.validate(audio);
@@ -105,23 +106,23 @@ class AudioValidationTest {
     @Test
     void testDescriptionValidation() {
         // Valid description
-        Audio audio = createAudioWithDescription("A nice audio recording");
+        Audio audio = createAudioWithTitle("A nice audio recording");
         Set<ConstraintViolation<Audio>> violations = validator.validate(audio);
-        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("description")));
+        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("title")));
 
         // Description too long (over 500 characters)
         String longDescription = "A".repeat(501);
-        audio = createAudioWithDescription(longDescription);
+        audio = createAudioWithTitle(longDescription);
         violations = validator.validate(audio);
         assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("description") && 
+                v.getPropertyPath().toString().equals("title") && 
                 v.getMessage().contains("500 characters")),
                 "Description over 500 characters should be invalid");
 
         // Null description should be valid (optional field)
-        audio = createAudioWithDescription(null);
+        audio = createAudioWithTitle(null);
         violations = validator.validate(audio);
-        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("description")));
+        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("title")));
     }
 
     @Test
@@ -180,19 +181,19 @@ class AudioValidationTest {
         return Audio.builder()
                 .userProfile(testUserProfile)
                 .url(url)
-                .visibility(AudioVisibility.PUBLIC)
-                .status(AudioStatus.ACTIVE)
+                .visibility("PUBLIC")
+                .status("APPROVED")
                 .uploadedAt(LocalDateTime.now())
                 .build();
     }
 
-    private Audio createAudioWithDescription(String description) {
+    private Audio createAudioWithTitle(String description) {
         return Audio.builder()
                 .userProfile(testUserProfile)
                 .url("https://example.com/audio.mp3")
-                .description(description)
-                .visibility(AudioVisibility.PUBLIC)
-                .status(AudioStatus.ACTIVE)
+                .title(description)
+                .visibility("PUBLIC")
+                .status("APPROVED")
                 .uploadedAt(LocalDateTime.now())
                 .build();
     }
@@ -201,8 +202,8 @@ class AudioValidationTest {
         return Audio.builder()
                 .userProfile(testUserProfile)
                 .url("https://example.com/audio.mp3")
-                .visibility(AudioVisibility.PUBLIC)
-                .status(AudioStatus.ACTIVE)
+                .visibility("PUBLIC")
+                .status("APPROVED")
                 .duration(duration)
                 .uploadedAt(LocalDateTime.now())
                 .build();
