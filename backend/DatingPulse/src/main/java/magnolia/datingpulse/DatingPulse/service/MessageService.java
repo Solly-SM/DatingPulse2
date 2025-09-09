@@ -70,12 +70,11 @@ public class MessageService {
         message.setSender(sender);
         message.setReceiver(receiver);
         message.setSentAt(LocalDateTime.now());
-        // Status and other fields removed from entity as they don't exist in schema
-        // message.setStatus("SENT");
-        // message.setIsEdited(false);
-        // message.setIsRead(false);
-        // message.setDeletedForSender(false);
-        // message.setDeletedForReceiver(false);
+        message.setStatus("SENT");
+        message.setIsEdited(false);
+        message.setIsRead(false);
+        message.setDeletedForSender(false);
+        message.setDeletedForReceiver(false);
 
         // Validate message type
         if (!isValidMessageType(messageDTO.getType())) {
@@ -123,9 +122,8 @@ public class MessageService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
         List<Message> unreadMessages = messageRepository.findByReceiverAndReadAtIsNull(user);
-        // Note: Removed filter for deletedForReceiver as field doesn't exist in schema
         return unreadMessages.stream()
-                // .filter(message -> !message.getDeletedForReceiver())
+                .filter(message -> !message.getDeletedForReceiver())
                 .map(messageMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -140,8 +138,9 @@ public class MessageService {
             throw new IllegalArgumentException("Only the receiver can mark message as read");
         }
 
-        // Mark message as read using read_at timestamp instead of boolean
+        // Mark message as read using both read_at timestamp and is_read boolean
         message.setReadAt(LocalDateTime.now());
+        message.setIsRead(true);
         Message updated = messageRepository.save(message);
         return messageMapper.toDTO(updated);
     }
@@ -158,6 +157,7 @@ public class MessageService {
                 .filter(message -> message.getReadAt() == null) // Changed to use read_at timestamp
                 .forEach(message -> {
                     message.setReadAt(LocalDateTime.now()); // Changed to use read_at timestamp
+                    message.setIsRead(true); // Also set is_read boolean
                     messageRepository.save(message);
                 });
     }
@@ -178,7 +178,7 @@ public class MessageService {
         }
 
         message.setContent(newContent);
-        // message.setIsEdited(true); // Field doesn't exist in schema
+        message.setIsEdited(true); // Set edited flag
         Message updated = messageRepository.save(message);
         return messageMapper.toDTO(updated);
     }
@@ -188,9 +188,11 @@ public class MessageService {
         Message message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new IllegalArgumentException("Message not found with ID: " + messageId));
 
-        // Since schema only has is_deleted field, mark message as deleted for all users
-        if (message.getSender().getUserID().equals(userId) || message.getReceiver().getUserID().equals(userId)) {
-            message.setIsDeleted(true);
+        // Use separate deletion flags for sender and receiver
+        if (message.getSender().getUserID().equals(userId)) {
+            message.setDeletedForSender(true);
+        } else if (message.getReceiver().getUserID().equals(userId)) {
+            message.setDeletedForReceiver(true);
         } else {
             throw new IllegalArgumentException("User is not part of this message");
         }
@@ -215,8 +217,7 @@ public class MessageService {
             throw new IllegalArgumentException("Invalid message status: " + status);
         }
 
-        // Status field removed from entity as it doesn't exist in schema
-        // message.setStatus(status);
+        message.setStatus(status);
         Message updated = messageRepository.save(message);
         return messageMapper.toDTO(updated);
     }
@@ -227,7 +228,7 @@ public class MessageService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
         return messageRepository.findByReceiverAndReadAtIsNull(user).stream()
-                .filter(message -> !message.getIsDeleted()) // Use is_deleted field from schema
+                .filter(message -> !message.getDeletedForReceiver()) // Use correct deletion field
                 .count();
     }
 
@@ -249,9 +250,13 @@ public class MessageService {
     }
 
     private boolean isMessageVisibleForUser(MessageDTO message, Long userId) {
-        // Message is visible if it's not deleted - simplified since schema only has is_deleted
-        // Note: This method may need to be refactored based on actual MessageDTO implementation
-        return true; // For now, return true since we can't check user-specific deletion
+        // Message is visible if it's not deleted for the specific user
+        if (message.getSenderID().equals(userId)) {
+            return !Boolean.TRUE.equals(message.getDeletedForSender());
+        } else if (message.getReceiverID().equals(userId)) {
+            return !Boolean.TRUE.equals(message.getDeletedForReceiver());
+        }
+        return false; // User is not part of this message
     }
 
     private boolean isValidMessageType(String type) {
