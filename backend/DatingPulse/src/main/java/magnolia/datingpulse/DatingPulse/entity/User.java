@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Long userID;
 
     @Column(nullable = false, unique = true, length = 50)
@@ -50,18 +49,17 @@ public class User {
     @Pattern(regexp = "^(ACTIVE|SUSPENDED|BANNED)$", message = "Status must be ACTIVE, SUSPENDED, or BANNED")
     private String status; // active, suspended, banned
 
-    @Column(nullable = false, name = "created_at")
+    @Column(nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(nullable = false, name = "updated_at")
+    @Column(nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
-    @Column(nullable = false, name = "email_verified")
+    @Column(nullable = false)
     @NotNull(message = "Email verification status is required")
     @Builder.Default
     private Boolean isVerified = false;

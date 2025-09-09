@@ -18,7 +18,7 @@ public class Admin {
     private Long adminID;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "userID")
+    @JoinColumn(name = "user_id")
     @NotNull(message = "User is required")
     private User user;
 
