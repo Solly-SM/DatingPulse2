@@ -143,19 +143,19 @@ public class UserProfileService {
             existing.setBio(profileDTO.getBio());
         }
         if (profileDTO.getPp() != null) {
-            existing.setProfilePictureUrl(profileDTO.getPp()); // Changed to match entity field
+            existing.setPp(profileDTO.getPp()); // Use correct field name
         }
         // if (profileDTO.getAvatarThumbnail() != null) {
         //     existing.setAvatarThumbnail(profileDTO.getAvatarThumbnail()); // Field removed from entity
         // }
         if (profileDTO.getCountry() != null) {
-            existing.setLocationCountry(profileDTO.getCountry()); // Changed to match entity field
+            existing.setCountry(profileDTO.getCountry()); // Use correct field name
         }
         // if (profileDTO.getRegion() != null) {
         //     existing.setRegion(profileDTO.getRegion()); // Field removed from entity
         // }
         if (profileDTO.getCity() != null) {
-            existing.setLocationCity(profileDTO.getCity()); // Changed to match entity field
+            existing.setCity(profileDTO.getCity()); // Use correct field name
         }
         if (profileDTO.getLatitude() != null) {
             existing.setLatitude(profileDTO.getLatitude());

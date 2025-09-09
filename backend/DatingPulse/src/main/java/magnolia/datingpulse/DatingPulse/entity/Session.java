@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 @Builder
 public class Session {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "session_id")
-    private Long sessionID;
+    @NotBlank(message = "Session ID is required")
+    @Size(min = 32, max = 255, message = "Session ID must be between 32 and 255 characters")
+    private String sessionID; // Changed to String to match schema and tests
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -24,7 +25,7 @@ public class Session {
 
     @Column(name = "session_token", nullable = false, unique = true, length = 500)
     @NotBlank(message = "Token is required")
-    @Size(min = 10, max = 500, message = "Token must be between 10 and 500 characters")
+    @Size(min = 10, max = 256, message = "Token must be between 10 and 256 characters") // Fixed max length to match test
     private String token; // JWT or random string
 
     @Column(name = "ip_address")
@@ -40,6 +41,7 @@ public class Session {
 
     @Column(name = "expires_at", nullable = false)
     @NotNull(message = "Expiry timestamp is required")
+    @Future(message = "Expiry time must be in the future") // Add validation for future dates
     private LocalDateTime expiresAt;
 
     @Column(name = "is_active")

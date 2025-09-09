@@ -125,24 +125,24 @@ class PhotoValidationTest {
         // Valid order index
         Photo photo = createPhotoWithOrderIndex(0);
         Set<ConstraintViolation<Photo>> violations = validator.validate(photo);
-        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("orderIndex")));
+        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("displayOrder")));
 
         photo = createPhotoWithOrderIndex(10);
         violations = validator.validate(photo);
-        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("orderIndex")));
+        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("displayOrder")));
 
         // Negative order index should be invalid
         photo = createPhotoWithOrderIndex(-1);
         violations = validator.validate(photo);
         assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("orderIndex") && 
+                v.getPropertyPath().toString().equals("displayOrder") && 
                 v.getMessage().contains("cannot be negative")),
                 "Negative order index should be invalid");
 
         // Null order index should be valid (optional field)
         photo = createPhotoWithOrderIndex(null);
         violations = validator.validate(photo);
-        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("orderIndex")));
+        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("displayOrder")));
     }
 
     @Test
@@ -161,8 +161,7 @@ class PhotoValidationTest {
         
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("user")));
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("url")));
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("isProfilePhoto")));
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("isPrivate")));
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("isPrimary")));
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("visibility")));
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("status")));
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("uploadedAt")));

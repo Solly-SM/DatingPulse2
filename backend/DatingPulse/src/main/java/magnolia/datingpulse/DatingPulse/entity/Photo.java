@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder(toBuilder = true)
 public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,8 +59,16 @@ public class Photo {
 
     @Column(name = "is_primary", nullable = false)
     @NotNull(message = "Primary photo status is required")
-    @Builder.Default
-    private Boolean isPrimary = false; // Changed from isProfilePhoto to match schema
+    private Boolean isPrimary = false; // Primary photo status as per schema
+    
+    @Column(name = "dimensions", length = 20)
+    @Size(max = 20, message = "Dimensions must not exceed 20 characters")
+    @Pattern(regexp = "^\\d+x\\d+$", message = "Dimensions must be in format WIDTHxHEIGHT (e.g., 400x600)")
+    private String dimensions; // Image dimensions as per schema
+    
+    @ManyToOne
+    @JoinColumn(name = "moderated_by")
+    private User moderatedBy; // Admin who moderated this photo as per schema
     
     @Column(name = "updated_at")
     private LocalDateTime updatedAt; // Added to match test expectations
@@ -84,21 +91,141 @@ public class Photo {
         this.visibility = (isPrivate != null && isPrivate) ? PhotoVisibility.PRIVATE : PhotoVisibility.PUBLIC;
     }
     
-    // Static builder method with backwards compatibility
-    public static PhotoBuilder customBuilder() {
-        return new PhotoBuilder() {
-            public PhotoBuilder isProfilePhoto(Boolean isProfilePhoto) {
-                return isPrimary(isProfilePhoto);
-            }
-            
-            public PhotoBuilder isPrivate(Boolean isPrivate) {
-                return visibility(isPrivate != null && isPrivate ? PhotoVisibility.PRIVATE : PhotoVisibility.PUBLIC);
-            }
-        };
+    public Integer getOrderIndex() {
+        return displayOrder;
     }
     
-    // Override builder() method to return our custom builder
+    public void setOrderIndex(Integer orderIndex) {
+        this.displayOrder = orderIndex;
+    }
+    
+    // Custom builder class that extends Lombok's PhotoBuilder
+    public static class PhotoBuilder {
+        private Long photoID;
+        private User user;
+        private String url;
+        private String caption;
+        private String description;
+        private Integer displayOrder;
+        private PhotoStatus status;
+        private PhotoVisibility visibility;
+        private LocalDateTime uploadedAt;
+        private LocalDateTime approvedAt;
+        private Boolean isPrimary = false;
+        private LocalDateTime updatedAt;
+        private String dimensions;
+        private User moderatedBy;
+        
+        PhotoBuilder() {}
+        
+        public PhotoBuilder photoID(Long photoID) {
+            this.photoID = photoID;
+            return this;
+        }
+        
+        public PhotoBuilder user(User user) {
+            this.user = user;
+            return this;
+        }
+        
+        public PhotoBuilder url(String url) {
+            this.url = url;
+            return this;
+        }
+        
+        public PhotoBuilder caption(String caption) {
+            this.caption = caption;
+            return this;
+        }
+        
+        public PhotoBuilder description(String description) {
+            this.description = description;
+            return this;
+        }
+        
+        public PhotoBuilder displayOrder(Integer displayOrder) {
+            this.displayOrder = displayOrder;
+            return this;
+        }
+        
+        public PhotoBuilder status(PhotoStatus status) {
+            this.status = status;
+            return this;
+        }
+        
+        public PhotoBuilder visibility(PhotoVisibility visibility) {
+            this.visibility = visibility;
+            return this;
+        }
+        
+        public PhotoBuilder uploadedAt(LocalDateTime uploadedAt) {
+            this.uploadedAt = uploadedAt;
+            return this;
+        }
+        
+        public PhotoBuilder approvedAt(LocalDateTime approvedAt) {
+            this.approvedAt = approvedAt;
+            return this;
+        }
+        
+        public PhotoBuilder isPrimary(Boolean isPrimary) {
+            this.isPrimary = isPrimary;
+            return this;
+        }
+        
+        public PhotoBuilder updatedAt(LocalDateTime updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+        
+        public PhotoBuilder dimensions(String dimensions) {
+            this.dimensions = dimensions;
+            return this;
+        }
+        
+        public PhotoBuilder moderatedBy(User moderatedBy) {
+            this.moderatedBy = moderatedBy;
+            return this;
+        }
+        
+        // Backwards compatibility methods
+        public PhotoBuilder isProfilePhoto(Boolean isProfilePhoto) {
+            this.isPrimary = isProfilePhoto;
+            return this;
+        }
+        
+        public PhotoBuilder isPrivate(Boolean isPrivate) {
+            this.visibility = (isPrivate != null && isPrivate) ? PhotoVisibility.PRIVATE : PhotoVisibility.PUBLIC;
+            return this;
+        }
+        
+        public PhotoBuilder orderIndex(Integer orderIndex) {
+            this.displayOrder = orderIndex;
+            return this;
+        }
+        
+        public Photo build() {
+            Photo photo = new Photo();
+            photo.photoID = this.photoID;
+            photo.user = this.user;
+            photo.url = this.url;
+            photo.caption = this.caption;
+            photo.description = this.description;
+            photo.displayOrder = this.displayOrder;
+            photo.status = this.status;
+            photo.visibility = this.visibility;
+            photo.uploadedAt = this.uploadedAt;
+            photo.approvedAt = this.approvedAt;
+            photo.isPrimary = this.isPrimary;
+            photo.updatedAt = this.updatedAt;
+            photo.dimensions = this.dimensions;
+            photo.moderatedBy = this.moderatedBy;
+            return photo;
+        }
+    }
+    
+    // Static builder method
     public static PhotoBuilder builder() {
-        return customBuilder();
+        return new PhotoBuilder();
     }
 }

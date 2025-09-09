@@ -3,6 +3,9 @@ package magnolia.datingpulse.DatingPulse.service;
 import lombok.RequiredArgsConstructor;
 import magnolia.datingpulse.DatingPulse.dto.AudioDTO;
 import magnolia.datingpulse.DatingPulse.entity.Audio;
+import magnolia.datingpulse.DatingPulse.entity.AudioStatus;
+import magnolia.datingpulse.DatingPulse.entity.AudioVisibility;
+import magnolia.datingpulse.DatingPulse.entity.User;
 import magnolia.datingpulse.DatingPulse.entity.UserProfile;
 import magnolia.datingpulse.DatingPulse.mapper.AudioMapper;
 import magnolia.datingpulse.DatingPulse.repositories.AudioRepository;
@@ -32,17 +35,20 @@ public class AudioService {
 
         // Map DTO to entity
         Audio audio = audioMapper.toEntity(audioDTO);
-        audio.setUserProfile(userProfile);
+        
+        // Get User from UserProfile
+        User user = userProfile.getUser();
+        audio.setUser(user); // Set user instead of userProfile
 
         // Set default values
         if (audio.getStatus() == null) {
-            audio.setStatus("PENDING"); // Default status
+            audio.setStatus(AudioStatus.PENDING); // Default status as enum
         }
         if (audio.getVisibility() == null) {
-            audio.setVisibility("PUBLIC");
+            audio.setVisibility(AudioVisibility.PUBLIC);
         }
         audio.setUploadedAt(LocalDateTime.now());
-        audio.setApprovedAt(LocalDateTime.now());
+        // Note: approvedAt removed from schema, not setting it
 
         Audio saved = audioRepository.save(audio);
         return audioMapper.toDTO(saved);
@@ -128,16 +134,16 @@ public class AudioService {
             existing.setTitle(audioDTO.getDescription());
         }
         if (audioDTO.getVisibility() != null && isValidAudioVisibility(audioDTO.getVisibility())) {
-            existing.setVisibility(audioDTO.getVisibility().toUpperCase());
+            existing.setVisibility(AudioVisibility.valueOf(audioDTO.getVisibility().toUpperCase()));
         }
         if (audioDTO.getStatus() != null && isValidAudioStatus(audioDTO.getStatus())) {
-            existing.setStatus(audioDTO.getStatus().toUpperCase());
+            existing.setStatus(AudioStatus.valueOf(audioDTO.getStatus().toUpperCase()));
         }
         if (audioDTO.getDuration() != null) {
             existing.setDuration(audioDTO.getDuration());
         }
 
-        existing.setApprovedAt(LocalDateTime.now());
+        // Note: approvedAt removed from schema, not setting it
 
         Audio updated = audioRepository.save(existing);
         return audioMapper.toDTO(updated);
@@ -148,8 +154,8 @@ public class AudioService {
         Audio audio = audioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Audio not found with ID: " + id));
 
-        audio.setStatus("APPROVED");
-        audio.setApprovedAt(LocalDateTime.now());
+        audio.setStatus(AudioStatus.APPROVED);
+        // Note: approvedAt removed from schema, not setting it
 
         Audio updated = audioRepository.save(audio);
         return audioMapper.toDTO(updated);
@@ -160,8 +166,8 @@ public class AudioService {
         Audio audio = audioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Audio not found with ID: " + id));
 
-        audio.setStatus("REJECTED");
-        audio.setApprovedAt(LocalDateTime.now());
+        audio.setStatus(AudioStatus.REJECTED);
+        // Note: approvedAt removed from schema, not setting it
 
         Audio updated = audioRepository.save(audio);
         return audioMapper.toDTO(updated);
@@ -172,8 +178,8 @@ public class AudioService {
         Audio audio = audioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Audio not found with ID: " + id));
 
-        audio.setStatus("REJECTED");
-        audio.setApprovedAt(LocalDateTime.now());
+        audio.setStatus(AudioStatus.FLAGGED);
+        // Note: approvedAt removed from schema, not setting it
 
         Audio updated = audioRepository.save(audio);
         return audioMapper.toDTO(updated);

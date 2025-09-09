@@ -7,6 +7,7 @@ import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -16,13 +17,14 @@ class AudioValidationTest {
 
     private Validator validator;
     private UserProfile testUserProfile;
+    private User testUser; // Added as field
 
     @BeforeEach
     void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
         
-        User testUser = User.builder()
+        testUser = User.builder() // Remove 'User' declaration to make it use the field
                 .username("testuser")
                 .email("test@example.com")
                 .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
@@ -42,14 +44,14 @@ class AudioValidationTest {
     @Test
     void testValidAudio() {
         Audio audio = Audio.builder()
-                .userProfile(testUserProfile)
+                .user(testUser) // Changed from userProfile to user
                 .url("https://example.com/audio.mp3")
                 .title("Test audio")
-                .visibility("PUBLIC")
-                .status("APPROVED")
+                .visibility(AudioVisibility.PUBLIC) // Changed to enum
+                .status(AudioStatus.APPROVED) // Changed to enum
                 .duration(60)
                 .uploadedAt(LocalDateTime.now())
-                .approvedAt(LocalDateTime.now())
+                // Remove approvedAt as it's not in the schema
                 .build();
 
         Set<ConstraintViolation<Audio>> violations = validator.validate(audio);
@@ -161,7 +163,7 @@ class AudioValidationTest {
     @Test
     void testRequiredFields() {
         Audio audio = Audio.builder()
-                .userProfile(null)
+                .user(null) // Changed from userProfile to user
                 .url(null)
                 .visibility(null)
                 .status(null)
@@ -179,31 +181,31 @@ class AudioValidationTest {
 
     private Audio createAudioWithUrl(String url) {
         return Audio.builder()
-                .userProfile(testUserProfile)
+                .user(testUser) // Changed from userProfile to user
                 .url(url)
-                .visibility("PUBLIC")
-                .status("APPROVED")
+                .visibility(AudioVisibility.PUBLIC) // Changed to enum
+                .status(AudioStatus.APPROVED) // Changed to enum
                 .uploadedAt(LocalDateTime.now())
                 .build();
     }
 
     private Audio createAudioWithTitle(String description) {
         return Audio.builder()
-                .userProfile(testUserProfile)
+                .user(testUser) // Changed from userProfile to user
                 .url("https://example.com/audio.mp3")
                 .title(description)
-                .visibility("PUBLIC")
-                .status("APPROVED")
+                .visibility(AudioVisibility.PUBLIC) // Changed to enum
+                .status(AudioStatus.APPROVED) // Changed to enum
                 .uploadedAt(LocalDateTime.now())
                 .build();
     }
 
     private Audio createAudioWithDuration(Integer duration) {
         return Audio.builder()
-                .userProfile(testUserProfile)
+                .user(testUser) // Changed from userProfile to user
                 .url("https://example.com/audio.mp3")
-                .visibility("PUBLIC")
-                .status("APPROVED")
+                .visibility(AudioVisibility.PUBLIC) // Changed to enum
+                .status(AudioStatus.APPROVED) // Changed to enum
                 .duration(duration)
                 .uploadedAt(LocalDateTime.now())
                 .build();
