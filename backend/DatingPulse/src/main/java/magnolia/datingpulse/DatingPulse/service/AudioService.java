@@ -36,9 +36,8 @@ public class AudioService {
         // Map DTO to entity
         Audio audio = audioMapper.toEntity(audioDTO);
         
-        // Get User from UserProfile
-        User user = userProfile.getUser();
-        audio.setUser(user); // Set user instead of userProfile
+        // Set userProfile directly
+        audio.setUserProfile(userProfile);
 
         // Set default values
         if (audio.getStatus() == null) {

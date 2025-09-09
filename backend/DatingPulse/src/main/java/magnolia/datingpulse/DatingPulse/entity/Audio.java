@@ -19,8 +19,8 @@ public class Audio {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @NotNull(message = "User is required")
-    private User user; // Changed from userProfile to user as per schema
+    @NotNull(message = "UserProfile is required")
+    private UserProfile userProfile;
 
     @Column(nullable = false)
     @NotBlank(message = "Audio URL is required")
