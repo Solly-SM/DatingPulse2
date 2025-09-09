@@ -165,7 +165,8 @@ class MigrationResourceValidationTest {
             "V2__Insert_sample_data.sql",
             "V2_1__Performance_indexes.sql",
             "V3__Photo_moderation_and_reporting.sql",
-            "V4__Security_hardening_and_gdpr_compliance.sql"
+            "V4__Security_hardening_and_gdpr_compliance.sql",
+            "V12__Add_rejected_at_column_to_profile_verifications.sql"
         };
         
         for (String expectedFile : expectedMigrationFiles) {

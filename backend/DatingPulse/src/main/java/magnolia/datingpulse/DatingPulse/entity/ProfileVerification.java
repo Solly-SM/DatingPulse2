@@ -42,7 +42,7 @@ public class ProfileVerification {
     @Column(name = "reviewed_at")
     private LocalDateTime verifiedAt;
 
-    @Column
+    @Column(name = "rejected_at")
     private LocalDateTime rejectedAt;
 
     @ManyToOne
