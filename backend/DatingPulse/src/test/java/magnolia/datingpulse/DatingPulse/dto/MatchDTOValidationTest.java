@@ -113,7 +113,7 @@ class MatchDTOValidationTest {
                 "Null matchSource should be valid (optional field)");
 
         // Test invalid matchSource values
-        String[] invalidSources = {"SWIPE", "LIKE", "DISLIKE", "INVALID", "mutual_like", "super_like", "algorithm", "manual"};
+        String[] invalidSources = {"LIKE", "DISLIKE", "INVALID", "mutual_like", "super_like", "algorithm", "manual", "swipe"};
         for (String source : invalidSources) {
             matchDTO.setMatchSource(source);
             violations = validator.validate(matchDTO);
@@ -124,7 +124,7 @@ class MatchDTOValidationTest {
         }
 
         // Test valid matchSource values
-        String[] validSources = {"MUTUAL_LIKE", "SUPER_LIKE", "ALGORITHM", "MANUAL"};
+        String[] validSources = {"SWIPE", "ALGORITHM", "MANUAL", "SUPER_LIKE", "MUTUAL_LIKE"};
         for (String source : validSources) {
             matchDTO.setMatchSource(source);
             violations = validator.validate(matchDTO);
@@ -242,6 +242,7 @@ class MatchDTOValidationTest {
 
         // Test that match sources are case-sensitive
         String[] caseVariants = {
+            "swipe", "Swipe", "SWIPE",
             "mutual_like", "Mutual_Like", "MUTUAL_LIKE",
             "super_like", "Super_Like", "SUPER_LIKE",
             "algorithm", "Algorithm", "ALGORITHM",
@@ -252,7 +253,7 @@ class MatchDTOValidationTest {
             matchDTO.setMatchSource(source);
             Set<ConstraintViolation<MatchDTO>> violations = validator.validate(matchDTO);
 
-            if (source.equals("MUTUAL_LIKE") || source.equals("SUPER_LIKE") || 
+            if (source.equals("SWIPE") || source.equals("MUTUAL_LIKE") || source.equals("SUPER_LIKE") || 
                 source.equals("ALGORITHM") || source.equals("MANUAL")) {
                 assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("matchSource")),
                         "Match source '" + source + "' should be valid (exact case match)");

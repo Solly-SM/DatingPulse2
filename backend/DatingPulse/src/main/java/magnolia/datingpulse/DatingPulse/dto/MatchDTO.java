@@ -18,8 +18,8 @@ public class MatchDTO {
     
     private LocalDateTime matchedAt;
     
-    @Pattern(regexp = "^(MUTUAL_LIKE|SUPER_LIKE|ALGORITHM|MANUAL)$", 
-             message = "Match source must be one of: MUTUAL_LIKE, SUPER_LIKE, ALGORITHM, MANUAL")
+    @Pattern(regexp = "^(SWIPE|ALGORITHM|MANUAL|SUPER_LIKE|MUTUAL_LIKE)$", 
+             message = "Match source must be one of: SWIPE, ALGORITHM, MANUAL, SUPER_LIKE, MUTUAL_LIKE")
     private String matchSource;
     
     private Boolean isActive;
