@@ -32,7 +32,11 @@ public class Device {
     @Column(name = "device_token", nullable = false)
     @NotBlank(message = "Push token is required")
     @Size(max = 500, message = "Push token must not exceed 500 characters")
-    private String pushToken; // For push notifications
+    private String pushToken; // For push notifications - maps to device_token column
+    
+    @Column(name = "device_name")
+    @Size(max = 100, message = "Device name must not exceed 100 characters")
+    private String deviceName; // Human readable device name
 
     @Column(name = "device_info")
     @Size(max = 500, message = "Device info must not exceed 500 characters")

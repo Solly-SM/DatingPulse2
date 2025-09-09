@@ -46,105 +46,146 @@ public class Preference {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    // Note: Following fields don't exist in current schema - removing for now
-    /*
+    // Additional preference fields now persisted to database
     @Pattern(regexp = "^(CASUAL|SERIOUS|MARRIAGE|FRIENDSHIP|HOOKUP)$", 
              message = "Relationship type must be CASUAL, SERIOUS, MARRIAGE, FRIENDSHIP, or HOOKUP")
-    @Transient
+    @Column(name = "relationship_type", length = 50)
     private String relationshipType;
     
-    @Transient
+    @Column(name = "wants_children")
     private Boolean wantsChildren;
     
     @Pattern(regexp = "^(HIGH_SCHOOL|COLLEGE|BACHELOR|MASTER|DOCTORATE|TRADE|OTHER)$", 
              message = "Education level must be valid value")
     @Size(max = 50, message = "Education level must not exceed 50 characters")
-    @Transient
+    @Column(name = "education_level", length = 50)
     private String educationLevel;
     
     @Size(max = 50, message = "Religion must not exceed 50 characters")
-    @Transient
+    @Column(name = "religion", length = 50)
     private String religion;
     
     @Pattern(regexp = "^(YES|NO|OCCASIONALLY|NEVER)$", 
              message = "Smoking preference must be YES, NO, OCCASIONALLY, or NEVER")
-    @Transient
+    @Column(name = "smoking", length = 50)
     private String smoking;
     
     @Pattern(regexp = "^(YES|NO|OCCASIONALLY|NEVER|SOCIALLY)$", 
              message = "Drinking preference must be YES, NO, OCCASIONALLY, NEVER, or SOCIALLY")
-    @Transient
+    @Column(name = "drinking", length = 50)
     private String drinking;
     
     @Size(max = 50, message = "Politics must not exceed 50 characters")
-    @Transient
+    @Column(name = "politics", length = 50)
     private String politics;
     
     @Size(max = 100, message = "Pets preference must not exceed 100 characters")
-    @Transient
+    @Column(name = "pets", length = 100)
     private String pets;
     
     @Size(max = 200, message = "Languages must not exceed 200 characters")
-    @Transient
+    @Column(name = "languages", length = 200)
     private String languages;
     
-    @Transient
+    @Column(name = "open_to_lgbtq")
     private Boolean openToLGBTQ;
     
     @Min(value = 120, message = "Minimum height must be at least 120cm")
     @Max(value = 250, message = "Minimum height must not exceed 250cm")
-    @Transient
+    @Column(name = "min_height")
     private Integer minHeight;         // in cm or inches
     
     @Min(value = 120, message = "Maximum height must be at least 120cm")
     @Max(value = 250, message = "Maximum height must not exceed 250cm")
-    @Transient
+    @Column(name = "max_height")
     private Integer maxHeight;
     
     @Pattern(regexp = "^(cm|in)$", message = "Height unit must be 'cm' or 'in'")
-    @Transient
+    @Column(name = "height_unit", length = 10)
     private String heightUnit;         // "cm" or "in"
     
     @Pattern(regexp = "^(SLIM|ATHLETIC|AVERAGE|CURVY|HEAVY|MUSCULAR)$", 
              message = "Body type must be valid value")
-    @Transient
+    @Column(name = "body_type", length = 50)
     private String bodyType;
     
     @Size(max = 50, message = "Ethnicity must not exceed 50 characters")
-    @Transient
+    @Column(name = "ethnicity", length = 50)
     private String ethnicity;
     
     @Pattern(regexp = "^(VEGETARIAN|VEGAN|KETO|PALEO|HALAL|KOSHER|NO_PREFERENCE)$", 
              message = "Dietary preference must be valid value")
-    @Transient
+    @Column(name = "dietary_preference", length = 50)
     private String dietaryPreference;
     
     @Pattern(regexp = "^(DAILY|WEEKLY|MONTHLY|RARELY|NEVER)$", 
              message = "Exercise preference must be DAILY, WEEKLY, MONTHLY, RARELY, or NEVER")
-    @Transient
+    @Column(name = "exercise_preference", length = 50)
     private String exercisePreference;
     
     @Pattern(regexp = "^(VACCINATED|NOT_VACCINATED|PREFER_VACCINATED|NO_PREFERENCE)$", 
              message = "COVID preference must be valid value")
-    @Transient
+    @Column(name = "covid_preference", length = 50)
     private String covidPreference;
     
     @Size(max = 20, message = "Star sign must not exceed 20 characters")
-    @Transient
+    @Column(name = "star_sign", length = 20)
     private String starSign;
     
     @Size(max = 500, message = "Hobbies must not exceed 500 characters")
-    @Transient
+    @Column(name = "hobbies", length = 500)
     private String hobbies;            // comma-separated or ManyToMany if you want normalization
     
     @Pattern(regexp = "^(WANTS_KIDS|NO_KIDS|MAYBE|HAVE_KIDS|DONT_WANT_MORE)$", 
              message = "Family plans must be valid value")
-    @Transient
+    @Column(name = "family_plans", length = 50)
     private String familyPlans;        // "wants_kids", "no_kids", etc.
-    */
 
     @OneToOne
     @JoinColumn(name = "user_profile_id")
     @NotNull(message = "User profile is required")
     private UserProfile userProfile;
+    
+    // Helper methods for backwards compatibility with tests
+    public String getGenderPreference() {
+        return preferredGender;
+    }
+    
+    public void setGenderPreference(String genderPreference) {
+        this.preferredGender = genderPreference;
+    }
+    
+    public Integer getAgeMin() {
+        return minAge;
+    }
+    
+    public void setAgeMin(Integer ageMin) {
+        this.minAge = ageMin;
+    }
+    
+    public Integer getAgeMax() {
+        return maxAge;
+    }
+    
+    public void setAgeMax(Integer ageMax) {
+        this.maxAge = ageMax;
+    }
+    
+    // Also provide builder methods for backwards compatibility
+    public static class PreferenceBuilder {
+        public PreferenceBuilder genderPreference(String genderPreference) {
+            this.preferredGender = genderPreference;
+            return this;
+        }
+        
+        public PreferenceBuilder ageMin(Integer ageMin) {
+            this.minAge = ageMin;
+            return this;
+        }
+        
+        public PreferenceBuilder ageMax(Integer ageMax) {
+            this.maxAge = ageMax;
+            return this;
+        }
+    }
 }
