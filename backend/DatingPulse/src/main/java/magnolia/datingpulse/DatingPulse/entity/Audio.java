@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class Audio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "audio_id")
     private Long id;
 
     @ManyToOne
@@ -27,7 +28,8 @@ public class Audio {
              message = "URL must be a valid audio file URL (mp3, wav, m4a, aac, ogg)")
     private String url;
 
-    @Size(max = 500, message = "Description must not exceed 500 characters")
+    @Column(name = "title")
+    @Size(max = 200, message = "Description must not exceed 200 characters")
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -40,15 +42,15 @@ public class Audio {
     @NotNull(message = "Status is required")
     private AudioStatus status; // Moderation status
 
-    @Column
+    @Column(name = "duration_seconds")
     @Min(value = 1, message = "Duration must be at least 1 second")
     @Max(value = 300, message = "Duration must not exceed 300 seconds (5 minutes)")
     private Integer duration;
 
-    @Column(nullable = false)
+    @Column(name = "uploaded_at", nullable = false)
     @NotNull(message = "Upload date is required")
     private LocalDateTime uploadedAt;
 
-    @Column
+    @Column(name = "approved_at")
     private LocalDateTime updatedAt; // Audit timestamp
 }

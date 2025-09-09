@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class Otp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "otp_id")
     private Long otpID;
 
     @ManyToOne

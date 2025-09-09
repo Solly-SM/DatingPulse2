@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "photo_id")
     private Long photoID;
 
     @ManyToOne

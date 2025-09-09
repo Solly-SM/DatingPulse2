@@ -14,19 +14,24 @@ import java.time.LocalDateTime;
 public class BlockedUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long blockID;
 
     @ManyToOne
-    @JoinColumn(name = "blockerID", nullable = false)
+    @JoinColumn(name = "blocker_id", nullable = false)
     @NotNull(message = "Blocker is required")
     private User blocker;
 
     @ManyToOne
-    @JoinColumn(name = "blockedID", nullable = false)
+    @JoinColumn(name = "blocked_id", nullable = false)
     @NotNull(message = "Blocked user is required")
     private User blocked;
 
-    @Column(nullable = false)
+    @Column(name = "reason")
+    @Size(max = 200, message = "Reason must not exceed 200 characters")
+    private String reason;
+
+    @Column(name = "blocked_at", nullable = false)
     @NotNull(message = "Block timestamp is required")
     private LocalDateTime blockedAt;
 }

@@ -8,16 +8,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface SessionRepository extends JpaRepository<Session, String> {
+public interface SessionRepository extends JpaRepository<Session, Long> {
     List<Session> findByUser(User user);
     Optional<Session> findByToken(String token);
-    List<Session> findByUserAndRevokedAtIsNullAndExpiresAtAfter(User user, LocalDateTime dateTime);
-    List<Session> findByUserAndRevokedAtIsNull(User user);
-    List<Session> findByExpiresAtBeforeAndRevokedAtIsNull(LocalDateTime dateTime);
-    List<Session> findByRevokedAtIsNotNull();
+    List<Session> findByUserAndIsActiveAndExpiresAtAfter(User user, Boolean isActive, LocalDateTime dateTime);
+    List<Session> findByUserAndIsActive(User user, Boolean isActive);
+    List<Session> findByExpiresAtBeforeAndIsActive(LocalDateTime dateTime, Boolean isActive);
+    List<Session> findByIsActive(Boolean isActive);
     List<Session> findByCreatedAtBefore(LocalDateTime dateTime);
-    boolean existsByUserAndRevokedAtIsNullAndExpiresAtAfter(User user, LocalDateTime dateTime);
-    long countByRevokedAtIsNullAndExpiresAtAfter(LocalDateTime dateTime);
+    boolean existsByUserAndIsActiveAndExpiresAtAfter(User user, Boolean isActive, LocalDateTime dateTime);
+    long countByIsActiveAndExpiresAtAfter(Boolean isActive, LocalDateTime dateTime);
     long countByUser(User user);
-    long countByUserAndRevokedAtIsNullAndExpiresAtAfter(User user, LocalDateTime dateTime);
+    long countByUserAndIsActiveAndExpiresAtAfter(User user, Boolean isActive, LocalDateTime dateTime);
 }

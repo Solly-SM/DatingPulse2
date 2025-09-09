@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "like_id")
     private Long likeID;
 
     @ManyToOne

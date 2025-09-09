@@ -62,8 +62,8 @@ public class SwipeHistoryService {
 
         // Set session if provided
         if (swipeDTO.getSessionID() != null) {
-            Session session = sessionRepository.findById(swipeDTO.getSessionID())
-                    .orElseThrow(() -> new IllegalArgumentException("Session not found with ID: " + swipeDTO.getSessionID()));
+            Session session = sessionRepository.findByToken(swipeDTO.getSessionID())
+                    .orElseThrow(() -> new IllegalArgumentException("Session not found with token: " + swipeDTO.getSessionID()));
             swipe.setSession(session);
         }
 

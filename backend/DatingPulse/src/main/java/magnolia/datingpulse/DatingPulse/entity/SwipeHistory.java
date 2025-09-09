@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class SwipeHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "swipe_id")
     private Long swipeID;
 
     @ManyToOne

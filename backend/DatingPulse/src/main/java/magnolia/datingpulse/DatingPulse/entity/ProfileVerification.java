@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class ProfileVerification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "verification_id")
     private Long verificationID;
 
     @ManyToOne
