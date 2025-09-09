@@ -18,7 +18,7 @@ public class ProfileVerification {
     private Long verificationID;
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "User is required")
     private User user;
 
@@ -52,7 +52,7 @@ public class ProfileVerification {
     private String documentURL;
 
     @ManyToOne
-    @JoinColumn(name = "reviewerID")
+    @JoinColumn(name = "reviewer_id")
     private User reviewer; // Optional: Admin/staff
 
     @Column(length = 1000)

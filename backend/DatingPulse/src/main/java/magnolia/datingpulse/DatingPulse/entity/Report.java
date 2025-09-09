@@ -18,12 +18,12 @@ public class Report {
     private Long reportID;
 
     @ManyToOne
-    @JoinColumn(name = "reporterID", nullable = false)
+    @JoinColumn(name = "reporter_id", nullable = false)
     @NotNull(message = "Reporter is required")
     private User reporter;
 
     @ManyToOne
-    @JoinColumn(name = "reportedID", nullable = false)
+    @JoinColumn(name = "reported_id", nullable = false)
     @NotNull(message = "Reported user is required")
     private User reported;
 

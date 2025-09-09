@@ -18,12 +18,12 @@ public class SwipeHistory {
     private Long swipeID;
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "User is required")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "targetUserID", nullable = false)
+    @JoinColumn(name = "target_user_id", nullable = false)
     @NotNull(message = "Target user is required")
     private User targetUser;
 
@@ -43,7 +43,7 @@ public class SwipeHistory {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "deviceID", nullable = false)
+    @JoinColumn(name = "device_id", nullable = false)
     @NotNull(message = "Device is required")
     private Device device;
 
@@ -53,6 +53,6 @@ public class SwipeHistory {
     private String appVersion;
 
     @ManyToOne
-    @JoinColumn(name = "sessionID")
+    @JoinColumn(name = "session_id")
     private Session session;
 }
