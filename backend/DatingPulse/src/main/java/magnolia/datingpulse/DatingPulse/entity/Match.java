@@ -40,6 +40,6 @@ public class Match {
     @Builder.Default
     private Boolean isActive = true; // For unmatched/blocking logic
 
-    @Column
+    @Column(name = "expires_at")
     private LocalDateTime expiresAt;
 }
