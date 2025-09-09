@@ -30,10 +30,6 @@ public class Conversation {
     @JoinColumn(name = "last_message_id")
     private Message lastMessage; // Latest message’s ID in this conversation
 
-    @OneToOne
-    @JoinColumn(name = "last_message_id")
-    private Message lastMessage; // Latest message's ID in this conversation
-
     @Column(name = "deleted_for_user1")
     @NotNull(message = "Deleted status for user1 is required")
     @Builder.Default

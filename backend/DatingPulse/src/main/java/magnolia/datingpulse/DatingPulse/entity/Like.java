@@ -18,21 +18,21 @@ public class Like {
     private Long likeID;
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "User is required")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "likedUserID", nullable = false)
+    @JoinColumn(name = "liked_user_id", nullable = false)
     @NotNull(message = "Liked user is required")
     private User likedUser;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "like_type", nullable = false)
     @NotNull(message = "Like type is required")
     private LikeType type; // NEW FIELD
 
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     @NotNull(message = "Liked timestamp is required")
     private LocalDateTime likedAt;
 }
