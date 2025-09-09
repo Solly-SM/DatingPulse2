@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface PreferenceRepository extends JpaRepository<Preference, Long> {
     Optional<Preference> findByUserProfile(UserProfile userProfile);
-    List<Preference> findByGenderPreference(String genderPreference);
-    List<Preference> findByAgeMinLessThanEqualAndAgeMaxGreaterThanEqual(Integer maxAge, Integer minAge);
+    List<Preference> findByPreferredGender(String preferredGender);
+    List<Preference> findByMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(Integer maxAge, Integer minAge);
 }
-

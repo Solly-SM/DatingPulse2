@@ -71,7 +71,7 @@ public class PreferenceService {
 
     @Transactional(readOnly = true)
     public List<PreferenceDTO> getPreferencesByGender(String genderPreference) {
-        List<Preference> preferences = preferenceRepository.findByGenderPreference(genderPreference);
+        List<Preference> preferences = preferenceRepository.findByPreferredGender(genderPreference);
         return preferences.stream()
                 .map(preferenceMapper::toDTO)
                 .collect(Collectors.toList());
@@ -79,7 +79,7 @@ public class PreferenceService {
 
     @Transactional(readOnly = true)
     public List<PreferenceDTO> getPreferencesByAgeRange(Integer minAge, Integer maxAge) {
-        List<Preference> preferences = preferenceRepository.findByAgeMinLessThanEqualAndAgeMaxGreaterThanEqual(maxAge, minAge);
+        List<Preference> preferences = preferenceRepository.findByMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(maxAge, minAge);
         return preferences.stream()
                 .map(preferenceMapper::toDTO)
                 .collect(Collectors.toList());

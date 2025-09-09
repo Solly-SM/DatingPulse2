@@ -28,6 +28,7 @@ public class Match {
     @NotNull(message = "User two is required")
     private User userTwo;
 
+    @Column(name="matched_at")
     @NotNull(message = "Match timestamp is required")
     private LocalDateTime matchedAt;
 

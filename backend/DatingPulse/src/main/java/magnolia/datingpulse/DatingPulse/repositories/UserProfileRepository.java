@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
     Optional<UserProfile> findByUser(User user);
-    List<UserProfile> findByCountry(String country);
+    List<UserProfile> findByLocationCountry(String locationCountry);
     List<UserProfile> findByGender(String gender);
 }
