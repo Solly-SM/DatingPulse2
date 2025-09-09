@@ -3,7 +3,11 @@
 
 -- Add status column 
 ALTER TABLE messages 
-ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'SENT' 
+ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'SENT';
+
+-- Add CHECK constraint for status values (PostgreSQL specific)
+ALTER TABLE messages 
+ADD CONSTRAINT messages_status_check 
 CHECK (status IN ('SENT', 'DELIVERED', 'READ', 'FAILED'));
 
 -- Add is_edited column
@@ -40,7 +44,7 @@ ALTER TABLE messages DROP COLUMN is_deleted;
 CREATE INDEX idx_messages_status ON messages(status);
 CREATE INDEX idx_messages_deleted_flags ON messages(deleted_for_sender, deleted_for_receiver);
 
--- Add comments for documentation
+-- Add comments for documentation (PostgreSQL specific)
 COMMENT ON COLUMN messages.status IS 'Message delivery status: SENT, DELIVERED, READ, or FAILED';
 COMMENT ON COLUMN messages.is_edited IS 'Whether the message has been edited after sending';
 COMMENT ON COLUMN messages.is_read IS 'Whether the message has been read by the receiver';
