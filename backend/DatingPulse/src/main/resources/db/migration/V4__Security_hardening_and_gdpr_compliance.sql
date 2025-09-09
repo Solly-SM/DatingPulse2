@@ -18,7 +18,7 @@ CREATE INDEX idx_users_deletion_requested_at ON users(deletion_requested_at);
 -- Create GDPR audit log table for tracking data processing activities
 CREATE TABLE gdpr_audit_log (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(userID),
+    user_id BIGINT REFERENCES users(user_id),
     action VARCHAR(100) NOT NULL,
     details TEXT,
     performed_by VARCHAR(255),
@@ -35,7 +35,7 @@ CREATE INDEX idx_gdpr_audit_log_performed_at ON gdpr_audit_log(performed_at);
 -- Create consent management table
 CREATE TABLE user_consent (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(userID) ON DELETE CASCADE,
+    user_id BIGINT REFERENCES users(user_id) ON DELETE CASCADE,
     consent_type VARCHAR(100) NOT NULL,
     consent_given BOOLEAN NOT NULL DEFAULT FALSE,
     consent_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -74,7 +74,7 @@ CREATE TABLE security_incidents (
     user_agent TEXT,
     request_path VARCHAR(500),
     request_method VARCHAR(10),
-    user_id BIGINT REFERENCES users(userID),
+    user_id BIGINT REFERENCES users(user_id),
     details TEXT,
     resolved BOOLEAN DEFAULT FALSE,
     resolved_at TIMESTAMP NULL,
@@ -92,11 +92,11 @@ CREATE INDEX idx_security_incidents_created_at ON security_incidents(created_at)
 
 -- Insert default consent types
 INSERT INTO user_consent (user_id, consent_type, consent_given, consent_date) 
-SELECT userID, 'ESSENTIAL', TRUE, CURRENT_TIMESTAMP 
+SELECT user_id, 'ESSENTIAL', TRUE, CURRENT_TIMESTAMP 
 FROM users 
 WHERE NOT EXISTS (
     SELECT 1 FROM user_consent 
-    WHERE user_consent.user_id = users.userID 
+    WHERE user_consent.user_id = users.user_id 
     AND user_consent.consent_type = 'ESSENTIAL'
 );
 
