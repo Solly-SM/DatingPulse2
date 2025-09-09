@@ -17,10 +17,10 @@ import java.util.function.Function;
 @Slf4j
 public class JwtUtil {
     
-    @Value("${jwt.secret:datingpulse-jwt-secret-key-for-development-change-in-production}")
+    @Value("${app.jwt.secret:datingpulse-jwt-secret-key-for-development-change-in-production}")
     private String jwtSecret;
     
-    @Value("${jwt.expiration:86400000}") // 24 hours in milliseconds
+    @Value("${app.jwt.expiration:86400000}") // 24 hours in milliseconds
     private Long jwtExpiration;
     
     private SecretKey getSigningKey() {
