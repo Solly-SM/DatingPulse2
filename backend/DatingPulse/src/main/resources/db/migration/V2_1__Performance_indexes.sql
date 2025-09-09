@@ -3,20 +3,20 @@
 
 -- User search and filtering indexes
 CREATE INDEX IF NOT EXISTS idx_users_status_created ON users(status, created_at);
-CREATE INDEX IF NOT EXISTS idx_users_role_status ON users(role, status);
-CREATE INDEX IF NOT EXISTS idx_users_verified_status ON users(is_verified, status);
+-- Skip idx_users_role_status as it already exists in V1 migration
+CREATE INDEX IF NOT EXISTS idx_users_email_verified_status ON users(email_verified, status);
 
 -- Session performance indexes  
 CREATE INDEX IF NOT EXISTS idx_sessions_user_active_expires ON sessions(user_id, is_active, expires_at);
 CREATE INDEX IF NOT EXISTS idx_sessions_token_active ON sessions(session_token, is_active);
 
--- Report performance indexes
-CREATE INDEX IF NOT EXISTS idx_reports_status_created ON reports(status, created_at);
-CREATE INDEX IF NOT EXISTS idx_reports_reporter_created ON reports(reporter_id, created_at);
+-- Report performance indexes (using correct column name: reported_at)
+CREATE INDEX IF NOT EXISTS idx_reports_status_reported ON reports(status, reported_at);
+CREATE INDEX IF NOT EXISTS idx_reports_reporter_reported ON reports(reporter_id, reported_at);
 
--- Photo performance indexes
+-- Photo performance indexes (using correct column name: uploaded_at)
 CREATE INDEX IF NOT EXISTS idx_photos_user_status ON photos(user_id, status);
-CREATE INDEX IF NOT EXISTS idx_photos_status_created ON photos(status, created_at);
+CREATE INDEX IF NOT EXISTS idx_photos_status_uploaded ON photos(status, uploaded_at);
 
 -- Message performance indexes
 CREATE INDEX IF NOT EXISTS idx_messages_conversation_created ON messages(conversation_id, sent_at DESC);
