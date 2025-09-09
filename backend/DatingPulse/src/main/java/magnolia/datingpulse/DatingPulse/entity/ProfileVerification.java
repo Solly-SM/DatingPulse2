@@ -52,7 +52,7 @@ public class ProfileVerification {
     private String documentURL;
 
     @ManyToOne
-    @JoinColumn(name = "reviewerID")
+    @JoinColumn(name = "reviewer_id")
     private User reviewer; // Optional: Admin/staff
 
     @Column(length = 1000)

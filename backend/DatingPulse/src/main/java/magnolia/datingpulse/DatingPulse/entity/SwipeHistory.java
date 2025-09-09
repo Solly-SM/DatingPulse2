@@ -43,7 +43,7 @@ public class SwipeHistory {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "deviceID", nullable = false)
+    @JoinColumn(name = "device_id", nullable = false)
     @NotNull(message = "Device is required")
     private Device device;
 
@@ -53,6 +53,6 @@ public class SwipeHistory {
     private String appVersion;
 
     @ManyToOne
-    @JoinColumn(name = "sessionID")
+    @JoinColumn(name = "session_id")
     private Session session;
 }
