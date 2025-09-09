@@ -13,9 +13,8 @@ import java.time.LocalDateTime;
 @Builder
 public class Session {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "session_id")
-    private Long sessionID;
+    private String sessionID; // Changed to String to match schema and tests
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
