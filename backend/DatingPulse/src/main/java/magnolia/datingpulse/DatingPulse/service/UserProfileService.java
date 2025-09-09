@@ -99,7 +99,7 @@ public class UserProfileService {
 
     @Transactional(readOnly = true)
     public List<UserProfileDTO> getProfilesByCountry(String country) {
-        List<UserProfile> profiles = userProfileRepository.findByLocationCountry(country);
+        List<UserProfile> profiles = userProfileRepository.findByCountry(country);
         return profiles.stream().map(userProfileMapper::toDTO).collect(Collectors.toList());
     }
 
