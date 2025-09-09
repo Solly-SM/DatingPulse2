@@ -7,7 +7,6 @@ import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,8 +37,6 @@ class AdminValidationTest {
         Admin admin = Admin.builder()
                 .user(testUser)
                 .permissions(new String[]{"READ", "WRITE"})
-                .isActive(true)
-                .createdAt(LocalDateTime.now())
                 .build();
 
         Set<ConstraintViolation<Admin>> violations = validator.validate(admin);
@@ -51,7 +48,6 @@ class AdminValidationTest {
         Admin admin = Admin.builder()
                 .user(null)
                 .permissions(new String[]{"READ"})
-                .isActive(true)
                 .build();
 
         Set<ConstraintViolation<Admin>> violations = validator.validate(admin);
@@ -66,7 +62,6 @@ class AdminValidationTest {
         Admin admin = Admin.builder()
                 .user(testUser)
                 .permissions(new String[]{})
-                .isActive(true)
                 .build();
 
         Set<ConstraintViolation<Admin>> violations = validator.validate(admin);
@@ -76,7 +71,6 @@ class AdminValidationTest {
         admin = Admin.builder()
                 .user(testUser)
                 .permissions(null)
-                .isActive(true)
                 .build();
 
         violations = validator.validate(admin);
@@ -84,35 +78,10 @@ class AdminValidationTest {
     }
 
     @Test
-    void testActiveStatus() {
-        // Test with isActive = false
-        Admin admin = Admin.builder()
-                .user(testUser)
-                .permissions(new String[]{"READ", "WRITE"})
-                .isActive(false)
-                .build();
-
-        Set<ConstraintViolation<Admin>> violations = validator.validate(admin);
-        assertTrue(violations.isEmpty(), "Inactive admin should be valid");
-        
-        // Test with isActive = null (should use default true)
-        admin = Admin.builder()
-                .user(testUser)
-                .permissions(new String[]{"READ", "WRITE"})
-                .isActive(null)
-                .build();
-
-        violations = validator.validate(admin);
-        assertTrue(violations.isEmpty(), "Null isActive should be valid");
-    }
-
-    @Test
     void testAdminCreationFields() {
         Admin admin = Admin.builder()
                 .user(testUser)
                 .permissions(new String[]{"READ", "WRITE", "DELETE"})
-                .isActive(true)
-                .createdAt(LocalDateTime.now())
                 .build();
 
         Set<ConstraintViolation<Admin>> violations = validator.validate(admin);

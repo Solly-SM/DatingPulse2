@@ -14,7 +14,5 @@ public interface AdminMapper {
     // For DTO→entity: set user and permissions in service
     @Mapping(target = "permissions", ignore = true)
     @Mapping(target = "user", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "isActive", ignore = true)
     Admin toEntity(AdminDTO dto);
 }
