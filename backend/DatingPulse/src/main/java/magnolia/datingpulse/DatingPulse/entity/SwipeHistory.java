@@ -18,12 +18,12 @@ public class SwipeHistory {
     private Long swipeID;
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "User is required")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "targetUserID", nullable = false)
+    @JoinColumn(name = "target_user_id", nullable = false)
     @NotNull(message = "Target user is required")
     private User targetUser;
 
