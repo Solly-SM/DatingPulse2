@@ -41,6 +41,13 @@ public class Notification {
     @NotBlank(message = "Content is required")
     @Size(max = 1000, message = "Content must not exceed 1000 characters")
     private String content; // Notification content/message
+    
+    @Column(columnDefinition = "TEXT")
+    @Size(max = 1000, message = "Message must not exceed 1000 characters")
+    private String message; // Legacy message field for backwards compatibility
+    
+    @Column(columnDefinition = "JSONB")
+    private String data; // Additional notification data as JSON
 
     @Pattern(regexp = "^(LOW|MEDIUM|HIGH|CRITICAL)$", 
              message = "Priority must be LOW, MEDIUM, HIGH, or CRITICAL")
@@ -54,4 +61,7 @@ public class Notification {
     @Column(nullable = false)
     @NotNull(message = "Created timestamp is required")
     private LocalDateTime createdAt;
+    
+    @Column(name = "read_at")
+    private LocalDateTime readAt; // Added to match database schema
 }
