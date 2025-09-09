@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "messages", indexes = {
-    @Index(name = "idx_conversation_sent_at", columnList = "conversationID, sentAt"),
-    @Index(name = "idx_sender_sent_at", columnList = "senderID, sentAt"),
-    @Index(name = "idx_receiver_sent_at", columnList = "receiverID, sentAt")
+    @Index(name = "idx_conversation_sent_at", columnList = "conversation_id, sent_at"),
+    @Index(name = "idx_sender_sent_at", columnList = "sender_id, sent_at"),
+    @Index(name = "idx_receiver_sent_at", columnList = "receiver_id, sent_at")
 })
 @Data
 @NoArgsConstructor
@@ -23,17 +23,17 @@ public class Message {
     private Long messageID;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "conversationID", nullable = false)
+    @JoinColumn(name = "conversation_id", nullable = false)
     @NotNull(message = "Conversation is required")
     private Conversation conversation;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "senderID", nullable = false)
+    @JoinColumn(name = "sender_id", nullable = false)
     @NotNull(message = "Sender is required")
     private User sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiverID", nullable = false)
+    @JoinColumn(name = "receiver_id", nullable = false)
     @NotNull(message = "Receiver is required")
     private User receiver;
 
@@ -42,14 +42,20 @@ public class Message {
     @Size(max = 5000, message = "Message content must not exceed 5000 characters")
     private String content; // Message text or media link
 
-    @Column(nullable = false, length = 20)
+    @Column(name = "message_type", nullable = false, length = 20)
     @NotBlank(message = "Message type is required")
-    @Pattern(regexp = "^(TEXT|IMAGE|AUDIO|VIDEO|SYSTEM|FILE)$", message = "Message type must be TEXT, IMAGE, AUDIO, VIDEO, SYSTEM, or FILE")
-    private String type;
+    @Pattern(regexp = "^(TEXT|IMAGE|AUDIO|VIDEO|LOCATION|EMOJI)$", message = "Message type must be TEXT, IMAGE, AUDIO, VIDEO, LOCATION, or EMOJI")
+    private String messageType;
 
-    @Column(nullable = false)
+    @Column(name = "sent_at", nullable = false)
     @CreationTimestamp
     private LocalDateTime sentAt;
+
+    @Column(name = "delivered_at")
+    private LocalDateTime deliveredAt;
+
+    @Column(name = "read_at")
+    private LocalDateTime readAt;
 
     @Column(nullable = false, length = 20)
     @NotBlank(message = "Message status is required")
@@ -75,4 +81,14 @@ public class Message {
     @NotNull(message = "Deleted for receiver status is required")
     @Builder.Default
     private Boolean deletedForReceiver = false;
+
+    // Getter method for backwards compatibility with service layer
+    public String getType() {
+        return messageType;
+    }
+    
+    // Setter method for backwards compatibility with service layer  
+    public void setType(String type) {
+        this.messageType = type;
+    }
 }

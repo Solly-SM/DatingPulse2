@@ -17,12 +17,12 @@ public class Grade {
     private Long gradeID;
 
     @ManyToOne
-    @JoinColumn(name = "userGivenID", nullable = false)
+    @JoinColumn(name = "user_given_id", nullable = false)
     @NotNull(message = "User who gave the grade is required")
     private User userGiven;
 
     @ManyToOne
-    @JoinColumn(name = "userReceivedID", nullable = false)
+    @JoinColumn(name = "user_received_id", nullable = false)
     @NotNull(message = "User who received the grade is required")
     private User userReceived;
 
