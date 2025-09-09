@@ -57,16 +57,31 @@ public class Message {
     @Column(name = "read_at")
     private LocalDateTime readAt;
 
-    @Column(name = "is_deleted", nullable = false)
-    @NotNull(message = "Deleted status is required")
-    @Builder.Default
-    private Boolean isDeleted = false; // Changed to match schema
-    
-    @Column(name = "status", length = 20)
+    @Column(name = "status", length = 20, nullable = false)
     @NotBlank(message = "Status is required")
     @Pattern(regexp = "^(SENT|DELIVERED|READ|FAILED)$", message = "Status must be SENT, DELIVERED, READ, or FAILED")
     @Builder.Default
     private String status = "SENT"; // Message delivery status
+
+    @Column(name = "is_edited", nullable = false)
+    @NotNull(message = "Edited status is required")
+    @Builder.Default
+    private Boolean isEdited = false; // Whether the message has been edited
+
+    @Column(name = "is_read", nullable = false)
+    @NotNull(message = "Read status is required")
+    @Builder.Default
+    private Boolean isRead = false; // Whether the message has been read
+
+    @Column(name = "deleted_for_sender", nullable = false)
+    @NotNull(message = "Deleted for sender status is required")
+    @Builder.Default
+    private Boolean deletedForSender = false; // Whether the message is deleted for the sender
+
+    @Column(name = "deleted_for_receiver", nullable = false)
+    @NotNull(message = "Deleted for receiver status is required")
+    @Builder.Default
+    private Boolean deletedForReceiver = false; // Whether the message is deleted for the receiver
 
     // Getter method for backwards compatibility with service layer
     public String getType() {
