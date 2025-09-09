@@ -3,7 +3,6 @@ package magnolia.datingpulse.DatingPulse.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "admins")
@@ -24,12 +23,5 @@ public class Admin {
 
     @Column
     private String[] permissions; // Using array to match DB TEXT[]
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "is_active")
-    @Builder.Default
-    private Boolean isActive = true;
 
 }
