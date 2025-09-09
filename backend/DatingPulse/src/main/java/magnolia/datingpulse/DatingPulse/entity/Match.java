@@ -33,7 +33,8 @@ public class Match {
 
     @NotBlank(message = "Match source is required")
     @Size(max = 50, message = "Match source must not exceed 50 characters")
-    @Pattern(regexp = "^(SWIPE|ALGORITHM|MANUAL|SUPER_LIKE)$", message = "Match source must be SWIPE, ALGORITHM, MANUAL, or SUPER_LIKE")
+    @Pattern(regexp = "^(SWIPE|ALGORITHM|MANUAL|SUPER_LIKE|MUTUAL_LIKE)$", message = "Match source must be SWIPE, ALGORITHM, MANUAL, SUPER_LIKE, or MUTUAL_LIKE")
+    @Column(name = "match_source")
     private String matchSource; // How the match occurred (e.g., swipe, algorithm, etc.)
 
     @NotNull(message = "Active status is required")

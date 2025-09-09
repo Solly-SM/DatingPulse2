@@ -60,7 +60,7 @@ class MatchValidationTest {
 
     @Test
     void testValidMatchSources() {
-        String[] validSources = {"SWIPE", "ALGORITHM", "MANUAL", "SUPER_LIKE"};
+        String[] validSources = {"SWIPE", "ALGORITHM", "MANUAL", "SUPER_LIKE", "MUTUAL_LIKE"};
         
         for (String source : validSources) {
             Match match = Match.builder()
@@ -90,7 +90,7 @@ class MatchValidationTest {
         Set<ConstraintViolation<Match>> violations = validator.validate(match);
         assertTrue(violations.stream().anyMatch(v -> 
                 v.getPropertyPath().toString().equals("matchSource") && 
-                v.getMessage().contains("must be SWIPE")),
+                v.getMessage().contains("must be SWIPE, ALGORITHM, MANUAL, SUPER_LIKE, or MUTUAL_LIKE")),
                 "Invalid match source should be rejected");
     }
 
