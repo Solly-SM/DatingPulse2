@@ -48,6 +48,11 @@ ALTER TABLE admin_permissions ADD CONSTRAINT admin_permissions_permission_id_fke
 CREATE INDEX idx_admin_permissions_admin_id ON admin_permissions(admin_id);
 CREATE INDEX idx_admin_permissions_permission_id ON admin_permissions(permission_id);
 
+-- Add missing columns to conversations table to match entity expectations
+ALTER TABLE conversations 
+ADD COLUMN deleted_for_user1 BOOLEAN DEFAULT FALSE,
+ADD COLUMN deleted_for_user2 BOOLEAN DEFAULT FALSE;
+
 -- Add comments for documentation
 COMMENT ON TABLE admin_permissions IS 'Join table for many-to-many relationship between admins and permissions';
 COMMENT ON COLUMN admins.role IS 'Admin role: ADMIN or SUPER_ADMIN';
