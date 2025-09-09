@@ -38,6 +38,7 @@ public class Match {
 
     @NotNull(message = "Active status is required")
     @Builder.Default
+    @Column(name = "is_active")
     private Boolean isActive = true; // For unmatched/blocking logic
 
     @Column(name = "expires_at")
