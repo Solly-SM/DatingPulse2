@@ -19,28 +19,29 @@ public class Device {
     private Long deviceID;
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "User is required")
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "device_type", nullable = false)
     @NotBlank(message = "Device type is required")
     @Pattern(regexp = "^(ANDROID|IOS|WEB|DESKTOP)$", 
              message = "Type must be one of: ANDROID, IOS, WEB, DESKTOP")
     private String type; // web, android, ios, desktop
 
-    @Column
-    @Size(max = 255, message = "Push token must not exceed 255 characters")
+    @Column(name = "device_token", nullable = false)
+    @NotBlank(message = "Push token is required")
+    @Size(max = 500, message = "Push token must not exceed 500 characters")
     private String pushToken; // For push notifications
 
-    @Column
+    @Column(name = "device_info")
     @Size(max = 500, message = "Device info must not exceed 500 characters")
     private String deviceInfo; // User agent, browser version, etc.
 
-    @Column
+    @Column(name = "last_used_at")
     private LocalDateTime lastSeen;
 
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     @NotNull(message = "Created date is required")
     private LocalDateTime createdAt;
 }
