@@ -60,11 +60,12 @@ public class User {
     private LocalDateTime lastLogin;
 
     @Column(nullable = false)
-    @NotNull(message = "Verification status is required")
+    @NotNull(message = "Email verification status is required")
     @Builder.Default
     private Boolean isVerified = false;
 
-    @Column(nullable = false)
+    // Note: login_attempt field doesn't exist in current schema - marking as transient
+    @Transient
     @NotNull(message = "Login attempt count is required")
     @Min(value = 0, message = "Login attempts cannot be negative")
     @Max(value = 10, message = "Maximum login attempts exceeded")
