@@ -39,4 +39,9 @@ public class Conversation {
     @NotNull(message = "Deleted status for user2 is required")
     @Builder.Default
     private Boolean deletedForUser2 = false; // If user2 deleted the convo
+
+    @Column(name = "is_active", nullable = false)
+    @NotNull(message = "Active status is required")
+    @Builder.Default
+    private Boolean isActive = true; // Match schema column
 }

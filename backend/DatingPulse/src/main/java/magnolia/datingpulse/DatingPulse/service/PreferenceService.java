@@ -95,17 +95,21 @@ public class PreferenceService {
 
         // Update fields if provided
         if (preferenceDTO.getGenderPreference() != null) {
-            existing.setGenderPreference(preferenceDTO.getGenderPreference());
+            existing.setPreferredGender(preferenceDTO.getGenderPreference()); // Changed to match entity field
         }
         if (preferenceDTO.getAgeMin() != null) {
-            existing.setAgeMin(preferenceDTO.getAgeMin());
+            existing.setMinAge(preferenceDTO.getAgeMin()); // Changed to match entity field
         }
         if (preferenceDTO.getAgeMax() != null) {
-            existing.setAgeMax(preferenceDTO.getAgeMax());
+            existing.setMaxAge(preferenceDTO.getAgeMax()); // Changed to match entity field
         }
         if (preferenceDTO.getMaxDistance() != null) {
             existing.setMaxDistance(preferenceDTO.getMaxDistance());
         }
+        // Note: Following fields don't exist in schema - they were marked as @Transient in entity
+        // The service may need to be updated if these fields are added to schema later
+        /*
+        // All the following fields are marked as @Transient in entity since they don't exist in schema
         if (preferenceDTO.getRelationshipType() != null) {
             existing.setRelationshipType(preferenceDTO.getRelationshipType());
         }
@@ -169,6 +173,7 @@ public class PreferenceService {
         if (preferenceDTO.getFamilyPlans() != null) {
             existing.setFamilyPlans(preferenceDTO.getFamilyPlans());
         }
+        */
 
         Preference updated = preferenceRepository.save(existing);
         return preferenceMapper.toDTO(updated);

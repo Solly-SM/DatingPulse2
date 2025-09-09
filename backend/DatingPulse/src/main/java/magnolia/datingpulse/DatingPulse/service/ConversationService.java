@@ -218,7 +218,7 @@ public class ConversationService {
             return false;
         }
 
-        // Check if the last message is read by this user
-        return !lastMessage.getIsRead();
+        // Check if the last message is read by this user (using read_at timestamp)
+        return lastMessage.getReadAt() == null;
     }
 }

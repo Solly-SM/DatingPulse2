@@ -150,8 +150,8 @@ public class CompatibilityCalculator {
             return false;
         }
 
-        Integer minAge = preference.getAgeMin();
-        Integer maxAge = preference.getAgeMax();
+        Integer minAge = preference.getMinAge();
+        Integer maxAge = preference.getMaxAge();
 
         if (minAge == null && maxAge == null) {
             return true; // No age restrictions
@@ -176,7 +176,7 @@ public class CompatibilityCalculator {
             return false;
         }
 
-        String genderPreference = preference.getGenderPreference();
+        String genderPreference = preference.getPreferredGender();
         if (genderPreference == null || genderPreference.equalsIgnoreCase("ANY")) {
             return true; // No gender restrictions
         }

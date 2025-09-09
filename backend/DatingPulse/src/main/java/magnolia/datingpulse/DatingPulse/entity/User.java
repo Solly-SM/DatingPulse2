@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long userID;
 
     @Column(nullable = false, unique = true, length = 50)
@@ -49,45 +50,57 @@ public class User {
     @Pattern(regexp = "^(ACTIVE|SUSPENDED|BANNED)$", message = "Status must be ACTIVE, SUSPENDED, or BANNED")
     private String status; // active, suspended, banned
 
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
-    @Column(nullable = false)
+    @Column(name = "email_verified", nullable = false)
     @NotNull(message = "Email verification status is required")
     @Builder.Default
-    private Boolean isVerified = false;
+    private Boolean emailVerified = false;
 
-    // Note: login_attempt field doesn't exist in current schema - marking as transient
-    @Transient
-    @NotNull(message = "Login attempt count is required")
-    @Min(value = 0, message = "Login attempts cannot be negative")
-    @Max(value = 10, message = "Maximum login attempts exceeded")
+    @Column(name = "phone_verified", nullable = false)
+    @NotNull(message = "Phone verification status is required")
     @Builder.Default
-    private Integer loginAttempt = 0;
+    private Boolean phoneVerified = false;
 
-    // GDPR Compliance fields
-    @Column(name = "deletion_requested_at")
-    private LocalDateTime deletionRequestedAt;
+    @Column(name = "password_reset_token", length = 255)
+    private String passwordResetToken;
 
-    @Column(name = "deletion_completed_at")
-    private LocalDateTime deletionCompletedAt;
+    @Column(name = "password_reset_expires")
+    private LocalDateTime passwordResetExpires;
 
-    @Column(name = "deletion_reason", length = 500)
-    private String deletionReason;
+    // Note: login_attempt field doesn't exist in current schema - removing
+    // @Transient
+    // @NotNull(message = "Login attempt count is required")
+    // @Min(value = 0, message = "Login attempts cannot be negative")
+    // @Max(value = 10, message = "Maximum login attempts exceeded")
+    // @Builder.Default
+    // private Integer loginAttempt = 0;
 
-    @Column(name = "account_status", length = 50)
-    @Builder.Default
-    private String accountStatus = "ACTIVE"; // ACTIVE, DELETION_PENDING, DELETED
+    // Note: GDPR fields don't exist in current schema - removing for now
+    // @Column(name = "deletion_requested_at")
+    // private LocalDateTime deletionRequestedAt;
 
-    @Column(name = "last_login_at")
-    private LocalDateTime lastLoginAt;
+    // @Column(name = "deletion_completed_at")
+    // private LocalDateTime deletionCompletedAt;
+
+    // @Column(name = "deletion_reason", length = 500)
+    // private String deletionReason;
+
+    // @Column(name = "account_status", length = 50)
+    // @Builder.Default
+    // private String accountStatus = "ACTIVE"; // ACTIVE, DELETION_PENDING, DELETED
+
+    // @Column(name = "last_login_at")
+    // private LocalDateTime lastLoginAt;
 
     // Helper methods for entity access
     public Long getId() {

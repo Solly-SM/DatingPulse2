@@ -34,8 +34,7 @@ class ProjectValidationIntegrationTest {
                 .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
                 .role("USER")
                 .status("ACTIVE")
-                .isVerified(false)
-                .loginAttempt(0)
+                .emailVerified(false).phoneVerified(false)
                 .build();
                 
         testUser2 = User.builder()
@@ -44,8 +43,7 @@ class ProjectValidationIntegrationTest {
                 .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
                 .role("USER")
                 .status("ACTIVE")
-                .isVerified(false)
-                .loginAttempt(0)
+                .emailVerified(false).phoneVerified(false)
                 .build();
     }
 
@@ -131,8 +129,7 @@ class ProjectValidationIntegrationTest {
                 .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
                 .role("USER")
                 .status("ACTIVE")
-                .isVerified(false)
-                .loginAttempt(0)
+                .emailVerified(false).phoneVerified(false)
                 .build();
         
         Set<ConstraintViolation<User>> violations = validator.validate(invalidUser);
@@ -231,8 +228,7 @@ class ProjectValidationIntegrationTest {
                 .phone("123") // Invalid format
                 .role("USER")
                 .status("ACTIVE")
-                .isVerified(false)
-                .loginAttempt(0)
+                .emailVerified(false).phoneVerified(false)
                 .build();
         
         Set<ConstraintViolation<User>> violations = validator.validate(invalidPhoneUser);
@@ -251,8 +247,7 @@ class ProjectValidationIntegrationTest {
                 .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
                 .role("USER")
                 .status("ACTIVE")
-                .isVerified(false)
-                .loginAttempt(15) // Exceeds max value
+                .emailVerified(false).phoneVerified(false)
                 .build();
         
         Set<ConstraintViolation<User>> violations = validator.validate(invalidLoginUser);
@@ -323,8 +318,7 @@ class ProjectValidationIntegrationTest {
                 .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") // Valid BCrypt hash
                 .role("USER")
                 .status("ACTIVE")
-                .isVerified(false)
-                .loginAttempt(0)
+                .emailVerified(false).phoneVerified(false)
                 .build();
 
         Set<ConstraintViolation<User>> userViolations = validator.validate(workflowUser);

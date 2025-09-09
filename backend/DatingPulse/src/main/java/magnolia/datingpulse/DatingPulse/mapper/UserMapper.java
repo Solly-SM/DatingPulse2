@@ -11,7 +11,7 @@ public interface UserMapper {
     
     // Convert DTO to Entity - ignore fields that should be set separately or auto-generated
     @Mapping(target = "password", ignore = true) // Password should be set separately after hashing
-    @Mapping(target = "loginAttempt", ignore = true) // Security field, set to default
+    // @Mapping(target = "loginAttempt", ignore = true) // Field removed from entity
     @Mapping(target = "createdAt", ignore = true) // Auto-generated
     @Mapping(target = "updatedAt", ignore = true) // Auto-generated
     User toEntity(UserDTO dto);

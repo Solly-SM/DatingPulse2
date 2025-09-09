@@ -10,5 +10,5 @@ import java.util.List;
 public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> findByConversationOrderBySentAtAsc(Conversation conversation);
     List<Message> findBySender(User sender);
-    List<Message> findByReceiverAndIsReadFalse(User receiver);
+    List<Message> findByReceiverAndReadAtIsNull(User receiver); // Changed to use read_at timestamp
 }

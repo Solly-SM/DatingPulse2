@@ -48,12 +48,15 @@ public class UserService {
         if (user.getStatus() == null) {
             user.setStatus("ACTIVE");
         }
-        if (user.getIsVerified() == null) {
-            user.setIsVerified(false);
+        if (user.getEmailVerified() == null) {
+            user.setEmailVerified(false);
         }
-        if (user.getLoginAttempt() == null) {
-            user.setLoginAttempt(0);
+        if (user.getPhoneVerified() == null) {
+            user.setPhoneVerified(false);
         }
+        // if (user.getLoginAttempt() == null) {
+        //     user.setLoginAttempt(0);
+        // }
 
         // Save and map back to DTO
         User saved = userRepository.save(user);
@@ -137,8 +140,10 @@ public class UserService {
         if (userDTO.getStatus() != null) {
             existing.setStatus(userDTO.getStatus());
         }
+        // Note: UserDTO still has isVerified for backwards compatibility, 
+        // but entity now has emailVerified and phoneVerified
         if (userDTO.getIsVerified() != null) {
-            existing.setIsVerified(userDTO.getIsVerified());
+            existing.setEmailVerified(userDTO.getIsVerified());
         }
 
         User updated = userRepository.save(existing);
@@ -151,7 +156,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
         
         user.setPassword(passwordEncoder.encode(newRawPassword));
-        user.setLoginAttempt(0); // Reset login attempts on password change
+        // user.setLoginAttempt(0); // Field removed from entity
         userRepository.save(user);
     }
 
@@ -161,17 +166,18 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
         
         user.setLastLogin(LocalDateTime.now());
-        user.setLoginAttempt(0); // Reset on successful login
+        // user.setLoginAttempt(0); // Field removed from entity
         userRepository.save(user);
     }
 
     @Transactional
     public void incrementLoginAttempts(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
-        
-        user.setLoginAttempt(user.getLoginAttempt() + 1);
-        userRepository.save(user);
+        // Login attempts field removed from entity - this method is deprecated
+        // User user = userRepository.findById(userId)
+        //         .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+        // 
+        // user.setLoginAttempt(user.getLoginAttempt() + 1);
+        // userRepository.save(user);
     }
 
     @Transactional
@@ -206,7 +212,8 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
         
-        user.setIsVerified(true);
+        user.setEmailVerified(true);
+        user.setPhoneVerified(true); // Assuming verification means both email and phone are verified
         userRepository.save(user);
     }
 
