@@ -78,19 +78,20 @@ class DeviceValidationTest {
         Set<ConstraintViolation<Device>> violations = validator.validate(device);
         assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("pushToken")));
 
-        // Push token too long (over 255 characters)
-        String longToken = "A".repeat(256);
+        // Push token too long (over 500 characters)
+        String longToken = "A".repeat(501);
         device = createDeviceWithPushToken(longToken);
         violations = validator.validate(device);
         assertTrue(violations.stream().anyMatch(v -> 
                 v.getPropertyPath().toString().equals("pushToken") && 
-                v.getMessage().contains("255 characters")),
-                "Push token over 255 characters should be invalid");
+                v.getMessage().contains("500 characters")),
+                "Push token over 500 characters should be invalid");
 
-        // Null push token should be valid (optional field)
+        // Null push token should be invalid (required field)
         device = createDeviceWithPushToken(null);
         violations = validator.validate(device);
-        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("pushToken")));
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("pushToken")),
+                "Push token is required");
     }
 
     @Test
@@ -120,6 +121,7 @@ class DeviceValidationTest {
         Device device = Device.builder()
                 .user(null)
                 .type(null)
+                .pushToken(null)
                 .createdAt(null)
                 .build();
 
@@ -127,6 +129,7 @@ class DeviceValidationTest {
         
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("user")));
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("type")));
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("pushToken")));
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("createdAt")));
     }
 
@@ -134,6 +137,7 @@ class DeviceValidationTest {
         return Device.builder()
                 .user(testUser)
                 .type(type)
+                .pushToken("test-token-123")
                 .createdAt(LocalDateTime.now())
                 .build();
     }
@@ -151,6 +155,7 @@ class DeviceValidationTest {
         return Device.builder()
                 .user(testUser)
                 .type("ANDROID")
+                .pushToken("test-token-123")
                 .deviceInfo(deviceInfo)
                 .createdAt(LocalDateTime.now())
                 .build();
