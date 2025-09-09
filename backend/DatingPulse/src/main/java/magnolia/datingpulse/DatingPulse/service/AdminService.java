@@ -42,8 +42,10 @@ public class AdminService {
             throw new IllegalArgumentException("Admin record already exists for user ID: " + adminDTO.getUserID());
         }
 
-        // Validate role - role field removed from Admin entity
-        // Role validation can be done via permissions array
+        // Validate role
+        if (!isValidAdminRole(adminDTO.getRole())) {
+            throw new IllegalArgumentException("Invalid admin role: " + adminDTO.getRole());
+        }
 
         // Map DTO to entity
         Admin admin = adminMapper.toEntity(adminDTO);
@@ -51,9 +53,12 @@ public class AdminService {
 
         // Set permissions if provided
         if (adminDTO.getPermissionIDs() != null && !adminDTO.getPermissionIDs().isEmpty()) {
-            String[] permissions = adminDTO.getPermissionIDs().stream()
-                    .map(Object::toString)
-                    .toArray(String[]::new);
+            Set<Permission> permissions = new HashSet<>();
+            for (Long permissionId : adminDTO.getPermissionIDs()) {
+                Permission permission = permissionRepository.findById(permissionId)
+                        .orElseThrow(() -> new IllegalArgumentException("Permission not found with ID: " + permissionId));
+                permissions.add(permission);
+            }
             admin.setPermissions(permissions);
         }
 
@@ -112,13 +117,18 @@ public class AdminService {
                 .orElseThrow(() -> new IllegalArgumentException("Admin not found with ID: " + adminId));
 
         // Update role if provided and valid
-        // Role field removed from Admin entity - role is managed via permissions
+        if (adminDTO.getRole() != null && isValidAdminRole(adminDTO.getRole())) {
+            existing.setRole(adminDTO.getRole());
+        }
 
         // Update permissions if provided
         if (adminDTO.getPermissionIDs() != null) {
-            String[] permissions = adminDTO.getPermissionIDs().stream()
-                    .map(Object::toString)
-                    .toArray(String[]::new);
+            Set<Permission> permissions = new HashSet<>();
+            for (Long permissionId : adminDTO.getPermissionIDs()) {
+                Permission permission = permissionRepository.findById(permissionId)
+                        .orElseThrow(() -> new IllegalArgumentException("Permission not found with ID: " + permissionId));
+                permissions.add(permission);
+            }
             existing.setPermissions(permissions);
         }
 
@@ -134,20 +144,11 @@ public class AdminService {
         Permission permission = permissionRepository.findById(permissionId)
                 .orElseThrow(() -> new IllegalArgumentException("Permission not found with ID: " + permissionId));
 
-        String[] currentPermissions = admin.getPermissions();
-        String permissionStr = permissionId.toString();
-        
-        if (currentPermissions == null) {
-            admin.setPermissions(new String[]{permissionStr});
-        } else {
-            // Check if permission already exists
-            boolean exists = java.util.Arrays.asList(currentPermissions).contains(permissionStr);
-            if (!exists) {
-                String[] newPermissions = java.util.Arrays.copyOf(currentPermissions, currentPermissions.length + 1);
-                newPermissions[newPermissions.length - 1] = permissionStr;
-                admin.setPermissions(newPermissions);
-            }
+        if (admin.getPermissions() == null) {
+            admin.setPermissions(new HashSet<>());
         }
+        
+        admin.getPermissions().add(permission);
         adminRepository.save(admin);
     }
 
@@ -159,14 +160,8 @@ public class AdminService {
         Permission permission = permissionRepository.findById(permissionId)
                 .orElseThrow(() -> new IllegalArgumentException("Permission not found with ID: " + permissionId));
 
-        String[] currentPermissions = admin.getPermissions();
-        String permissionStr = permissionId.toString();
-        
-        if (currentPermissions != null) {
-            String[] newPermissions = java.util.Arrays.stream(currentPermissions)
-                    .filter(p -> !p.equals(permissionStr))
-                    .toArray(String[]::new);
-            admin.setPermissions(newPermissions);
+        if (admin.getPermissions() != null) {
+            admin.getPermissions().remove(permission);
             adminRepository.save(admin);
         }
     }
@@ -184,18 +179,12 @@ public class AdminService {
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new IllegalArgumentException("Admin not found with ID: " + adminId));
         
-        if (admin.getPermissions() == null) {
+        if (admin.getPermissions() == null || admin.getPermissions().isEmpty()) {
             return false;
         }
         
-        // Look up permission by name to get ID
-        Permission permission = permissionRepository.findByName(permissionName).orElse(null);
-        if (permission == null) {
-            return false;
-        }
-        
-        String permissionId = permission.getId().toString();
-        return java.util.Arrays.asList(admin.getPermissions()).contains(permissionId);
+        return admin.getPermissions().stream()
+                .anyMatch(permission -> permission.getName().equals(permissionName));
     }
 
     @Transactional(readOnly = true)
@@ -207,6 +196,6 @@ public class AdminService {
     }
 
     private boolean isValidAdminRole(String role) {
-        return role != null && (role.equals("superAdmin") || role.equals("moderator"));
+        return role != null && (role.equals("ADMIN") || role.equals("SUPER_ADMIN"));
     }
 }
