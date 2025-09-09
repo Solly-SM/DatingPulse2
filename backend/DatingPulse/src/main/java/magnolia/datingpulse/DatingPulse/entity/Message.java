@@ -44,7 +44,7 @@ public class Message {
 
     @Column(name = "message_type", nullable = false, length = 20)
     @NotBlank(message = "Message type is required")
-    @Pattern(regexp = "^(TEXT|IMAGE|AUDIO|VIDEO|LOCATION|EMOJI)$", message = "Message type must be TEXT, IMAGE, AUDIO, VIDEO, LOCATION, or EMOJI")
+    @Pattern(regexp = "^(TEXT|IMAGE|AUDIO|VIDEO|LOCATION|EMOJI|SYSTEM)$", message = "Message type must be TEXT, IMAGE, AUDIO, VIDEO, LOCATION, EMOJI, or SYSTEM")
     private String messageType;
 
     @Column(name = "sent_at", nullable = false)
@@ -60,27 +60,22 @@ public class Message {
     @Column(name = "status", length = 20, nullable = false)
     @NotBlank(message = "Status is required")
     @Pattern(regexp = "^(SENT|DELIVERED|READ|FAILED)$", message = "Status must be SENT, DELIVERED, READ, or FAILED")
-    @Builder.Default
     private String status = "SENT"; // Message delivery status
 
     @Column(name = "is_edited", nullable = false)
     @NotNull(message = "Edited status is required")
-    @Builder.Default
     private Boolean isEdited = false; // Whether the message has been edited
 
     @Column(name = "is_read", nullable = false)
     @NotNull(message = "Read status is required")
-    @Builder.Default
     private Boolean isRead = false; // Whether the message has been read
 
     @Column(name = "deleted_for_sender", nullable = false)
     @NotNull(message = "Deleted for sender status is required")
-    @Builder.Default
     private Boolean deletedForSender = false; // Whether the message is deleted for the sender
 
     @Column(name = "deleted_for_receiver", nullable = false)
     @NotNull(message = "Deleted for receiver status is required")
-    @Builder.Default
     private Boolean deletedForReceiver = false; // Whether the message is deleted for the receiver
 
     // Getter method for backwards compatibility with service layer
