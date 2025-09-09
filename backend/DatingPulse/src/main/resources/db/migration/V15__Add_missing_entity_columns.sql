@@ -25,6 +25,17 @@ ALTER TABLE devices ADD COLUMN device_name VARCHAR(100);
 -- Let's make sure both exist for compatibility
 ALTER TABLE devices ALTER COLUMN device_info TYPE VARCHAR(500);
 
+-- Add missing columns to sessions table
+ALTER TABLE sessions ADD COLUMN device_info VARCHAR(500);
+ALTER TABLE sessions ADD COLUMN revoked_at TIMESTAMP;
+
+-- Add missing columns to messages table  
+ALTER TABLE messages ADD COLUMN status VARCHAR(20) DEFAULT 'SENT';
+
+-- Add check constraint for message status
+ALTER TABLE messages ADD CONSTRAINT chk_message_status 
+    CHECK (status IN ('SENT', 'DELIVERED', 'READ', 'FAILED'));
+
 -- Add comments for clarity
 COMMENT ON COLUMN photos.description IS 'Photo description/caption - mapped to entity description field';
 COMMENT ON COLUMN photos.updated_at IS 'Timestamp when photo was last updated';
@@ -33,3 +44,6 @@ COMMENT ON COLUMN notifications.message IS 'Legacy message field for backwards c
 COMMENT ON COLUMN notifications.data IS 'Additional notification data as JSON';
 COMMENT ON COLUMN notifications.read_at IS 'Timestamp when notification was read';
 COMMENT ON COLUMN devices.device_name IS 'Human readable device name';
+COMMENT ON COLUMN sessions.device_info IS 'Device information for session';
+COMMENT ON COLUMN sessions.revoked_at IS 'Timestamp when session was revoked';
+COMMENT ON COLUMN messages.status IS 'Message delivery status';

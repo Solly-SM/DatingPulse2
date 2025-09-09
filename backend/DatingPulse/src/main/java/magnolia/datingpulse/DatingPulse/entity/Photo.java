@@ -96,4 +96,9 @@ public class Photo {
             }
         };
     }
+    
+    // Override builder() method to return our custom builder
+    public static PhotoBuilder builder() {
+        return customBuilder();
+    }
 }

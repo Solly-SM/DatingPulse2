@@ -44,4 +44,11 @@ public class Session {
 
     @Column(name = "is_active")
     private Boolean isActive = true;
+    
+    @Column(name = "device_info", length = 500)
+    @Size(max = 500, message = "Device info must not exceed 500 characters")
+    private String deviceInfo; // Device information for session
+    
+    @Column(name = "revoked_at")
+    private LocalDateTime revokedAt; // When session was revoked
 }

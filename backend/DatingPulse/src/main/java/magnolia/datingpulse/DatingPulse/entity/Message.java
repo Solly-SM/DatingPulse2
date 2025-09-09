@@ -61,6 +61,12 @@ public class Message {
     @NotNull(message = "Deleted status is required")
     @Builder.Default
     private Boolean isDeleted = false; // Changed to match schema
+    
+    @Column(name = "status", length = 20)
+    @NotBlank(message = "Status is required")
+    @Pattern(regexp = "^(SENT|DELIVERED|READ|FAILED)$", message = "Status must be SENT, DELIVERED, READ, or FAILED")
+    @Builder.Default
+    private String status = "SENT"; // Message delivery status
 
     // Getter method for backwards compatibility with service layer
     public String getType() {
