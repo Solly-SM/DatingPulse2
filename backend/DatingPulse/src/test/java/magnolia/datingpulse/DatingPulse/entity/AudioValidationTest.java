@@ -44,7 +44,7 @@ class AudioValidationTest {
     @Test
     void testValidAudio() {
         Audio audio = Audio.builder()
-                .user(testUser) // Changed from userProfile to user
+                .userProfile(testUserProfile)
                 .url("https://example.com/audio.mp3")
                 .title("Test audio")
                 .visibility(AudioVisibility.PUBLIC) // Changed to enum
@@ -163,7 +163,7 @@ class AudioValidationTest {
     @Test
     void testRequiredFields() {
         Audio audio = Audio.builder()
-                .user(null) // Changed from userProfile to user
+                .userProfile(null)
                 .url(null)
                 .visibility(null)
                 .status(null)
@@ -181,7 +181,7 @@ class AudioValidationTest {
 
     private Audio createAudioWithUrl(String url) {
         return Audio.builder()
-                .user(testUser) // Changed from userProfile to user
+                .userProfile(testUserProfile)
                 .url(url)
                 .visibility(AudioVisibility.PUBLIC) // Changed to enum
                 .status(AudioStatus.APPROVED) // Changed to enum
@@ -191,7 +191,7 @@ class AudioValidationTest {
 
     private Audio createAudioWithTitle(String description) {
         return Audio.builder()
-                .user(testUser) // Changed from userProfile to user
+                .userProfile(testUserProfile)
                 .url("https://example.com/audio.mp3")
                 .title(description)
                 .visibility(AudioVisibility.PUBLIC) // Changed to enum
@@ -202,7 +202,7 @@ class AudioValidationTest {
 
     private Audio createAudioWithDuration(Integer duration) {
         return Audio.builder()
-                .user(testUser) // Changed from userProfile to user
+                .userProfile(testUserProfile)
                 .url("https://example.com/audio.mp3")
                 .visibility(AudioVisibility.PUBLIC) // Changed to enum
                 .status(AudioStatus.APPROVED) // Changed to enum
