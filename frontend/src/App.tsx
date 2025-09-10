@@ -6,7 +6,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
-import Register from './pages/Register';
+import MultiStepRegister from './components/MultiStepRegister';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Discover from './pages/Discover';
@@ -47,7 +47,7 @@ function App() {
           <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Routes>
               <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route path="/register" element={<MultiStepRegister />} />
               <Route path="/" element={
                 <ProtectedRoute>
                   <>

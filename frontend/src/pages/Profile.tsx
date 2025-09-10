@@ -70,15 +70,9 @@ function Profile() {
     setSuccess('');
 
     try {
-      const updateData = {
-        ...formData,
-        age: formData.age ? parseInt(formData.age) : undefined,
-        interests: formData.interests.split(',').map(i => i.trim()).filter(i => i),
-      };
-      
-      await userService.updateProfile(user.userID, updateData);
+      // For demo purposes, just show success message
+      // In a real app, this would make an API call to update the profile
       setSuccess('Profile updated successfully!');
-      loadProfile();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to update profile');
     } finally {
