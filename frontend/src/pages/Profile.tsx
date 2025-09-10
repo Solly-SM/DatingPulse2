@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Typography,
@@ -17,7 +17,7 @@ import { UserProfile } from '../types/User';
 
 function Profile() {
   const { user } = useAuth();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
@@ -30,11 +30,7 @@ function Profile() {
     interests: '',
   });
 
-  useEffect(() => {
-    loadProfile();
-  }, [user]);
-
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     if (!user) return;
     
     try {
@@ -51,7 +47,11 @@ function Profile() {
     } catch (err) {
       console.error('Failed to load profile:', err);
     }
-  };
+  }, [user, setProfile]);
+
+  useEffect(() => {
+    loadProfile();
+  }, [user, loadProfile]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
