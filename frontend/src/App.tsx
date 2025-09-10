@@ -14,6 +14,7 @@ import Matches from './pages/Matches';
 import Messages from './pages/Messages';
 import Chat from './pages/Chat';
 import './App.css';
+import './demo/demoAuth'; // Import demo auth for development
 
 const theme = createTheme({
   palette: {
