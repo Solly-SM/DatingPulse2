@@ -1,5 +1,5 @@
 import api from './api';
-import { User, UserProfile } from '../types/User';
+import { User, UserProfile, ProfileSetupRequest } from '../types/User';
 
 export const userService = {
   async getProfile(userId: number): Promise<UserProfile> {
@@ -7,7 +7,7 @@ export const userService = {
     return response.data;
   },
 
-  async updateProfile(userId: number, data: Partial<UserProfile>): Promise<UserProfile> {
+  async updateProfile(userId: number, data: ProfileSetupRequest): Promise<UserProfile> {
     const response = await api.put(`/users/${userId}/profile`, data);
     return response.data;
   },
@@ -34,5 +34,24 @@ export const userService = {
   async searchUsers(query: string): Promise<User[]> {
     const response = await api.get(`/users/search?q=${encodeURIComponent(query)}`);
     return response.data;
+  },
+
+  async uploadPhoto(userId: number, photo: File): Promise<{ url: string; photoID: number }> {
+    const formData = new FormData();
+    formData.append('photo', photo);
+    const response = await api.post(`/users/${userId}/photos`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  async deletePhoto(userId: number, photoID: number): Promise<void> {
+    await api.delete(`/users/${userId}/photos/${photoID}`);
+  },
+
+  async setPrimaryPhoto(userId: number, photoID: number): Promise<void> {
+    await api.patch(`/users/${userId}/photos/${photoID}/primary`);
   },
 };

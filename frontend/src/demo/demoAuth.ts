@@ -26,5 +26,11 @@ export function enableDemoMode() {
   localStorage.setItem('user', JSON.stringify(demoAuth.user));
 }
 
+// Auto-enable demo mode in development
+if (process.env.NODE_ENV === 'development') {
+  enableDemoMode();
+  console.log('🎭 Demo mode enabled - Auto-logged in as demo user');
+}
+
 // Simulate login for demo
 (window as any).enableDemoMode = enableDemoMode;

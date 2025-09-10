@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Typography,
@@ -24,13 +24,7 @@ function Chat() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (conversationId) {
-      loadMessages();
-    }
-  }, [conversationId]);
-
-  const loadMessages = async () => {
+  const loadMessages = useCallback(async () => {
     if (!conversationId) return;
     
     try {
@@ -42,7 +36,13 @@ function Chat() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [conversationId]);
+
+  useEffect(() => {
+    if (conversationId) {
+      loadMessages();
+    }
+  }, [conversationId, loadMessages]);
 
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !conversationId) return;
