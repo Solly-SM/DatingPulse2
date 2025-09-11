@@ -201,10 +201,32 @@ function LandingPage() {
                   background: 'linear-gradient(45deg, #c2185b, #e91e63)',
                   boxShadow: '0 6px 25px rgba(233, 30, 99, 0.4)',
                 },
-                mb: 3,
+                mb: 2,
               }}
             >
               Get Started
+            </Button>
+            
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={handleLoginClick}
+              sx={{
+                py: 1.5,
+                px: 4,
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                borderRadius: 25,
+                borderColor: '#e91e63',
+                color: '#e91e63',
+                '&:hover': {
+                  borderColor: '#c2185b',
+                  backgroundColor: 'rgba(233, 30, 99, 0.04)',
+                },
+                mb: 3,
+              }}
+            >
+              Already have an account? Login
             </Button>
             
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -220,6 +242,7 @@ function LandingPage() {
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
               <IconButton
                 size="large"
+                onClick={handleLoginClick}
                 sx={{
                   backgroundColor: '#4285f4',
                   color: 'white',
@@ -232,6 +255,7 @@ function LandingPage() {
               </IconButton>
               <IconButton
                 size="large"
+                onClick={handleLoginClick}
                 sx={{
                   backgroundColor: '#1877f2',
                   color: 'white',
