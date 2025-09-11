@@ -17,10 +17,10 @@ import {
   Work,
   Height,
   Verified,
-  Favorite,
   Close,
   Star,
 } from '@mui/icons-material';
+import PulseLogo from './PulseLogo';
 import { DiscoverUser } from '../types/Dating';
 
 interface SwipeableUserCardProps {
@@ -439,7 +439,7 @@ function SwipeableUserCard({
           }}
         >
           {dragOffset.x > 0 ? (
-            <Favorite sx={{ fontSize: 80, color: 'success.main' }} />
+            <PulseLogo sx={{ fontSize: 80, color: 'success.main' }} />
           ) : (
             <Close sx={{ fontSize: 80, color: 'error.main' }} />
           )}

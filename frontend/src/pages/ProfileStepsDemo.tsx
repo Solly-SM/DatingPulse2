@@ -10,7 +10,8 @@ import {
   Button,
   Grid,
 } from '@mui/material';
-import { Favorite } from '@mui/icons-material';
+import { } from '@mui/icons-material';
+import PulseLogo from '../components/PulseLogo';
 import {
   PersonalDetailsStep,
   AboutMeStep,
@@ -170,7 +171,7 @@ function ProfileStepsDemo() {
       >
         <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 3 }}>
-            <Favorite sx={{ fontSize: 40, color: 'primary.main', mr: 1 }} />
+            <PulseLogo sx={{ fontSize: 40, color: 'primary.main', mr: 1 }} />
             <Typography component="h1" variant="h4">
               DatingPulse
             </Typography>
