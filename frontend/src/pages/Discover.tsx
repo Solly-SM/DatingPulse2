@@ -26,22 +26,7 @@ import {
   Star,
 } from '@mui/icons-material';
 import { datingService } from '../services/datingService';
-
-interface DiscoverUser {
-  userID: number;
-  username: string;
-  firstName?: string;
-  lastName?: string;
-  age?: number;
-  bio?: string;
-  location?: string;
-  interests?: string[];
-  photos?: { url: string; isPrimary: boolean }[];
-  education?: string;
-  occupation?: string;
-  height?: number;
-  distance?: number;
-}
+import { DiscoverUser } from '../types/Dating';
 
 function Discover() {
   const [users, setUsers] = useState<DiscoverUser[]>([]);
@@ -57,71 +42,10 @@ function Discover() {
 
   const loadUsers = async () => {
     setLoading(true);
+    setError('');
     try {
-      // Create mock users with more realistic data for demo
-      const mockUsers: DiscoverUser[] = [
-        {
-          userID: 1,
-          username: 'sarah_jones',
-          firstName: 'Sarah',
-          lastName: 'Jones',
-          age: 25,
-          bio: "Adventure seeker and coffee enthusiast ☕ Love hiking, photography, and trying new restaurants. Looking for someone to explore the world with! 🌍",
-          location: 'Cape Town, 5km away',
-          interests: ['Photography', 'Hiking', 'Coffee', 'Travel', 'Art'],
-          photos: [{ url: '', isPrimary: true }],
-          education: 'University of Cape Town',
-          occupation: 'Graphic Designer',
-          height: 165,
-          distance: 5,
-        },
-        {
-          userID: 2,
-          username: 'mike_tech',
-          firstName: 'Michael',
-          lastName: 'Chen',
-          age: 28,
-          bio: "Tech entrepreneur by day, chef by night 👨‍💻👨‍🍳 Building the future while perfecting my pasta recipes. Swipe right if you love good food and great conversations!",
-          location: 'Johannesburg, 2km away',
-          interests: ['Technology', 'Cooking', 'Fitness', 'Music', 'Startups'],
-          photos: [{ url: '', isPrimary: true }],
-          education: 'MIT',
-          occupation: 'Software Engineer',
-          height: 180,
-          distance: 2,
-        },
-        {
-          userID: 3,
-          username: 'emma_artist',
-          firstName: 'Emma',
-          lastName: 'Williams',
-          age: 26,
-          bio: "Artist with a passion for life! 🎨 Creating beauty in the world through painting and dance. Looking for someone who appreciates art, culture, and spontaneous adventures.",
-          location: 'Durban, 8km away',
-          interests: ['Art', 'Dancing', 'Movies', 'Wine', 'Culture'],
-          photos: [{ url: '', isPrimary: true }],
-          education: 'Rhodes University',
-          occupation: 'Artist',
-          height: 158,
-          distance: 8,
-        },
-        {
-          userID: 4,
-          username: 'alex_fit',
-          firstName: 'Alex',
-          lastName: 'Thompson',
-          age: 30,
-          bio: "Fitness trainer and outdoor enthusiast 💪 When I'm not at the gym, you'll find me rock climbing, surfing, or planning my next adventure. Let's stay active together!",
-          location: 'Cape Town, 3km away',
-          interests: ['Fitness', 'Rock Climbing', 'Surfing', 'Nature', 'Health'],
-          photos: [{ url: '', isPrimary: true }],
-          education: 'Stellenbosch University',
-          occupation: 'Personal Trainer',
-          height: 175,
-          distance: 3,
-        },
-      ];
-      setUsers(mockUsers);
+      const discoverUsers = await datingService.getDiscoverUsers(0, 10);
+      setUsers(discoverUsers);
     } catch (err: any) {
       setError('Failed to load users');
       console.error('Error loading users:', err);
