@@ -110,7 +110,7 @@ function MultiStepRegister() {
         });
       }
       
-      navigate('/');
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Profile setup failed. Please try again.');
     } finally {
