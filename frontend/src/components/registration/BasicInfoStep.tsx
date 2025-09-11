@@ -20,11 +20,9 @@ interface BasicInfoStepProps {
 
 function BasicInfoStep({ onComplete, onBack, loading }: BasicInfoStepProps) {
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
     password: '',
     confirmPassword: '',
-    phone: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -48,12 +46,6 @@ function BasicInfoStep({ onComplete, onBack, loading }: BasicInfoStepProps) {
   const validateForm = () => {
     const errors: Record<string, string> = {};
 
-    if (!formData.username.trim()) {
-      errors.username = 'Username is required';
-    } else if (formData.username.length < 3) {
-      errors.username = 'Username must be at least 3 characters';
-    }
-
     if (!formData.email.trim()) {
       errors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
@@ -70,10 +62,6 @@ function BasicInfoStep({ onComplete, onBack, loading }: BasicInfoStepProps) {
       errors.confirmPassword = 'Passwords do not match';
     }
 
-    if (formData.phone && !/^\d{10,15}$/.test(formData.phone.replace(/\D/g, ''))) {
-      errors.phone = 'Please enter a valid phone number';
-    }
-
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -85,8 +73,14 @@ function BasicInfoStep({ onComplete, onBack, loading }: BasicInfoStepProps) {
       return;
     }
 
+    // Generate a username from email for backend compatibility
+    const username = formData.email.split('@')[0] + Math.floor(Math.random() * 1000);
+    
     const { confirmPassword, ...registerData } = formData;
-    onComplete(registerData);
+    onComplete({
+      ...registerData,
+      username, // Add generated username for backend compatibility
+    });
   };
 
   return (
@@ -95,24 +89,8 @@ function BasicInfoStep({ onComplete, onBack, loading }: BasicInfoStepProps) {
         Create Your Account
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Let's start with the basics. We'll need this to create your account.
+        Enter your email and create a secure password to get started.
       </Typography>
-
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        id="username"
-        label="Username"
-        name="username"
-        autoComplete="username"
-        autoFocus
-        value={formData.username}
-        onChange={handleChange}
-        error={!!formErrors.username}
-        helperText={formErrors.username}
-        disabled={loading}
-      />
 
       <TextField
         margin="normal"
@@ -123,25 +101,11 @@ function BasicInfoStep({ onComplete, onBack, loading }: BasicInfoStepProps) {
         name="email"
         autoComplete="email"
         type="email"
+        autoFocus
         value={formData.email}
         onChange={handleChange}
         error={!!formErrors.email}
-        helperText={formErrors.email}
-        disabled={loading}
-      />
-
-      <TextField
-        margin="normal"
-        fullWidth
-        id="phone"
-        label="Phone Number"
-        name="phone"
-        autoComplete="tel"
-        value={formData.phone}
-        onChange={handleChange}
-        error={!!formErrors.phone}
-        helperText={formErrors.phone || 'We\'ll send you a verification code'}
-        placeholder="0821234567"
+        helperText={formErrors.email || "We'll send a verification code to this email"}
         disabled={loading}
       />
 

@@ -7,20 +7,21 @@ import {
   LinearProgress,
   Link,
 } from '@mui/material';
-import { Phone, Refresh } from '@mui/icons-material';
+import { Email, Refresh } from '@mui/icons-material';
 import OTPInput from '../OTPInput';
 import { OTPVerificationRequest } from '../../types/User';
 import { otpService } from '../../services/otpService';
 
 interface OTPVerificationStepProps {
-  phone: string;
+  email: string;
+  userId: number | null;
   onComplete: (data: OTPVerificationRequest) => void;
   onBack: () => void;
   loading: boolean;
   error: string;
 }
 
-function OTPVerificationStep({ phone, onComplete, onBack, loading, error }: OTPVerificationStepProps) {
+function OTPVerificationStep({ email, userId, onComplete, onBack, loading, error }: OTPVerificationStepProps) {
   const [otp, setOtp] = useState('');
   const [resendLoading, setResendLoading] = useState(false);
   const [resendError, setResendError] = useState('');
@@ -42,25 +43,22 @@ function OTPVerificationStep({ phone, onComplete, onBack, loading, error }: OTPV
     setOtp(otpValue);
     if (otpValue.length === 6) {
       onComplete({
-        phone,
+        email,
         code: otpValue,
-        type: 'phone',
+        type: 'email',
       });
     }
   };
 
   const handleResendOTP = async () => {
-    if (!canResend || !phone) return;
+    if (!canResend || !email || !userId) return;
 
     setResendLoading(true);
     setResendError('');
     setResendSuccess('');
 
     try {
-      await otpService.resendOTP({
-        phone,
-        type: 'phone',
-      });
+      await otpService.generateOTP(userId, 'signup');
       setResendSuccess('Verification code sent successfully!');
       setCountdown(60);
       setCanResend(false);
@@ -72,28 +70,31 @@ function OTPVerificationStep({ phone, onComplete, onBack, loading, error }: OTPV
     }
   };
 
-  const formatPhone = (phoneNumber: string) => {
-    if (!phoneNumber) return '';
-    const cleaned = phoneNumber.replace(/\D/g, '');
-    if (cleaned.length >= 10) {
-      return `****-***-${cleaned.slice(-4)}`;
+  const formatEmail = (emailAddress: string) => {
+    if (!emailAddress) return '';
+    const [localPart, domain] = emailAddress.split('@');
+    if (localPart && domain) {
+      const maskedLocal = localPart.length > 3 
+        ? localPart.substring(0, 2) + '***' + localPart.slice(-1)
+        : '***';
+      return `${maskedLocal}@${domain}`;
     }
-    return phoneNumber;
+    return emailAddress;
   };
 
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
-        Verify Your Phone Number
+        Verify Your Email Address
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         We've sent a 6-digit verification code to
       </Typography>
       
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, justifyContent: 'center' }}>
-        <Phone sx={{ mr: 1, color: 'primary.main' }} />
+        <Email sx={{ mr: 1, color: 'primary.main' }} />
         <Typography variant="h6" color="primary">
-          {formatPhone(phone)}
+          {formatEmail(email)}
         </Typography>
       </Box>
 
@@ -161,7 +162,7 @@ function OTPVerificationStep({ phone, onComplete, onBack, loading, error }: OTPV
 
       <Box textAlign="center" sx={{ mt: 2 }}>
         <Typography variant="body2" color="text.secondary">
-          Didn't receive a code? Check your phone and try resending.
+          Didn't receive a code? Check your email inbox and spam folder.
         </Typography>
       </Box>
     </Box>
