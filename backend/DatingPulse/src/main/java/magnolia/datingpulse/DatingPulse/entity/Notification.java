@@ -46,7 +46,7 @@ public class Notification {
     @Size(max = 1000, message = "Message must not exceed 1000 characters")
     private String message; // Legacy message field for backwards compatibility
     
-    @Column(columnDefinition = "JSONB")
+    @Column(columnDefinition = "TEXT")
     private String data; // Additional notification data as JSON
 
     @Pattern(regexp = "^(LOW|MEDIUM|HIGH|CRITICAL)$", 
