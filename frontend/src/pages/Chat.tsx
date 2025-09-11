@@ -10,7 +10,6 @@ import {
   Alert,
   AppBar,
   Toolbar,
-  Badge,
   Fab,
   Chip,
   Menu,

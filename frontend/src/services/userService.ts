@@ -1,5 +1,5 @@
 import api from './api';
-import { User, UserProfile, ProfileSetupRequest, Photo } from '../types/User';
+import { User, UserProfile, ProfileSetupRequest } from '../types/User';
 
 const USE_MOCK_DATA = process.env.NODE_ENV === 'development';
 

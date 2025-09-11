@@ -6,7 +6,6 @@ import {
   TextField,
   Button,
   Box,
-  Avatar,
   Grid,
   Alert,
   IconButton,
@@ -21,7 +20,6 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import { 
-  Person, 
   PhotoCamera, 
   Delete, 
   Star, 

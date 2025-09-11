@@ -91,7 +91,7 @@ const defaultPreferences: UserPreferences = {
 };
 
 function Settings() {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
   const [saving, setSaving] = useState(false);

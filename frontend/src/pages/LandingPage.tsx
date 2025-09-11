@@ -5,7 +5,6 @@ import {
   Typography,
   Container,
   Paper,
-  IconButton,
   Menu,
   MenuItem,
   Chip,
@@ -13,8 +12,6 @@ import {
 import {
   Favorite,
   Language,
-  Google,
-  Facebook,
 } from '@mui/icons-material';
 import LoginModal from '../components/LoginModal';
 
@@ -201,72 +198,15 @@ function LandingPage() {
                   background: 'linear-gradient(45deg, #c2185b, #e91e63)',
                   boxShadow: '0 6px 25px rgba(233, 30, 99, 0.4)',
                 },
-                mb: 2,
+                mb: 3,
               }}
             >
               Get Started
             </Button>
             
-            <Button
-              variant="outlined"
-              size="large"
-              onClick={handleLoginClick}
-              sx={{
-                py: 1.5,
-                px: 4,
-                fontSize: '1rem',
-                fontWeight: 'bold',
-                borderRadius: 25,
-                borderColor: '#e91e63',
-                color: '#e91e63',
-                '&:hover': {
-                  borderColor: '#c2185b',
-                  backgroundColor: 'rgba(233, 30, 99, 0.04)',
-                },
-                mb: 3,
-              }}
-            >
-              Already have an account? Login
-            </Button>
-            
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               Join millions of people finding love every day
             </Typography>
-          </Box>
-
-          {/* Social Login Options */}
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Or continue with
-            </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-              <IconButton
-                size="large"
-                onClick={handleLoginClick}
-                sx={{
-                  backgroundColor: '#4285f4',
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#3367d6',
-                  },
-                }}
-              >
-                <Google />
-              </IconButton>
-              <IconButton
-                size="large"
-                onClick={handleLoginClick}
-                sx={{
-                  backgroundColor: '#1877f2',
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#166fe5',
-                  },
-                }}
-              >
-                <Facebook />
-              </IconButton>
-            </Box>
           </Box>
 
           {/* Terms */}
