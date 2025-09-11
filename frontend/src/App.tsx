@@ -5,6 +5,7 @@ import { CssBaseline, Box } from '@mui/material';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
+import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import MultiStepRegister from './components/MultiStepRegister';
 import Dashboard from './pages/Dashboard';
@@ -47,6 +48,7 @@ function App() {
         <Router>
           <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Routes>
+              <Route path="/landing" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<MultiStepRegister />} />
               <Route path="/" element={
@@ -119,7 +121,7 @@ function App() {
                   </>
                 </ProtectedRoute>
               } />
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<Navigate to="/landing" replace />} />
             </Routes>
           </Box>
         </Router>
