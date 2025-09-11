@@ -54,6 +54,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<MultiStepRegister />} />
               <Route path="/demo" element={<ModernProfileStepsDemo />} />
+              <Route path="/demo-old" element={<ProfileStepsDemo />} />
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <>
