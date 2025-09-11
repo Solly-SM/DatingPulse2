@@ -13,6 +13,7 @@ import Discover from './pages/Discover';
 import Matches from './pages/Matches';
 import Messages from './pages/Messages';
 import Chat from './pages/Chat';
+import Settings from './pages/Settings';
 import './App.css';
 import './demo/demoAuth'; // Import demo auth for development
 
@@ -104,6 +105,16 @@ function App() {
                     <Navbar />
                     <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                       <Chat />
+                    </Box>
+                  </>
+                </ProtectedRoute>
+              } />
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <>
+                    <Navbar />
+                    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                      <Settings />
                     </Box>
                   </>
                 </ProtectedRoute>
