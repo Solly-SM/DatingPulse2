@@ -10,10 +10,10 @@ import {
   Chip,
 } from '@mui/material';
 import {
-  Favorite,
   Language,
 } from '@mui/icons-material';
 import LoginModal from '../components/LoginModal';
+import PulseLogo from '../components/PulseLogo';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -144,50 +144,12 @@ function LandingPage() {
           {/* Logo and Title */}
           <Box sx={{ mb: 4 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
-              <Favorite 
+              <PulseLogo 
+                animated={isLoading}
                 sx={{ 
                   fontSize: 60, 
                   color: 'primary.main',
                   mr: 1,
-                  animation: isLoading 
-                    ? 'lovePulse 0.8s ease-in-out infinite' 
-                    : 'gentlePulse 3s ease-in-out infinite',
-                  '@keyframes gentlePulse': {
-                    '0%': {
-                      transform: 'scale(1)',
-                      opacity: 1,
-                    },
-                    '50%': {
-                      transform: 'scale(1.05)',
-                      opacity: 0.8,
-                    },
-                    '100%': {
-                      transform: 'scale(1)',
-                      opacity: 1,
-                    },
-                  },
-                  '@keyframes lovePulse': {
-                    '0%': {
-                      transform: 'scale(1)',
-                      filter: 'brightness(1)',
-                    },
-                    '25%': {
-                      transform: 'scale(1.15)',
-                      filter: 'brightness(1.2)',
-                    },
-                    '50%': {
-                      transform: 'scale(0.95)',
-                      filter: 'brightness(0.9)',
-                    },
-                    '75%': {
-                      transform: 'scale(1.1)',
-                      filter: 'brightness(1.1)',
-                    },
-                    '100%': {
-                      transform: 'scale(1)',
-                      filter: 'brightness(1)',
-                    },
-                  },
                 }} 
               />
               <Typography 

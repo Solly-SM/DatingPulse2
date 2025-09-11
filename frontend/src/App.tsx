@@ -9,6 +9,7 @@ import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import MultiStepRegister from './components/MultiStepRegister';
 import ProfileStepsDemo from './pages/ProfileStepsDemo';
+import ModernProfileStepsDemo from './pages/ModernProfileStepsDemo';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Discover from './pages/Discover';
@@ -52,7 +53,7 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<MultiStepRegister />} />
-              <Route path="/demo" element={<ProfileStepsDemo />} />
+              <Route path="/demo" element={<ModernProfileStepsDemo />} />
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <>
