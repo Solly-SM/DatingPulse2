@@ -32,6 +32,7 @@ function LandingPage() {
   const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
   const [languageMenuAnchor, setLanguageMenuAnchor] = useState<null | HTMLElement>(null);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLanguageClick = (event: React.MouseEvent<HTMLElement>) => {
     setLanguageMenuAnchor(event.currentTarget);
@@ -47,7 +48,12 @@ function LandingPage() {
   };
 
   const handleLoginClick = () => {
-    setLoginModalOpen(true);
+    setIsLoading(true);
+    // Simulate loading state for demo
+    setTimeout(() => {
+      setIsLoading(false);
+      setLoginModalOpen(true);
+    }, 1500);
   };
 
   const handleLoginClose = () => {
@@ -143,16 +149,43 @@ function LandingPage() {
                   fontSize: 60, 
                   color: 'primary.main',
                   mr: 1,
-                  animation: 'pulse 2s infinite',
-                  '@keyframes pulse': {
+                  animation: isLoading 
+                    ? 'lovePulse 0.8s ease-in-out infinite' 
+                    : 'gentlePulse 3s ease-in-out infinite',
+                  '@keyframes gentlePulse': {
                     '0%': {
                       transform: 'scale(1)',
+                      opacity: 1,
                     },
                     '50%': {
-                      transform: 'scale(1.1)',
+                      transform: 'scale(1.05)',
+                      opacity: 0.8,
                     },
                     '100%': {
                       transform: 'scale(1)',
+                      opacity: 1,
+                    },
+                  },
+                  '@keyframes lovePulse': {
+                    '0%': {
+                      transform: 'scale(1)',
+                      filter: 'brightness(1)',
+                    },
+                    '25%': {
+                      transform: 'scale(1.15)',
+                      filter: 'brightness(1.2)',
+                    },
+                    '50%': {
+                      transform: 'scale(0.95)',
+                      filter: 'brightness(0.9)',
+                    },
+                    '75%': {
+                      transform: 'scale(1.1)',
+                      filter: 'brightness(1.1)',
+                    },
+                    '100%': {
+                      transform: 'scale(1)',
+                      filter: 'brightness(1)',
                     },
                   },
                 }} 
@@ -186,6 +219,7 @@ function LandingPage() {
               variant="contained"
               size="large"
               onClick={handleLoginClick}
+              disabled={isLoading}
               sx={{
                 py: 1.5,
                 px: 4,
@@ -198,10 +232,14 @@ function LandingPage() {
                   background: 'linear-gradient(45deg, #c2185b, #e91e63)',
                   boxShadow: '0 6px 25px rgba(233, 30, 99, 0.4)',
                 },
+                '&:disabled': {
+                  background: 'linear-gradient(45deg, #e91e63, #ff4081)',
+                  opacity: 0.7,
+                },
                 mb: 3,
               }}
             >
-              Get Started
+              {isLoading ? 'Loading...' : 'Get Started'}
             </Button>
             
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
