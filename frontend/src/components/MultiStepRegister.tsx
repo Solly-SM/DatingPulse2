@@ -16,6 +16,7 @@ import {
   NameAboutStep,
   BirthDateStep,
   GenderDisplayStep,
+  SexualOrientationStep,
   PersonalDetailsStep,
   AboutMeStep,
   InterestsStep,
@@ -85,7 +86,9 @@ function MultiStepRegister() {
     },
     physicalAttributes: {},
     preferences: {
-      interestedIn: ''
+      interestedIn: '',
+      showGender: false,
+      showOrientation: false
     },
     lifestyle: {},
     media: {
@@ -196,13 +199,28 @@ function MultiStepRegister() {
             loading={loading}
           />
         );
-      case 3: // Orientation - placeholder
+      case 3: // Orientation
         return (
-          <Box sx={{ textAlign: 'center', p: 4 }}>
-            <Typography variant="h5" gutterBottom>Sexual Orientation</Typography>
-            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
-            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
-          </Box>
+          <SexualOrientationStep
+            data={{
+              sexualOrientation: profileData.preferences.sexualOrientation || '',
+              showOrientation: profileData.preferences.showOrientation || false
+            }}
+            onComplete={(data) => {
+              setProfileData(prev => ({
+                ...prev,
+                preferences: { 
+                  ...prev.preferences, 
+                  sexualOrientation: data.sexualOrientation,
+                  showOrientation: data.showOrientation
+                }
+              }));
+              handleNextStep();
+            }}
+            onBack={handleBack}
+            onSkip={handleSkipStep}
+            loading={loading}
+          />
         );
       case 4: // Interested In - placeholder
         return (

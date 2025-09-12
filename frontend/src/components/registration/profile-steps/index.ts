@@ -10,6 +10,7 @@ export { default as MediaStep } from './MediaStep';
 export { default as NameAboutStep } from './NameAboutStep';
 export { default as BirthDateStep } from './BirthDateStep';
 export { default as GenderDisplayStep } from './GenderDisplayStep';
+export { default as SexualOrientationStep } from './SexualOrientationStep';
 
 // Combined data type for all profile steps
 export interface ProfileData {
@@ -38,6 +39,8 @@ export interface ProfileData {
     interestedIn: string;
     relationshipGoal?: string;
     sexualOrientation?: string;
+    showGender?: boolean;
+    showOrientation?: boolean;
   };
   lifestyle: {
     pets?: string;
