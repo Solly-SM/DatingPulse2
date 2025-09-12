@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Paper,
@@ -8,12 +8,15 @@ import {
   StepLabel,
   Typography,
   Alert,
+  Button,
 } from '@mui/material';
-import { Favorite } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-import BasicInfoStep from './registration/BasicInfoStep';
-import OTPVerificationStep from './registration/OTPVerificationStep';
+import { useNavigate, useLocation } from 'react-router-dom';
+import PulseLogo from './PulseLogo';
 import {
+  NameAboutStep,
+  BirthDateStep,
+  GenderDisplayStep,
+  SexualOrientationStep,
   PersonalDetailsStep,
   AboutMeStep,
   InterestsStep,
@@ -23,43 +26,49 @@ import {
   MediaStep,
   ProfileData
 } from './registration/profile-steps';
-import { RegisterRequest, OTPVerificationRequest } from '../types/User';
-import { authService } from '../services/authService';
-import { otpService } from '../services/otpService';
-import { userService } from '../services/userService';
 import { useAuth } from '../contexts/AuthContext';
 
 const steps = [
-  'Account Info', 
-  'Verify Email', 
-  'Personal Details',
-  'About Me',
-  'Interests',
-  'Physical Attributes',
-  'Preferences',
+  'Name & About', 
+  'Birth Date',
+  'Gender & Display',
+  'Orientation',
+  'Interested In',
+  'Looking For',
+  'Distance',
   'Lifestyle',
-  'Photos & Audio'
+  'Personality',
+  'Interests',
+  'Languages',
+  'Physical Details',
+  'Photos',
+  'Audio Intro',
+  'Location'
 ];
 
 interface RegistrationData {
-  basicInfo: RegisterRequest | null;
-  otpVerified: boolean;
+  email: string;
   profileData: ProfileData | null;
 }
 
 function MultiStepRegister() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [registrationData, setRegistrationData] = useState<RegistrationData>({
-    basicInfo: null,
-    otpVerified: false,
-    profileData: null,
-  });
-  const [tempUserId, setTempUserId] = useState<number | null>(null);
   
+  // Get email from location state (passed from LoginModal) 
+  const email = location.state?.email || 'demo@example.com'; // Use demo email for testing
+
+  useEffect(() => {
+    // For demo purposes, don't redirect even if no email is provided
+    // if (!email) {
+    //   navigate('/');
+    // }
+  }, [email, navigate]);
+
   // Profile data state
   const [profileData, setProfileData] = useState<ProfileData>({
     personalDetails: {
@@ -77,58 +86,15 @@ function MultiStepRegister() {
     },
     physicalAttributes: {},
     preferences: {
-      interestedIn: ''
+      interestedIn: '',
+      showGender: false,
+      showOrientation: false
     },
     lifestyle: {},
     media: {
       photos: []
     }
   });
-
-  const handleBasicInfoComplete = async (data: RegisterRequest) => {
-    setLoading(true);
-    setError('');
-
-    try {
-      // Create account
-      const authResponse = await authService.register(data);
-      setTempUserId(authResponse.user.userID);
-      setRegistrationData(prev => ({ ...prev, basicInfo: data }));
-      
-      // Generate email OTP for verification
-      await otpService.generateOTP(authResponse.user.userID, 'signup');
-      
-      setActiveStep(1);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOTPVerificationComplete = async (data: OTPVerificationRequest) => {
-    if (!tempUserId) {
-      setError('User ID not found. Please restart registration.');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-
-    try {
-      const result = await otpService.validateOTP(tempUserId, data.code, 'signup');
-      if (result.verified) {
-        setRegistrationData(prev => ({ ...prev, otpVerified: true }));
-        setActiveStep(2);
-      } else {
-        setError('Invalid OTP code. Please try again.');
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'OTP verification failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleProfileStepComplete = (stepData: any, stepName: keyof ProfileData) => {
     setProfileData(prev => ({
@@ -139,42 +105,31 @@ function MultiStepRegister() {
     setError('');
   };
 
-  const handleFinalSubmit = async () => {
-    if (!tempUserId) {
-      setError('User ID not found. Please restart registration.');
-      return;
-    }
+  const handleNextStep = () => {
+    setActiveStep(prev => prev + 1);
+    setError('');
+  };
 
+  const handleSkipStep = () => {
+    setActiveStep(prev => prev + 1);
+    setError('');
+  };
+
+  const handleFinalSubmit = async () => {
     setLoading(true);
     setError('');
 
     try {
-      // Combine all profile data for submission
-      const completeProfileData = {
-        userID: tempUserId,
-        firstName: profileData.personalDetails.firstName,
-        lastName: profileData.personalDetails.lastName,
-        dateOfBirth: profileData.personalDetails.dateOfBirth,
-        bio: profileData.aboutMe.bio,
-        location: profileData.personalDetails.location,
-        interests: profileData.interests.interests,
-        gender: profileData.personalDetails.gender.toLowerCase() as 'male' | 'female' | 'other',
-        interestedIn: profileData.preferences.interestedIn.toLowerCase() as 'male' | 'female' | 'both',
-        height: profileData.physicalAttributes.height,
-        // Add other fields based on backend requirements
-      };
-
-      // Update user profile
-      await userService.updateProfile(tempUserId, completeProfileData);
-
-      // Auto-login after successful registration
-      if (registrationData.basicInfo) {
-        await login({
-          username: registrationData.basicInfo.username,
-          password: registrationData.basicInfo.password,
-        });
-      }
+      // Simulate profile creation
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // Simulate auto-login after successful registration
+      const loginData = {
+        username: email,
+        password: 'temp-password', // In real app, would use proper authentication
+      };
+      
+      await login(loginData);
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Profile setup failed. Please try again.');
@@ -190,72 +145,108 @@ function MultiStepRegister() {
 
   const renderStepContent = (step: number) => {
     switch (step) {
-      case 0:
+      case 0: // Name & About
         return (
-          <BasicInfoStep
-            onComplete={handleBasicInfoComplete}
-            onBack={() => navigate('/login')}
+          <NameAboutStep
+            data={{
+              firstName: profileData.personalDetails.firstName,
+              bio: profileData.aboutMe.bio
+            }}
+            onComplete={(data) => {
+              setProfileData(prev => ({
+                ...prev,
+                personalDetails: { ...prev.personalDetails, firstName: data.firstName },
+                aboutMe: { ...prev.aboutMe, bio: data.bio }
+              }));
+              handleNextStep();
+            }}
+            onBack={() => navigate('/')}
             loading={loading}
-            error={error}
           />
         );
-      case 1:
+      case 1: // Birth Date
         return (
-          <OTPVerificationStep
-            email={registrationData.basicInfo?.email || ''}
-            userId={tempUserId}
-            onComplete={handleOTPVerificationComplete}
+          <BirthDateStep
+            data={{ dateOfBirth: profileData.personalDetails.dateOfBirth }}
+            onComplete={(data) => {
+              setProfileData(prev => ({
+                ...prev,
+                personalDetails: { ...prev.personalDetails, dateOfBirth: data.dateOfBirth }
+              }));
+              handleNextStep();
+            }}
             onBack={handleBack}
+            onSkip={handleSkipStep}
             loading={loading}
-            error={error}
           />
         );
-      case 2:
+      case 2: // Gender & Display
         return (
-          <PersonalDetailsStep
-            data={profileData.personalDetails}
-            onComplete={(data) => handleProfileStepComplete(data, 'personalDetails')}
+          <GenderDisplayStep
+            data={{
+              gender: profileData.personalDetails.gender,
+              showGender: true // This should be stored in preferences
+            }}
+            onComplete={(data) => {
+              setProfileData(prev => ({
+                ...prev,
+                personalDetails: { ...prev.personalDetails, gender: data.gender }
+              }));
+              handleNextStep();
+            }}
             onBack={handleBack}
+            onSkip={handleSkipStep}
             loading={loading}
           />
         );
-      case 3:
+      case 3: // Orientation
         return (
-          <AboutMeStep
-            data={profileData.aboutMe}
-            onComplete={(data) => handleProfileStepComplete(data, 'aboutMe')}
+          <SexualOrientationStep
+            data={{
+              sexualOrientation: profileData.preferences.sexualOrientation || '',
+              showOrientation: profileData.preferences.showOrientation || false
+            }}
+            onComplete={(data) => {
+              setProfileData(prev => ({
+                ...prev,
+                preferences: { 
+                  ...prev.preferences, 
+                  sexualOrientation: data.sexualOrientation,
+                  showOrientation: data.showOrientation
+                }
+              }));
+              handleNextStep();
+            }}
             onBack={handleBack}
+            onSkip={handleSkipStep}
             loading={loading}
           />
         );
-      case 4:
+      case 4: // Interested In - placeholder
         return (
-          <InterestsStep
-            data={profileData.interests}
-            onComplete={(data) => handleProfileStepComplete(data, 'interests')}
-            onBack={handleBack}
-            loading={loading}
-          />
+          <Box sx={{ textAlign: 'center', p: 4 }}>
+            <Typography variant="h5" gutterBottom>Who You're Interested In</Typography>
+            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
+            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
+          </Box>
         );
-      case 5:
+      case 5: // Looking For - placeholder
         return (
-          <PhysicalAttributesStep
-            data={profileData.physicalAttributes}
-            onComplete={(data) => handleProfileStepComplete(data, 'physicalAttributes')}
-            onBack={handleBack}
-            loading={loading}
-          />
+          <Box sx={{ textAlign: 'center', p: 4 }}>
+            <Typography variant="h5" gutterBottom>What You're Looking For</Typography>
+            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
+            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
+          </Box>
         );
-      case 6:
+      case 6: // Distance - placeholder
         return (
-          <PreferencesStep
-            data={profileData.preferences}
-            onComplete={(data) => handleProfileStepComplete(data, 'preferences')}
-            onBack={handleBack}
-            loading={loading}
-          />
+          <Box sx={{ textAlign: 'center', p: 4 }}>
+            <Typography variant="h5" gutterBottom>Distance Preference</Typography>
+            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
+            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
+          </Box>
         );
-      case 7:
+      case 7: // Lifestyle
         return (
           <LifestyleStep
             data={profileData.lifestyle}
@@ -264,17 +255,66 @@ function MultiStepRegister() {
             loading={loading}
           />
         );
-      case 8:
+      case 8: // Personality - placeholder
         return (
-          <MediaStep
-            data={profileData.media}
-            onComplete={(data) => {
-              setProfileData(prev => ({ ...prev, media: data }));
-              handleFinalSubmit();
-            }}
+          <Box sx={{ textAlign: 'center', p: 4 }}>
+            <Typography variant="h5" gutterBottom>Personality</Typography>
+            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
+            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
+          </Box>
+        );
+      case 9: // Interests
+        return (
+          <InterestsStep
+            data={profileData.interests}
+            onComplete={(data) => handleProfileStepComplete(data, 'interests')}
             onBack={handleBack}
             loading={loading}
           />
+        );
+      case 10: // Languages - placeholder
+        return (
+          <Box sx={{ textAlign: 'center', p: 4 }}>
+            <Typography variant="h5" gutterBottom>Languages</Typography>
+            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
+            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
+          </Box>
+        );
+      case 11: // Physical Details
+        return (
+          <PhysicalAttributesStep
+            data={profileData.physicalAttributes}
+            onComplete={(data) => handleProfileStepComplete(data, 'physicalAttributes')}
+            onBack={handleBack}
+            loading={loading}
+          />
+        );
+      case 12: // Photos
+        return (
+          <MediaStep
+            data={profileData.media}
+            onComplete={(data) => handleProfileStepComplete(data, 'media')}
+            onBack={handleBack}
+            loading={loading}
+          />
+        );
+      case 13: // Audio Intro - placeholder
+        return (
+          <Box sx={{ textAlign: 'center', p: 4 }}>
+            <Typography variant="h5" gutterBottom>Audio Introduction</Typography>
+            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
+            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
+          </Box>
+        );
+      case 14: // Location - final step
+        return (
+          <Box sx={{ textAlign: 'center', p: 4 }}>
+            <Typography variant="h5" gutterBottom>Your Location</Typography>
+            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
+            <Button variant="contained" onClick={handleFinalSubmit} disabled={loading}>
+              {loading ? 'Creating Profile...' : 'Complete Setup'}
+            </Button>
+          </Box>
         );
       default:
         return null;
@@ -293,20 +333,28 @@ function MultiStepRegister() {
       >
         <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 3 }}>
-            <Favorite sx={{ fontSize: 40, color: 'primary.main', mr: 1 }} />
+            <PulseLogo sx={{ fontSize: 40, color: 'primary.main', mr: 1 }} />
             <Typography component="h1" variant="h4">
               DatingPulse
             </Typography>
           </Box>
 
-          <Typography component="h2" variant="h5" align="center" sx={{ mb: 3 }}>
+          <Typography component="h2" variant="h5" align="center" sx={{ mb: 1 }}>
             Create Your Perfect Dating Profile
           </Typography>
+          
+          <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
+            Setting up profile for {email}
+          </Typography>
 
-          <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-            {steps.map((label) => (
+          <Stepper activeStep={activeStep} sx={{ mb: 4 }} alternativeLabel>
+            {steps.map((label, index) => (
               <Step key={label}>
-                <StepLabel>{label}</StepLabel>
+                <StepLabel>
+                  <Typography variant="caption">
+                    {index < 3 ? label : ''}
+                  </Typography>
+                </StepLabel>
               </Step>
             ))}
           </Stepper>
