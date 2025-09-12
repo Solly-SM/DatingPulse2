@@ -15,6 +15,7 @@ import {
   Close,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import OTPInput from './OTPInput';
 
 interface LoginModalProps {
@@ -24,38 +25,33 @@ interface LoginModalProps {
 
 function LoginModal({ open, onClose }: LoginModalProps) {
   const { login } = useAuth();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
+  const [isExistingUser, setIsExistingUser] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      // For demo purposes, we'll simulate login and then show OTP
-      // In a real app, this would call the actual login API
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      // Check if user exists (simulate API call)
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Show OTP verification step
+      // For demo purposes, simulate checking if user exists
+      // In real app, this would call the API to check user existence and send OTP
+      const userExists = Math.random() > 0.5; // Random simulation
+      setIsExistingUser(userExists);
+      
+      // Always show OTP verification step
       setShowOTP(true);
       setLoading(false);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(err.response?.data?.message || 'Failed to send verification code. Please try again.');
       setLoading(false);
     }
   };
@@ -65,18 +61,23 @@ function LoginModal({ open, onClose }: LoginModalProps) {
     setError('');
 
     try {
-      // For demo purposes, we'll simulate OTP verification
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      // Simulate OTP verification
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // In a real app, you would verify the OTP here
-      // For now, we'll just simulate successful login
-      const loginData = {
-        username: formData.email, // Use email as username
-        password: formData.password,
-      };
-      
-      await login(loginData);
-      onClose();
+      if (isExistingUser) {
+        // Existing user - login and go to dashboard
+        const loginData = {
+          username: email,
+          password: 'temp-password', // In real app, OTP would authenticate the user
+        };
+        await login(loginData);
+        onClose();
+        navigate('/dashboard');
+      } else {
+        // New user - go to registration flow
+        onClose();
+        navigate('/register', { state: { email } });
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || 'OTP verification failed. Please try again.');
     } finally {
@@ -85,10 +86,11 @@ function LoginModal({ open, onClose }: LoginModalProps) {
   };
 
   const handleClose = () => {
-    setFormData({ email: '', password: '' });
+    setEmail('');
     setError('');
     setShowOTP(false);
     setOtpLoading(false);
+    setIsExistingUser(false);
     onClose();
   };
 
@@ -101,7 +103,7 @@ function LoginModal({ open, onClose }: LoginModalProps) {
       PaperProps={{
         sx: {
           borderRadius: 3,
-          minHeight: 500,
+          minHeight: 400,
         }
       }}
     >
@@ -119,10 +121,12 @@ function LoginModal({ open, onClose }: LoginModalProps) {
           <Close />
         </IconButton>
         <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          {showOTP ? 'Verify Your Email' : 'Welcome Back'}
+          {showOTP ? 'Verify Your Email' : 'Get Started'}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {showOTP ? 'Enter the verification code sent to your email' : 'Log in to your DatingPulse account'}
+          {showOTP 
+            ? 'Enter the verification code sent to your email' 
+            : 'Enter your email to continue'}
         </Typography>
       </DialogTitle>
 
@@ -137,7 +141,7 @@ function LoginModal({ open, onClose }: LoginModalProps) {
             )}
             
             <Typography variant="body1" sx={{ mb: 3 }}>
-              We've sent a verification code to <strong>{formData.email}</strong>
+              We've sent a verification code to <strong>{email}</strong>
             </Typography>
             
             <OTPInput
@@ -159,13 +163,13 @@ function LoginModal({ open, onClose }: LoginModalProps) {
                 onClick={() => setShowOTP(false)}
                 disabled={otpLoading}
               >
-                Back to Login
+                Back to Email
               </Button>
             </Box>
           </Box>
         ) : (
-          /* Login Form */
-          <Box component="form" onSubmit={handleSubmit}>
+          /* Email Form */
+          <Box component="form" onSubmit={handleEmailSubmit}>
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 {error}
@@ -182,22 +186,8 @@ function LoginModal({ open, onClose }: LoginModalProps) {
               type="email"
               autoComplete="email"
               autoFocus
-              value={formData.email}
-              onChange={handleChange}
-              sx={{ mb: 2 }}
-            />
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={formData.password}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               sx={{ mb: 3 }}
             />
 
@@ -208,38 +198,36 @@ function LoginModal({ open, onClose }: LoginModalProps) {
               variant="contained"
               disabled={loading}
               sx={{
-                py: 1.2,
-                fontSize: '1rem',
+                py: 1.5,
+                px: 4,
+                fontSize: '1.1rem',
                 fontWeight: 'bold',
-                borderRadius: 2,
+                borderRadius: 25,
                 background: 'linear-gradient(45deg, #e91e63, #ff4081)',
+                boxShadow: '0 4px 20px rgba(233, 30, 99, 0.3)',
                 '&:hover': {
                   background: 'linear-gradient(45deg, #c2185b, #e91e63)',
+                  boxShadow: '0 6px 25px rgba(233, 30, 99, 0.4)',
+                },
+                '&:disabled': {
+                  background: 'linear-gradient(45deg, #e91e63, #ff4081)',
+                  opacity: 0.7,
                 },
               }}
             >
-              {loading ? 'Signing In...' : 'Sign In'}
+              {loading ? 'Sending Code...' : 'Continue'}
             </Button>
 
             {/* Additional Links */}
             <Box sx={{ mt: 3, textAlign: 'center' }}>
-              <Link
-                component="button"
-                variant="body2"
-                type="button"
-                sx={{ display: 'block', mb: 1 }}
-              >
-                Forgot your password?
-              </Link>
               <Typography variant="body2" color="text.secondary">
-                Don't have an account?{' '}
-                <Link
-                  component="button"
-                  variant="body2"
-                  type="button"
-                  sx={{ fontWeight: 'bold' }}
-                >
-                  Sign up here
+                By continuing, you agree to our{' '}
+                <Link component="button" variant="body2" type="button">
+                  Terms of Service
+                </Link>
+                {' '}and{' '}
+                <Link component="button" variant="body2" type="button">
+                  Privacy Policy
                 </Link>
               </Typography>
             </Box>

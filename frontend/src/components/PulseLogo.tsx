@@ -13,27 +13,26 @@ const PulseLogo: React.FC<PulseLogoProps> = ({ animated = false, ...props }) => 
       sx={{
         ...props.sx,
         ...(animated && {
-          animation: 'pulse 1.5s ease-in-out infinite',
-          '@keyframes pulse': {
+          '& .zig-zag-line': {
+            strokeDasharray: '200',
+            strokeDashoffset: '200',
+            animation: 'drawZigZag 2s ease-in-out infinite',
+          },
+          '@keyframes drawZigZag': {
             '0%': {
-              transform: 'scale(1)',
-              opacity: 1,
-            },
-            '50%': {
-              transform: 'scale(1.1)',
-              opacity: 0.8,
+              strokeDashoffset: '200',
             },
             '100%': {
-              transform: 'scale(1)',
-              opacity: 1,
+              strokeDashoffset: '0',
             },
           },
         }),
       }}
     >
-      {/* Pulse line with heartbeat pattern */}
+      {/* Zig-zag line pattern */}
       <path
-        d="M5 30 L15 30 L20 10 L25 50 L30 15 L35 45 L40 25 L50 30 L55 30 L60 20 L65 40 L70 30 L80 30 L85 15 L90 45 L95 30"
+        className="zig-zag-line"
+        d="M5 30 L15 15 L25 45 L35 15 L45 45 L55 15 L65 45 L75 15 L85 45 L95 30"
         fill="none"
         stroke="currentColor"
         strokeWidth="3"
@@ -43,27 +42,8 @@ const PulseLogo: React.FC<PulseLogoProps> = ({ animated = false, ...props }) => 
       
       {/* Heart shape at the end */}
       <path
-        d="M75 25 C75 22, 77 20, 80 20 C83 20, 85 22, 85 25 C85 28, 80 33, 80 33 C80 33, 75 28, 75 25 Z"
+        d="M88 25 C88 22, 90 20, 93 20 C96 20, 98 22, 98 25 C98 28, 93 33, 93 33 C93 33, 88 28, 88 25 Z"
         fill="currentColor"
-      />
-      
-      {/* Additional pulse segments for more dynamic look */}
-      <path
-        d="M10 30 L12 25 L14 35 L16 30"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        opacity="0.7"
-      />
-      
-      <path
-        d="M45 30 L47 35 L49 25 L51 30"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        opacity="0.7"
       />
     </SvgIcon>
   );

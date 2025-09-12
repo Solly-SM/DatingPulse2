@@ -70,7 +70,37 @@ function LandingPage() {
         position: 'relative',
       }}
     >
-      {/* Header with Language Selector */}
+      {/* Header with Logo and Language Selector */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 20,
+          left: 20,
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <PulseLogo 
+            sx={{ 
+              fontSize: 40, 
+              color: 'white',
+            }} 
+          />
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              fontWeight: 'bold',
+              color: 'white',
+            }}
+          >
+            DatingPulse
+          </Typography>
+        </Box>
+      </Box>
+
       <Box
         sx={{
           position: 'absolute',
