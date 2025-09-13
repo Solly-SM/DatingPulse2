@@ -17,6 +17,7 @@ import Matches from './pages/Matches';
 import Messages from './pages/Messages';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
+import RegistrationTest from './pages/RegistrationTest';
 import './App.css';
 import './demo/demoAuth'; // Import demo auth for development
 
@@ -53,6 +54,7 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<MultiStepRegister />} />
+              <Route path="/registration-test" element={<RegistrationTest />} />
               <Route path="/demo" element={<ModernProfileStepsDemo />} />
               <Route path="/demo-old" element={<ProfileStepsDemo />} />
               <Route path="/dashboard" element={
