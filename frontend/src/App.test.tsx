@@ -4,6 +4,6 @@ import App from './App';
 
 test('renders DatingPulse app', () => {
   render(<App />);
-  const titleElement = screen.getByText(/DatingPulse/i);
+  const titleElement = screen.getAllByText(/DatingPulse/i)[0];
   expect(titleElement).toBeInTheDocument();
 });

@@ -2,7 +2,7 @@ import api from './api';
 import { User, RegisterRequest, LoginRequest, AuthResponse } from '../types/User';
 
 // Development mode check
-const isDevelopment = process.env.NODE_ENV === 'development' || process.env.REACT_APP_DEVELOPMENT_MODE === 'true';
+const isDevelopment = process.env.NODE_ENV === 'development' || import.meta.env.VITE_REACT_APP_DEVELOPMENT_MODE === 'true';
 
 export const authService = {
   async register(data: RegisterRequest): Promise<AuthResponse> {
