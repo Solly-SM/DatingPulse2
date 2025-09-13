@@ -50,9 +50,9 @@ function Navbar() {
           <Button
             color="inherit"
             startIcon={<Search />}
-            onClick={() => navigate('/discover')}
+            onClick={() => navigate('/explore')}
           >
-            Discover
+            Explore
           </Button>
           
           <Button

@@ -13,6 +13,8 @@ import MultiStepRegister from './components/MultiStepRegister';
 import ProfileStepsDemo from './pages/ProfileStepsDemo';
 import ModernProfileStepsDemo from './pages/ModernProfileStepsDemo';
 import Dashboard from './pages/Dashboard';
+import Home from './pages/Home';
+import Explore from './pages/Explore';
 import Profile from './pages/Profile';
 import Discover from './pages/Discover';
 import Matches from './pages/Matches';
@@ -296,7 +298,23 @@ function App() {
               <Route path="/demo-old" element={<ProfileStepsDemo />} />
               <Route path="/demo-sidebar" element={<DemoSidebar />} />
               <Route path="/demo-discover" element={<DiscoverDemo />} />
+              <Route path="/demo-explore" element={<Explore />} />
+              <Route path="/demo-home" element={<Home />} />
               <Route path="/demo-components" element={<ComponentsDemo />} />
+              <Route path="/home" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Home />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/explore" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Explore />
+                  </Layout>
+                </ProtectedRoute>
+              } />
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Layout>
@@ -346,6 +364,8 @@ function App() {
                   </Layout>
                 </ProtectedRoute>
               } />
+              {/* Redirects for old routes */}
+              <Route path="/discover" element={<Navigate to="/explore" replace />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Box>
