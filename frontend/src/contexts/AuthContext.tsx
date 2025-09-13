@@ -28,15 +28,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const storedUser = authService.getStoredUser();
         if (storedUser && authService.isAuthenticated()) {
           setUser(storedUser);
-          // Optionally validate token with backend in background (non-blocking)
-          setTimeout(async () => {
-            try {
-              await authService.getCurrentUser();
-            } catch (error) {
-              console.warn('Token validation failed, user may need to re-login:', error);
-              // Don't logout automatically to avoid disruption
-            }
-          }, 100);
+          // Skip backend validation in development mode for demo
+          if (process.env.NODE_ENV !== 'development') {
+            // Optionally validate token with backend in background (non-blocking)
+            setTimeout(async () => {
+              try {
+                await authService.getCurrentUser();
+              } catch (error) {
+                console.warn('Token validation failed, user may need to re-login:', error);
+                // Don't logout automatically to avoid disruption
+              }
+            }, 100);
+          }
+        } else if (process.env.NODE_ENV === 'development' && window.location.pathname.includes('/dashboard')) {
+          // Enable demo mode automatically for dashboard testing
+          const demoUser = {
+            userID: 1,
+            username: "demouser",
+            email: "demo@datingpulse.com", 
+            phone: "0821234567",
+            role: "USER",
+            status: "ACTIVE",
+            createdAt: "2024-01-01T00:00:00.000Z",
+            updatedAt: "2024-01-01T00:00:00.000Z",
+            lastLogin: "2024-01-01T00:00:00.000Z",
+            isVerified: true
+          };
+          localStorage.setItem('authToken', 'demo-jwt-token');
+          localStorage.setItem('user', JSON.stringify(demoUser));
+          setUser(demoUser);
+          console.log('🎭 Demo mode enabled - Auto-logged in as demo user for dashboard testing');
         }
       } catch (error) {
         console.warn('Auth initialization failed:', error);

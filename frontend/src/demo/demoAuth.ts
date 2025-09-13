@@ -26,11 +26,16 @@ export function enableDemoMode() {
   localStorage.setItem('user', JSON.stringify(demoAuth.user));
 }
 
-// Auto-enable demo mode in development - DISABLED for landing page implementation
-// if (process.env.NODE_ENV === 'development') {
-//   enableDemoMode();
-//   console.log('🎭 Demo mode enabled - Auto-logged in as demo user');
-// }
+// Auto-enable demo mode in development for sidebar/dashboard testing
+if (process.env.NODE_ENV === 'development' && window.location.pathname.includes('/dashboard')) {
+  const currentToken = localStorage.getItem('authToken');
+  if (!currentToken || currentToken !== 'demo-jwt-token') {
+    enableDemoMode();
+    console.log('🎭 Demo mode enabled - Auto-logged in as demo user for dashboard testing');
+    // Reload to ensure AuthContext picks up the demo user
+    window.location.reload();
+  }
+}
 
 // Simulate login for demo
 (window as any).enableDemoMode = enableDemoMode;

@@ -19,6 +19,7 @@ import Matches from './pages/Matches';
 import Messages from './pages/Messages';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
+import DemoSidebar from './pages/DemoSidebar';
 import './App.css';
 // Conditionally import demo auth only in development
 if (process.env.NODE_ENV === 'development') {
@@ -291,6 +292,7 @@ function App() {
               <Route path="/register" element={<MultiStepRegister />} />
               <Route path="/demo" element={<ModernProfileStepsDemo />} />
               <Route path="/demo-old" element={<ProfileStepsDemo />} />
+              <Route path="/demo-sidebar" element={<DemoSidebar />} />
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Layout>
