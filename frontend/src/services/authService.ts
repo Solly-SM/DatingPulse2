@@ -1,26 +1,57 @@
 import api from './api';
 import { User, RegisterRequest, LoginRequest, AuthResponse } from '../types/User';
 
+// Development mode check
+const isDevelopment = process.env.NODE_ENV === 'development' || process.env.REACT_APP_DEVELOPMENT_MODE === 'true';
+
 export const authService = {
   async register(data: RegisterRequest): Promise<AuthResponse> {
-    const response = await api.post('/auth/register', data);
-    return response.data;
+    try {
+      const response = await api.post('/auth/register', data);
+      return response.data;
+    } catch (error: any) {
+      if (isDevelopment && (error.code === 'ECONNREFUSED' || error.code === 'NETWORK_ERROR')) {
+        console.warn('Backend not available in development mode. Using mock response.');
+        throw new Error('Backend service unavailable. Please ensure the backend server is running on port 8080.');
+      }
+      throw error;
+    }
   },
 
   async login(data: LoginRequest): Promise<AuthResponse> {
-    const response = await api.post('/auth/login', data);
-    return response.data;
+    try {
+      const response = await api.post('/auth/login', data);
+      return response.data;
+    } catch (error: any) {
+      if (isDevelopment && (error.code === 'ECONNREFUSED' || error.code === 'NETWORK_ERROR')) {
+        console.warn('Backend not available in development mode. Using mock response.');
+        throw new Error('Backend service unavailable. Please ensure the backend server is running on port 8080.');
+      }
+      throw error;
+    }
   },
 
   async logout(): Promise<void> {
-    await api.post('/auth/logout');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+    try {
+      await api.post('/auth/logout');
+    } catch (error) {
+      console.warn('Logout API call failed, clearing local storage anyway:', error);
+    } finally {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+    }
   },
 
   async getCurrentUser(): Promise<User> {
-    const response = await api.get('/auth/me');
-    return response.data;
+    try {
+      const response = await api.get('/auth/me');
+      return response.data;
+    } catch (error: any) {
+      if (isDevelopment) {
+        console.warn('Could not validate user token with backend:', error.message);
+      }
+      throw error;
+    }
   },
 
   isAuthenticated(): boolean {
