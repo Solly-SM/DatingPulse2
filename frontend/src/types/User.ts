@@ -54,8 +54,10 @@ export interface LoginRequest {
 
 export interface AuthResponse {
   token: string;
+  type?: string;
   user: User;
   expiresAt: string;
+  message?: string;
 }
 
 export interface OTPRequest {

@@ -9,6 +9,7 @@ import magnolia.datingpulse.DatingPulse.dto.*;
 import magnolia.datingpulse.DatingPulse.entity.User;
 import magnolia.datingpulse.DatingPulse.repositories.UserRepository;
 import magnolia.datingpulse.DatingPulse.service.UserService;
+import magnolia.datingpulse.DatingPulse.mapper.UserMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @RestController
@@ -32,6 +36,7 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
     
     @PostMapping("/register")
     @Operation(summary = "Register new user", description = "Create a new user account with email and password")
@@ -57,7 +62,6 @@ public class AuthController {
                     .status("ACTIVE")
                     .emailVerified(false)
                     .phoneVerified(false)
-                    // .loginAttempt(0) // Field removed from entity
                     .build();
             
             User savedUser = userRepository.save(user);
@@ -65,13 +69,20 @@ public class AuthController {
             // Generate JWT token
             String token = jwtUtil.generateToken(savedUser.getUsername());
             
+            // Calculate expiration time
+            String expiresAt = LocalDateTime.now()
+                    .plusDays(1) // Assuming 24 hours expiration
+                    .atOffset(ZoneOffset.UTC)
+                    .format(DateTimeFormatter.ISO_INSTANT);
+            
+            // Convert User to UserDTO
+            UserDTO userDTO = userMapper.toDTO(savedUser);
+            
             // Create response
             AuthResponse authResponse = AuthResponse.builder()
                     .token(token)
-                    .userId(savedUser.getUserID())
-                    .username(savedUser.getUsername())
-                    .email(savedUser.getEmail())
-                    .role(savedUser.getRole())
+                    .user(userDTO)
+                    .expiresAt(expiresAt)
                     .message("Registration successful")
                     .build();
             
@@ -104,33 +115,31 @@ public class AuthController {
             
             // Update last login
             user.setLastLogin(java.time.LocalDateTime.now());
-            // user.setLoginAttempt(0); // Field removed from entity
             userRepository.save(user);
             
-            // Generate JWT token
-            String token = jwtUtil.generateToken(userDetails);
+            // Generate JWT token - use consistent method
+            String token = jwtUtil.generateToken(user.getUsername());
+            
+            // Calculate expiration time
+            String expiresAt = LocalDateTime.now()
+                    .plusDays(1) // Assuming 24 hours expiration
+                    .atOffset(ZoneOffset.UTC)
+                    .format(DateTimeFormatter.ISO_INSTANT);
+            
+            // Convert User to UserDTO
+            UserDTO userDTO = userMapper.toDTO(user);
             
             // Create response
             AuthResponse authResponse = AuthResponse.builder()
                     .token(token)
-                    .userId(user.getUserID())
-                    .username(user.getUsername())
-                    .email(user.getEmail())
-                    .role(user.getRole())
+                    .user(userDTO)
+                    .expiresAt(expiresAt)
                     .message("Login successful")
                     .build();
             
             return ResponseEntity.ok(authResponse);
             
         } catch (BadCredentialsException e) {
-            // Handle failed login attempt - field removed from entity
-            // userRepository.findByUsername(loginRequest.getUsername())
-            //         .or(() -> userRepository.findByEmail(loginRequest.getUsername()))
-            //         .ifPresent(user -> {
-            //             user.setLoginAttempt(user.getLoginAttempt() + 1);
-            //             userRepository.save(user);
-            //         });
-            
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Invalid username or password"));
         } catch (Exception e) {
@@ -148,5 +157,36 @@ public class AuthController {
             "message", "Logout successful",
             "note", "Client should discard the JWT token"
         ));
+    }
+    
+    @GetMapping("/me")
+    @Operation(summary = "Get current user", description = "Get current authenticated user information")
+    public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
+        try {
+            // Extract token from Authorization header
+            String token = authHeader.replace("Bearer ", "");
+            
+            // Validate token and extract username
+            if (!jwtUtil.validateToken(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Invalid or expired token"));
+            }
+            
+            String username = jwtUtil.extractUsername(token);
+            
+            // Find user in database
+            User user = userRepository.findByUsername(username)
+                    .or(() -> userRepository.findByEmail(username))
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            
+            // Convert User to UserDTO
+            UserDTO userDTO = userMapper.toDTO(user);
+            
+            return ResponseEntity.ok(userDTO);
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Authentication failed: " + e.getMessage()));
+        }
     }
 }

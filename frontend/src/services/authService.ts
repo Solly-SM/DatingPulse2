@@ -7,7 +7,7 @@ const isDevelopment = process.env.NODE_ENV === 'development' || import.meta.env.
 export const authService = {
   async register(data: RegisterRequest): Promise<AuthResponse> {
     try {
-      const response = await api.post('/auth/register', data);
+      const response = await api.post('/api/auth/register', data);
       return response.data;
     } catch (error: any) {
       if (isDevelopment && (error.code === 'ECONNREFUSED' || error.code === 'NETWORK_ERROR')) {
@@ -20,7 +20,7 @@ export const authService = {
 
   async login(data: LoginRequest): Promise<AuthResponse> {
     try {
-      const response = await api.post('/auth/login', data);
+      const response = await api.post('/api/auth/login', data);
       return response.data;
     } catch (error: any) {
       if (isDevelopment && (error.code === 'ECONNREFUSED' || error.code === 'NETWORK_ERROR')) {
@@ -33,7 +33,7 @@ export const authService = {
 
   async logout(): Promise<void> {
     try {
-      await api.post('/auth/logout');
+      await api.post('/api/auth/logout');
     } catch (error) {
       console.warn('Logout API call failed, clearing local storage anyway:', error);
     } finally {
@@ -44,7 +44,7 @@ export const authService = {
 
   async getCurrentUser(): Promise<User> {
     try {
-      const response = await api.get('/auth/me');
+      const response = await api.get('/api/auth/me');
       return response.data;
     } catch (error: any) {
       if (isDevelopment) {
