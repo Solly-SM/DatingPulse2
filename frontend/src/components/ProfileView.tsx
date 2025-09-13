@@ -90,14 +90,15 @@ function ProfileView({ user, onClose, compact = false, hidePhotos = false }: Pro
   };
 
   return (
-    <Paper sx={{ height: '100%', overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
+    <Paper sx={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       {/* Header */}
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center', 
         p: compact ? 1 : 2,
-        borderBottom: '1px solid #e0e0e0'
+        borderBottom: '1px solid #e0e0e0',
+        flexShrink: 0
       }}>
         <Typography variant={compact ? "subtitle1" : "h6"} fontWeight="bold">
           Profile
@@ -117,10 +118,10 @@ function ProfileView({ user, onClose, compact = false, hidePhotos = false }: Pro
         </Box>
       </Box>
 
-      <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+      <Box sx={{ flexGrow: 1, overflow: hidePhotos ? 'auto' : 'hidden', display: 'flex', flexDirection: 'column' }}>
         {/* Photo Carousel - only show if hidePhotos is false */}
         {!hidePhotos && (
-          <Box sx={{ position: 'relative', height: compact ? 200 : 300 }}>
+          <Box sx={{ position: 'relative', height: compact ? 200 : 300, flexShrink: 0 }}>
             <Box
               component="img"
               src={profileUser.photos[currentPhotoIndex]?.url}
@@ -196,8 +197,13 @@ function ProfileView({ user, onClose, compact = false, hidePhotos = false }: Pro
           </Box>
         )}
 
-        {/* Profile Info */}
-        <Box sx={{ p: compact ? 1 : 2 }}>
+        {/* Profile Info - Scrollable when hidePhotos is true */}
+        <Box sx={{ 
+          p: compact ? 1 : 2, 
+          flexGrow: 1, 
+          overflow: hidePhotos ? 'auto' : 'visible',
+          minHeight: 0
+        }}>
           {/* Name and Age */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
             <Typography variant={compact ? "h6" : "h5"} fontWeight="bold">

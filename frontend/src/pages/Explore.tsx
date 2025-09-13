@@ -31,12 +31,19 @@ import {
   LocationOn,
   Settings,
   ArrowBack,
+  Pets,
+  LocalBar,
+  SportsEsports,
+  Psychology,
+  Nature,
+  AutoAwesome,
 } from '@mui/icons-material';
 import { datingService } from '../services/datingService';
 import { DiscoverUser } from '../types/Dating';
 import ProfileView from '../components/ProfileView';
 import PhotoViewer from '../components/PhotoViewer';
 import PulseLogo from '../components/PulseLogo';
+import PulseLoader from '../components/PulseLoader';
 
 // Category definition with icon and description
 interface ExploreCategory {
@@ -135,6 +142,70 @@ const exploreCategories: ExploreCategory[] = [
     color: '#607d8b',
     filterCriteria: {
       interests: ['Reading', 'Technology', 'Business'],
+    },
+  },
+  {
+    id: 'pet-lovers',
+    title: 'Pet Lovers',
+    description: 'Dog and cat enthusiasts',
+    icon: <Pets sx={{ fontSize: 40 }} />,
+    color: '#8bc34a',
+    filterCriteria: {
+      interests: ['Pets', 'Animals', 'Dog Walking'],
+    },
+  },
+  {
+    id: 'nightlife-social',
+    title: 'Nightlife & Social',
+    description: 'Party lovers and social butterflies',
+    icon: <LocalBar sx={{ fontSize: 40 }} />,
+    color: '#ff5722',
+    filterCriteria: {
+      lifestyle: 'Social/Party focused',
+      interests: ['Nightlife', 'Dancing', 'Socializing'],
+    },
+  },
+  {
+    id: 'gaming-tech',
+    title: 'Gaming & Tech',
+    description: 'Gamers and tech enthusiasts',
+    icon: <SportsEsports sx={{ fontSize: 40 }} />,
+    color: '#3f51b5',
+    filterCriteria: {
+      interests: ['Gaming', 'Technology', 'Esports'],
+    },
+  },
+  {
+    id: 'mindful-spiritual',
+    title: 'Mindful & Spiritual',
+    description: 'Meditation and spiritual growth seekers',
+    icon: <Psychology sx={{ fontSize: 40 }} />,
+    color: '#9c27b0',
+    filterCriteria: {
+      lifestyle: 'Mindful/Spiritual',
+      interests: ['Meditation', 'Yoga', 'Spirituality'],
+    },
+  },
+  {
+    id: 'eco-conscious',
+    title: 'Eco-Conscious',
+    description: 'Environmentally aware individuals',
+    icon: <Nature sx={{ fontSize: 40 }} />,
+    color: '#4caf50',
+    filterCriteria: {
+      lifestyle: 'Eco-conscious',
+      interests: ['Environment', 'Sustainability', 'Nature'],
+    },
+  },
+  {
+    id: 'luxury-lifestyle',
+    title: 'Luxury Lifestyle',
+    description: 'Fine dining and luxury experiences',
+    icon: <AutoAwesome sx={{ fontSize: 40 }} />,
+    color: '#ffd700',
+    filterCriteria: {
+      lifestyle: 'Luxury focused',
+      interests: ['Fine Dining', 'Luxury Travel', 'Fashion'],
     },
   },
 ];
@@ -263,9 +334,9 @@ function Explore() {
 
   if (loading) {
     return (
-      <Box sx={{ p: 4 }}>
-        <LinearProgress sx={{ mb: 4 }} />
-        <Typography variant="h6" textAlign="center" color="text.secondary">
+      <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+        <PulseLoader visible={true} size={80} />
+        <Typography variant="h6" sx={{ mt: 2, textAlign: 'center', color: 'text.secondary' }}>
           Finding amazing people in {selectedCategory?.title}...
         </Typography>
       </Box>

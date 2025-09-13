@@ -73,8 +73,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         
         {/* Page content */}
         <Box sx={{ 
-          p: { xs: 2, md: 4 },
-          pt: { xs: 1, md: 4 } 
+          p: { xs: 1, md: 2 },
+          pt: { xs: 0.5, md: 1 } 
         }}>
           {children}
         </Box>
