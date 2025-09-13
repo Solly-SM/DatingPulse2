@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline, Box } from '@mui/material';
 import { AuthProvider } from './contexts/AuthContext';
 import { usePerformanceMonitoring } from './hooks/usePerformanceMonitoring';
 import ProtectedRoute from './components/ProtectedRoute';
-import Navbar from './components/Navbar';
+import Layout from './components/Layout';
+import LoadingScreen from './components/LoadingScreen';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import MultiStepRegister from './components/MultiStepRegister';
@@ -245,6 +246,38 @@ const theme = createTheme({
 function App() {
   // Monitor performance in development
   usePerformanceMonitoring();
+  
+  const [isLoading, setIsLoading] = useState(true);
+  const [appInitialized, setAppInitialized] = useState(false);
+
+  useEffect(() => {
+    // Simulate app initialization
+    const initializeApp = async () => {
+      // Add any actual initialization logic here
+      // For now, just simulate loading time
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setAppInitialized(true);
+    };
+
+    initializeApp();
+  }, []);
+
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+  };
+
+  // Show loading screen if app is not initialized or still loading
+  if (!appInitialized || isLoading) {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <LoadingScreen 
+          onComplete={handleLoadingComplete}
+          duration={2500}
+        />
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -260,72 +293,51 @@ function App() {
               <Route path="/demo-old" element={<ProfileStepsDemo />} />
               <Route path="/dashboard" element={
                 <ProtectedRoute>
-                  <>
-                    <Navbar />
-                    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                      <Dashboard />
-                    </Box>
-                  </>
+                  <Layout>
+                    <Dashboard />
+                  </Layout>
                 </ProtectedRoute>
               } />
               <Route path="/profile" element={
                 <ProtectedRoute>
-                  <>
-                    <Navbar />
-                    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                      <Profile />
-                    </Box>
-                  </>
+                  <Layout>
+                    <Profile />
+                  </Layout>
                 </ProtectedRoute>
               } />
               <Route path="/discover" element={
                 <ProtectedRoute>
-                  <>
-                    <Navbar />
-                    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                      <Discover />
-                    </Box>
-                  </>
+                  <Layout>
+                    <Discover />
+                  </Layout>
                 </ProtectedRoute>
               } />
               <Route path="/matches" element={
                 <ProtectedRoute>
-                  <>
-                    <Navbar />
-                    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                      <Matches />
-                    </Box>
-                  </>
+                  <Layout>
+                    <Matches />
+                  </Layout>
                 </ProtectedRoute>
               } />
               <Route path="/messages" element={
                 <ProtectedRoute>
-                  <>
-                    <Navbar />
-                    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                      <Messages />
-                    </Box>
-                  </>
+                  <Layout>
+                    <Messages />
+                  </Layout>
                 </ProtectedRoute>
               } />
               <Route path="/chat/:conversationId" element={
                 <ProtectedRoute>
-                  <>
-                    <Navbar />
-                    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                      <Chat />
-                    </Box>
-                  </>
+                  <Layout>
+                    <Chat />
+                  </Layout>
                 </ProtectedRoute>
               } />
               <Route path="/settings" element={
                 <ProtectedRoute>
-                  <>
-                    <Navbar />
-                    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                      <Settings />
-                    </Box>
-                  </>
+                  <Layout>
+                    <Settings />
+                  </Layout>
                 </ProtectedRoute>
               } />
               <Route path="*" element={<Navigate to="/" replace />} />
