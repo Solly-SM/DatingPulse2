@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline, Box } from '@mui/material';
 import { AuthProvider } from './contexts/AuthContext';
+import { usePerformanceMonitoring } from './hooks/usePerformanceMonitoring';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import LandingPage from './pages/LandingPage';
@@ -18,7 +19,10 @@ import Messages from './pages/Messages';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import './App.css';
-import './demo/demoAuth'; // Import demo auth for development
+// Conditionally import demo auth only in development
+if (process.env.NODE_ENV === 'development') {
+  import('./demo/demoAuth');
+}
 
 const theme = createTheme({
   palette: {
@@ -43,6 +47,9 @@ const theme = createTheme({
 });
 
 function App() {
+  // Monitor performance in development
+  usePerformanceMonitoring();
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

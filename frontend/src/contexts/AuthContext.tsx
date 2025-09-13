@@ -19,18 +19,35 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Changed from true to false
 
   useEffect(() => {
-    // Check if user is already logged in
-    const storedUser = authService.getStoredUser();
-    if (storedUser && authService.isAuthenticated()) {
-      setUser(storedUser);
-    }
-    setLoading(false);
+    // Check if user is already logged in (non-blocking)
+    const initializeAuth = async () => {
+      try {
+        const storedUser = authService.getStoredUser();
+        if (storedUser && authService.isAuthenticated()) {
+          setUser(storedUser);
+          // Optionally validate token with backend in background (non-blocking)
+          setTimeout(async () => {
+            try {
+              await authService.getCurrentUser();
+            } catch (error) {
+              console.warn('Token validation failed, user may need to re-login:', error);
+              // Don't logout automatically to avoid disruption
+            }
+          }, 100);
+        }
+      } catch (error) {
+        console.warn('Auth initialization failed:', error);
+      }
+    };
+    
+    initializeAuth();
   }, []);
 
   const login = async (credentials: LoginRequest) => {
+    setLoading(true);
     try {
       const authResponse: AuthResponse = await authService.login(credentials);
       authService.storeAuth(authResponse);
@@ -38,10 +55,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const register = async (userData: RegisterRequest) => {
+    setLoading(true);
     try {
       const authResponse: AuthResponse = await authService.register(userData);
       authService.storeAuth(authResponse);
@@ -49,6 +69,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       console.error('Registration failed:', error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
