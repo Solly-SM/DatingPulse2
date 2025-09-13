@@ -265,9 +265,14 @@ function RegistrationModal({ open, onClose, email }: RegistrationModalProps) {
   return (
     <Dialog 
       open={open} 
-      onClose={handleClose}
+      onClose={(event, reason) => {
+        if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
+          handleClose();
+        }
+      }}
       maxWidth="sm"
       fullWidth
+      disableEscapeKeyDown
       PaperProps={{
         sx: {
           borderRadius: 3,

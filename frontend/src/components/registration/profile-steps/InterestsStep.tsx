@@ -23,29 +23,29 @@ interface InterestsStepProps {
 }
 
 const interestCategories = {
-  'Creativity': [
-    'Art', 'Photography', 'Writing', 'Music', 'Drawing', 'Crafts', 'Design', 'Poetry', 'Singing', 'Dancing'
+  '🎨 Creativity': [
+    '🎨 Art', '📸 Photography', '✍️ Writing', '🎵 Music', '🖊️ Drawing', '🧵 Crafts', '🎨 Design', '📝 Poetry', '🎤 Singing', '💃 Dancing'
   ],
-  'Fan Favorites': [
-    'Movies', 'TV Shows', 'Anime', 'Comics', 'Books', 'Podcasts', 'YouTube', 'Netflix', 'Gaming Streams', 'Documentaries'
+  '⭐ Fan Favorites': [
+    '🎬 Movies', '📺 TV Shows', '🌸 Anime', '📚 Comics', '📖 Books', '🎧 Podcasts', '📱 YouTube', '🎬 Netflix', '🎮 Gaming Streams', '📽️ Documentaries'
   ],
-  'Food & Drink': [
-    'Cooking', 'Baking', 'Wine Tasting', 'Coffee', 'Beer', 'Cocktails', 'Food Trucks', 'Fine Dining', 'BBQ', 'Vegetarian'
+  '🍽️ Food & Drink': [
+    '👨‍🍳 Cooking', '🧁 Baking', '🍷 Wine Tasting', '☕ Coffee', '🍺 Beer', '🍸 Cocktails', '🚚 Food Trucks', '🍽️ Fine Dining', '🔥 BBQ', '🥗 Vegetarian'
   ],
-  'Gaming': [
-    'Video Games', 'Board Games', 'Card Games', 'PC Gaming', 'Console Gaming', 'Mobile Games', 'VR Gaming', 'Esports', 'Retro Games', 'RPGs'
+  '🎮 Gaming': [
+    '🎮 Video Games', '🎲 Board Games', '🃏 Card Games', '💻 PC Gaming', '🎮 Console Gaming', '📱 Mobile Games', '🥽 VR Gaming', '🏆 Esports', '👾 Retro Games', '🗡️ RPGs'
   ],
-  'Sports & Fitness': [
-    'Running', 'Gym', 'Yoga', 'Swimming', 'Football', 'Basketball', 'Tennis', 'Cycling', 'Hiking', 'Rock Climbing'
+  '💪 Sports & Fitness': [
+    '🏃‍♂️ Running', '💪 Gym', '🧘‍♀️ Yoga', '🏊‍♂️ Swimming', '🏈 Football', '🏀 Basketball', '🎾 Tennis', '🚴‍♂️ Cycling', '🥾 Hiking', '🧗‍♂️ Rock Climbing'
   ],
-  'Travel & Adventure': [
-    'Travel', 'Adventure', 'Camping', 'Backpacking', 'Road Trips', 'Beaches', 'Mountains', 'Cities', 'Nature', 'Exploration'
+  '✈️ Travel & Adventure': [
+    '✈️ Travel', '🏔️ Adventure', '🏕️ Camping', '🎒 Backpacking', '🚗 Road Trips', '🏖️ Beaches', '⛰️ Mountains', '🏙️ Cities', '🌿 Nature', '🗺️ Exploration'
   ],
-  'Learning & Growth': [
-    'Reading', 'Languages', 'Science', 'History', 'Philosophy', 'Psychology', 'Self-improvement', 'Meditation', 'Spirituality', 'Technology'
+  '📚 Learning & Growth': [
+    '📚 Reading', '🗣️ Languages', '🔬 Science', '🏛️ History', '🤔 Philosophy', '🧠 Psychology', '🌱 Self-improvement', '🧘‍♂️ Meditation', '🙏 Spirituality', '💻 Technology'
   ],
-  'Social & Lifestyle': [
-    'Parties', 'Nightlife', 'Concerts', 'Festivals', 'Fashion', 'Shopping', 'Volunteering', 'Social Causes', 'Politics', 'Activism'
+  '🎉 Social & Lifestyle': [
+    '🎉 Parties', '🌃 Nightlife', '🎵 Concerts', '🎪 Festivals', '👗 Fashion', '🛍️ Shopping', '🤝 Volunteering', '❤️ Social Causes', '🗳️ Politics', '✊ Activism'
   ]
 };
 
