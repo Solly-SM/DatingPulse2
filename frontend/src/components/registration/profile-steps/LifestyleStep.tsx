@@ -30,13 +30,24 @@ interface LifestyleStepProps {
   loading: boolean;
 }
 
-const petOptions = ['Love them', 'Have pets', 'Allergic', 'Not a fan', 'Want pets'];
-const drinkingOptions = ['Never', 'Rarely', 'Socially', 'Regularly', 'Prefer not to say'];
-const smokingOptions = ['Never', 'Socially', 'Regularly', 'Trying to quit', 'Prefer not to say'];
-const workoutOptions = ['Daily', 'Often', 'Sometimes', 'Rarely', 'Never'];
-const dietOptions = ['Omnivore', 'Vegetarian', 'Vegan', 'Pescatarian', 'Keto', 'Paleo', 'Other'];
-const socialMediaOptions = ['Very active', 'Active', 'Rarely use', 'Not on social media'];
-const sleepOptions = ['Early bird', 'Night owl', 'Depends on the day', 'Inconsistent schedule'];
+const petOptions = [
+  '❤️ Love them', 
+  '🐕 Have dogs', 
+  '🐱 Have cats', 
+  '🐰 Have small pets (rabbits, hamsters, etc.)', 
+  '🐦 Have birds', 
+  '🐢 Have reptiles/amphibians', 
+  '🐠 Have fish', 
+  '🤧 Allergic', 
+  '🚫 Not a fan', 
+  '💭 Want pets someday'
+];
+const drinkingOptions = ['🚫 Never', '🍷 Rarely', '🥂 Socially', '🍺 Regularly', '🤐 Prefer not to say'];
+const smokingOptions = ['🚫 Never', '🚬 Socially', '🚬 Regularly', '🚭 Trying to quit', '🤐 Prefer not to say'];
+const workoutOptions = ['💪 Daily', '🏃‍♂️ Often', '🚶‍♂️ Sometimes', '🛋️ Rarely', '😴 Never'];
+const dietOptions = ['🍖 Omnivore', '🥗 Vegetarian', '🌱 Vegan', '🐟 Pescatarian', '🥑 Keto', '🍎 Paleo', '🤷‍♂️ Other'];
+const socialMediaOptions = ['📱 Very active', '📲 Active', '🤳 Rarely use', '🚫 Not on social media'];
+const sleepOptions = ['🌅 Early bird', '🦉 Night owl', '🤷‍♂️ Depends on the day', '😵‍💫 Inconsistent schedule'];
 
 const languageOptions = [
   'English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Russian', 'Chinese',
@@ -86,9 +97,11 @@ function LifestyleStep({ data, onComplete, onBack, loading }: LifestyleStepProps
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
-            <InputLabel>Pets</InputLabel>
+            <InputLabel id="pets-label">🐾 Pets</InputLabel>
             <Select
               name="pets"
+              labelId="pets-label"
+              label="🐾 Pets"
               value={formData.pets || ''}
               onChange={handleSelectChange}
               disabled={loading}
@@ -101,9 +114,11 @@ function LifestyleStep({ data, onComplete, onBack, loading }: LifestyleStepProps
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
-            <InputLabel>Drinking</InputLabel>
+            <InputLabel id="drinking-label">🍷 Drinking</InputLabel>
             <Select
               name="drinking"
+              labelId="drinking-label"
+              label="🍷 Drinking"
               value={formData.drinking || ''}
               onChange={handleSelectChange}
               disabled={loading}
@@ -116,9 +131,11 @@ function LifestyleStep({ data, onComplete, onBack, loading }: LifestyleStepProps
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
-            <InputLabel>Smoking</InputLabel>
+            <InputLabel id="smoking-label">🚬 Smoking</InputLabel>
             <Select
               name="smoking"
+              labelId="smoking-label"
+              label="🚬 Smoking"
               value={formData.smoking || ''}
               onChange={handleSelectChange}
               disabled={loading}
@@ -131,9 +148,11 @@ function LifestyleStep({ data, onComplete, onBack, loading }: LifestyleStepProps
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
-            <InputLabel>Workout Frequency</InputLabel>
+            <InputLabel id="workout-label">💪 Workout Frequency</InputLabel>
             <Select
               name="workout"
+              labelId="workout-label"
+              label="💪 Workout Frequency"
               value={formData.workout || ''}
               onChange={handleSelectChange}
               disabled={loading}
@@ -146,9 +165,11 @@ function LifestyleStep({ data, onComplete, onBack, loading }: LifestyleStepProps
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
-            <InputLabel>Dietary Preference</InputLabel>
+            <InputLabel id="diet-label">🥗 Dietary Preference</InputLabel>
             <Select
               name="dietaryPreference"
+              labelId="diet-label"
+              label="🥗 Dietary Preference"
               value={formData.dietaryPreference || ''}
               onChange={handleSelectChange}
               disabled={loading}
@@ -161,9 +182,11 @@ function LifestyleStep({ data, onComplete, onBack, loading }: LifestyleStepProps
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
-            <InputLabel>Social Media Usage</InputLabel>
+            <InputLabel id="social-media-label">📱 Social Media Usage</InputLabel>
             <Select
               name="socialMedia"
+              labelId="social-media-label"
+              label="📱 Social Media Usage"
               value={formData.socialMedia || ''}
               onChange={handleSelectChange}
               disabled={loading}
@@ -176,9 +199,11 @@ function LifestyleStep({ data, onComplete, onBack, loading }: LifestyleStepProps
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <InputLabel>Sleeping Habits</InputLabel>
+            <InputLabel id="sleep-label">😴 Sleeping Habits</InputLabel>
             <Select
               name="sleepingHabits"
+              labelId="sleep-label"
+              label="😴 Sleeping Habits"
               value={formData.sleepingHabits || ''}
               onChange={handleSelectChange}
               disabled={loading}
@@ -191,7 +216,7 @@ function LifestyleStep({ data, onComplete, onBack, loading }: LifestyleStepProps
         </Grid>
         <Grid item xs={12}>
           <Typography variant="subtitle2" gutterBottom>
-            Languages (Select up to 5)
+            🗣️ Languages (Select up to 5)
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
             {languageOptions.map((language) => {

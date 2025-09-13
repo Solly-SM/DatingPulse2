@@ -106,9 +106,14 @@ function LoginModal({ open, onClose }: LoginModalProps) {
     <>
       <Dialog 
         open={open && !showRegistration} 
-        onClose={handleClose}
+        onClose={(event, reason) => {
+          if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
+            handleClose();
+          }
+        }}
         maxWidth="sm"
         fullWidth
+        disableEscapeKeyDown
         PaperProps={{
           sx: {
             borderRadius: 3,
