@@ -20,17 +20,11 @@ public class AuthResponse {
     @Builder.Default
     private String type = "Bearer";
     
-    @Schema(description = "User ID", example = "1")
-    private Long userId;
+    @Schema(description = "User information")
+    private UserDTO user;
     
-    @Schema(description = "Username", example = "john_doe")
-    private String username;
-    
-    @Schema(description = "Email address", example = "john.doe@example.com")
-    private String email;
-    
-    @Schema(description = "User role", example = "USER")
-    private String role;
+    @Schema(description = "Token expiration time", example = "2024-01-01T23:59:59Z")
+    private String expiresAt;
     
     @Schema(description = "Authentication success message", example = "Login successful")
     private String message;
