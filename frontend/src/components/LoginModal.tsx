@@ -17,6 +17,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import OTPInput from './OTPInput';
+import RegistrationModal from './RegistrationModal';
 
 interface LoginModalProps {
   open: boolean;
@@ -32,6 +33,7 @@ function LoginModal({ open, onClose }: LoginModalProps) {
   const [showOTP, setShowOTP] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
   const [isExistingUser, setIsExistingUser] = useState(false);
+  const [showRegistration, setShowRegistration] = useState(false);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,9 +76,9 @@ function LoginModal({ open, onClose }: LoginModalProps) {
         onClose();
         navigate('/dashboard');
       } else {
-        // New user - go to registration flow
-        onClose();
-        navigate('/register', { state: { email } });
+        // New user - show registration modal
+        setShowOTP(false);
+        setShowRegistration(true);
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'OTP verification failed. Please try again.');
@@ -91,23 +93,30 @@ function LoginModal({ open, onClose }: LoginModalProps) {
     setShowOTP(false);
     setOtpLoading(false);
     setIsExistingUser(false);
+    setShowRegistration(false);
     onClose();
   };
 
+  const handleRegistrationClose = () => {
+    setShowRegistration(false);
+    handleClose();
+  };
+
   return (
-    <Dialog 
-      open={open} 
-      onClose={handleClose}
-      maxWidth="sm"
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 3,
-          minHeight: 400,
-        }
-      }}
-    >
-      <DialogTitle sx={{ textAlign: 'center', pb: 1, position: 'relative' }}>
+    <>
+      <Dialog 
+        open={open && !showRegistration} 
+        onClose={handleClose}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            minHeight: 400,
+          }
+        }}
+      >
+        <DialogTitle sx={{ textAlign: 'center', pb: 1, position: 'relative' }}>
         <IconButton
           aria-label="close"
           onClick={handleClose}
@@ -234,7 +243,14 @@ function LoginModal({ open, onClose }: LoginModalProps) {
           </Box>
         )}
       </DialogContent>
-    </Dialog>
+      </Dialog>
+
+      <RegistrationModal 
+        open={showRegistration}
+        onClose={handleRegistrationClose}
+        email={email}
+      />
+    </>
   );
 }
 
