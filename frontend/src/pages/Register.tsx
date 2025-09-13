@@ -66,17 +66,56 @@ function Register() {
           alignItems: 'center',
         }}
       >
-        <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 3 }}>
-            <Favorite sx={{ fontSize: 40, color: 'primary.main', mr: 1 }} />
-            <Typography component="h1" variant="h4">
+        <Paper 
+          elevation={3} 
+          sx={{ 
+            padding: 5, 
+            width: '100%',
+            borderRadius: 4,
+            background: 'linear-gradient(135deg, #ffffff 0%, #fafbfc 100%)',
+            boxShadow: '0px 12px 40px rgba(0, 0, 0, 0.1)',
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 4 }}>
+            <Favorite sx={{ fontSize: 50, color: 'primary.main', mr: 2 }} />
+            <Typography 
+              component="h1" 
+              variant="h3"
+              sx={{
+                fontWeight: 700,
+                background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
               DatingPulse
             </Typography>
           </Box>
           
-          <Typography component="h2" variant="h5" align="center" sx={{ mb: 3 }}>
-            Join DatingPulse
-          </Typography>
+          <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <Typography 
+              component="h2" 
+              variant="h4" 
+              sx={{ 
+                mb: 2,
+                fontWeight: 600,
+                color: 'text.primary',
+              }}
+            >
+              Join DatingPulse
+            </Typography>
+            <Typography 
+              variant="body1" 
+              color="text.secondary"
+              sx={{ 
+                fontSize: '1.1rem',
+                lineHeight: 1.6,
+              }}
+            >
+              Start your journey to find meaningful connections
+            </Typography>
+          </Box>
 
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -84,7 +123,7 @@ function Register() {
             </Alert>
           )}
 
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
             <TextField
               margin="normal"
               required
@@ -96,6 +135,14 @@ function Register() {
               autoFocus
               value={formData.username}
               onChange={handleChange}
+              sx={{
+                mb: 3,
+                '& .MuiOutlinedInput-root': {
+                  fontSize: '1.1rem',
+                  py: 0.5,
+                },
+              }}
+              placeholder="Choose a unique username"
             />
             <TextField
               margin="normal"
@@ -108,6 +155,14 @@ function Register() {
               type="email"
               value={formData.email}
               onChange={handleChange}
+              sx={{
+                mb: 3,
+                '& .MuiOutlinedInput-root': {
+                  fontSize: '1.1rem',
+                  py: 0.5,
+                },
+              }}
+              placeholder="your.email@example.com"
             />
             <TextField
               margin="normal"
@@ -119,6 +174,13 @@ function Register() {
               value={formData.phone}
               onChange={handleChange}
               placeholder="0821234567"
+              sx={{
+                mb: 3,
+                '& .MuiOutlinedInput-root': {
+                  fontSize: '1.1rem',
+                  py: 0.5,
+                },
+              }}
             />
             <TextField
               margin="normal"
@@ -131,6 +193,14 @@ function Register() {
               autoComplete="new-password"
               value={formData.password}
               onChange={handleChange}
+              sx={{
+                mb: 3,
+                '& .MuiOutlinedInput-root': {
+                  fontSize: '1.1rem',
+                  py: 0.5,
+                },
+              }}
+              placeholder="Create a strong password"
             />
             <TextField
               margin="normal"
@@ -142,12 +212,34 @@ function Register() {
               id="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
+              sx={{
+                mb: 4,
+                '& .MuiOutlinedInput-root': {
+                  fontSize: '1.1rem',
+                  py: 0.5,
+                },
+              }}
+              placeholder="Re-enter your password"
             />
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ 
+                mt: 2, 
+                mb: 3,
+                py: 1.5,
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                borderRadius: 3,
+                background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #c2185b 0%, #e91e63 100%)',
+                  transform: 'translateY(-1px)',
+                  boxShadow: '0px 6px 20px rgba(233, 30, 99, 0.4)',
+                },
+                transition: 'all 0.2s ease-in-out',
+              }}
               disabled={loading}
             >
               {loading ? 'Creating Account...' : 'Sign Up'}
@@ -158,6 +250,15 @@ function Register() {
                 variant="body2"
                 onClick={() => navigate('/login')}
                 type="button"
+                sx={{
+                  fontSize: '1rem',
+                  fontWeight: 500,
+                  color: 'primary.main',
+                  textDecorationColor: 'primary.main',
+                  '&:hover': {
+                    color: 'primary.dark',
+                  },
+                }}
               >
                 Already have an account? Sign In
               </Link>

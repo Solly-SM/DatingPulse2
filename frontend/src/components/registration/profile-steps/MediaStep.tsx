@@ -127,27 +127,95 @@ function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit}>
-      <Typography variant="h6" gutterBottom>
-        Photos & Audio Intro
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Upload photos that show your personality and add an audio intro to stand out!
-      </Typography>
+    <Box 
+      component="form" 
+      onSubmit={handleSubmit}
+      sx={{
+        background: 'linear-gradient(135deg, #ffffff 0%, #fafbfc 100%)',
+        borderRadius: 4,
+        p: 4,
+        border: '1px solid',
+        borderColor: 'divider',
+      }}
+    >
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography 
+          variant="h4" 
+          gutterBottom
+          sx={{ 
+            fontWeight: 700, 
+            color: 'primary.main',
+            background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            mb: 2,
+          }}
+        >
+          Photos & Audio Intro
+        </Typography>
+        <Typography 
+          variant="body1" 
+          color="text.secondary" 
+          sx={{ 
+            fontSize: '1.1rem',
+            fontWeight: 400,
+            lineHeight: 1.6,
+            maxWidth: 600,
+            mx: 'auto',
+          }}
+        >
+          Upload photos that showcase your personality and add an audio intro to make your profile stand out!
+        </Typography>
+      </Box>
 
       {/* Photo Upload Section */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="subtitle1" gutterBottom>
-          Photos (1-6) {formErrors.photos && <span style={{ color: 'red' }}>*</span>}
+      <Box sx={{ mb: 6 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              fontWeight: 600,
+              color: 'text.primary',
+            }}
+          >
+            Photos (1-6 required)
+          </Typography>
+          {formErrors.photos && (
+            <Typography variant="body2" color="error" sx={{ fontWeight: 500 }}>
+              *{formErrors.photos}
+            </Typography>
+          )}
+        </Box>
+        <Typography 
+          variant="body2" 
+          color="text.secondary" 
+          sx={{ 
+            mb: 4,
+            fontSize: '0.95rem',
+            lineHeight: 1.6,
+          }}
+        >
+          Choose photos that show your face clearly and represent your personality. The first photo will be your main profile photo.
         </Typography>
-        <Grid container spacing={2}>
+        
+        <Grid container spacing={3} sx={{ mb: 2 }}>
           {formData.photos.map((photo, index) => (
-            <Grid item xs={4} sm={3} md={2} key={index}>
+            <Grid item xs={6} sm={4} md={3} key={index}>
               <Paper
                 sx={{
                   position: 'relative',
                   paddingTop: '100%',
                   overflow: 'hidden',
+                  borderRadius: 3,
+                  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                  border: formData.profilePhotoIndex === index ? '3px solid' : '1px solid',
+                  borderColor: formData.profilePhotoIndex === index ? 'primary.main' : 'divider',
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.15)',
+                  },
                 }}
               >
                 <Avatar
@@ -158,19 +226,24 @@ function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    borderRadius: 1,
-                    border: formData.profilePhotoIndex === index ? '3px solid' : 'none',
-                    borderColor: 'primary.main'
+                    borderRadius: 3,
                   }}
                   variant="rounded"
                 />
                 <IconButton
                   sx={{
                     position: 'absolute',
-                    top: 4,
-                    right: 4,
-                    backgroundColor: 'rgba(255,255,255,0.8)',
-                    '&:hover': { backgroundColor: 'rgba(255,255,255,0.9)' },
+                    top: 8,
+                    right: 8,
+                    backgroundColor: 'rgba(255,255,255,0.9)',
+                    color: 'error.main',
+                    width: 32,
+                    height: 32,
+                    '&:hover': { 
+                      backgroundColor: 'rgba(255,255,255,1)',
+                      transform: 'scale(1.1)',
+                    },
+                    transition: 'all 0.2s ease-in-out',
                   }}
                   size="small"
                   onClick={() => removePhoto(index)}
@@ -182,41 +255,50 @@ function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
                     size="small"
                     sx={{
                       position: 'absolute',
-                      bottom: 4,
-                      left: 4,
-                      right: 4,
-                      backgroundColor: 'rgba(0,0,0,0.7)',
+                      bottom: 8,
+                      left: 8,
+                      right: 8,
+                      backgroundColor: 'rgba(0,0,0,0.8)',
                       color: 'white',
-                      fontSize: '0.7rem'
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      py: 0.5,
+                      borderRadius: 2,
+                      '&:hover': {
+                        backgroundColor: 'primary.main',
+                      },
+                      transition: 'all 0.2s ease-in-out',
                     }}
                     onClick={() => setAsProfilePhoto(index)}
                   >
-                    Set as Profile
+                    Set as Main
                   </Button>
                 )}
                 {formData.profilePhotoIndex === index && (
                   <Box
                     sx={{
                       position: 'absolute',
-                      bottom: 4,
-                      left: 4,
-                      right: 4,
+                      bottom: 8,
+                      left: 8,
+                      right: 8,
                       backgroundColor: 'primary.main',
                       color: 'white',
                       textAlign: 'center',
-                      py: 0.5,
-                      fontSize: '0.7rem',
-                      fontWeight: 'bold'
+                      py: 0.8,
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      borderRadius: 2,
+                      boxShadow: '0px 2px 8px rgba(233, 30, 99, 0.4)',
                     }}
                   >
-                    Profile Photo
+                    MAIN PHOTO
                   </Box>
                 )}
               </Paper>
             </Grid>
           ))}
           {formData.photos.length < 6 && (
-            <Grid item xs={4} sm={3} md={2}>
+            <Grid item xs={6} sm={4} md={3}>
               <input
                 accept="image/*"
                 style={{ display: 'none' }}
@@ -233,10 +315,18 @@ function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: 'pointer',
-                    border: '2px dashed',
-                    borderColor: 'grey.400',
-                    '&:hover': { borderColor: 'primary.main' },
+                    border: '3px dashed',
+                    borderColor: 'primary.light',
+                    borderRadius: 3,
+                    backgroundColor: 'rgba(233, 30, 99, 0.02)',
                     position: 'relative',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': { 
+                      borderColor: 'primary.main',
+                      backgroundColor: 'rgba(233, 30, 99, 0.08)',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0px 8px 24px rgba(233, 30, 99, 0.15)',
+                    },
                   }}
                 >
                   <Box
@@ -248,9 +338,31 @@ function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
                       textAlign: 'center',
                     }}
                   >
-                    <PhotoCamera color="action" />
-                    <Typography variant="caption" display="block">
+                    <PhotoCamera 
+                      sx={{ 
+                        fontSize: 40, 
+                        color: 'primary.main',
+                        mb: 1,
+                      }} 
+                    />
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        fontWeight: 600,
+                        color: 'primary.main',
+                      }}
+                    >
                       Add Photo
+                    </Typography>
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        color: 'text.secondary',
+                        display: 'block',
+                        mt: 0.5,
+                      }}
+                    >
+                      {6 - formData.photos.length} left
                     </Typography>
                   </Box>
                 </Paper>
@@ -258,23 +370,46 @@ function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
             </Grid>
           )}
         </Grid>
-        {formErrors.photos && (
-          <Typography variant="caption" color="error">
-            {formErrors.photos}
-          </Typography>
-        )}
       </Box>
 
       {/* Audio Intro Section */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="subtitle1" gutterBottom>
+      <Box sx={{ mb: 6 }}>
+        <Typography 
+          variant="h5" 
+          gutterBottom
+          sx={{ 
+            fontWeight: 600,
+            color: 'text.primary',
+            mb: 2,
+          }}
+        >
           Audio Intro (Optional)
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Record a short audio introduction to let your personality shine through!
+        <Typography 
+          variant="body2" 
+          color="text.secondary" 
+          sx={{ 
+            mb: 4,
+            fontSize: '0.95rem',
+            lineHeight: 1.6,
+          }}
+        >
+          Record a short audio introduction (30-60 seconds) to let your personality shine through and make your profile more engaging!
         </Typography>
         
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 2, 
+            flexWrap: 'wrap',
+            p: 3,
+            borderRadius: 3,
+            backgroundColor: 'rgba(233, 30, 99, 0.02)',
+            border: '1px solid',
+            borderColor: 'rgba(233, 30, 99, 0.1)',
+          }}
+        >
           {!formData.audioIntro ? (
             <Button
               variant={isRecording ? "contained" : "outlined"}
@@ -282,6 +417,22 @@ function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
               startIcon={isRecording ? <Stop /> : <Mic />}
               onClick={isRecording ? stopRecording : startRecording}
               disabled={loading}
+              sx={{
+                borderRadius: 2,
+                px: 3,
+                py: 1.5,
+                fontSize: '1rem',
+                fontWeight: 600,
+                ...(isRecording && {
+                  background: 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)',
+                  animation: 'pulse 1.5s infinite',
+                  '@keyframes pulse': {
+                    '0%': { boxShadow: '0 0 0 0 rgba(231, 76, 60, 0.7)' },
+                    '70%': { boxShadow: '0 0 0 10px rgba(231, 76, 60, 0)' },
+                    '100%': { boxShadow: '0 0 0 0 rgba(231, 76, 60, 0)' },
+                  },
+                }),
+              }}
             >
               {isRecording ? 'Stop Recording' : 'Start Recording'}
             </Button>
@@ -292,6 +443,13 @@ function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
                 startIcon={<PlayArrow />}
                 onClick={playAudio}
                 disabled={loading}
+                sx={{
+                  borderRadius: 2,
+                  px: 3,
+                  py: 1.5,
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                }}
               >
                 Play Audio
               </Button>
@@ -301,6 +459,13 @@ function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
                 startIcon={<Close />}
                 onClick={removeAudio}
                 disabled={loading}
+                sx={{
+                  borderRadius: 2,
+                  px: 3,
+                  py: 1.5,
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                }}
               >
                 Remove
               </Button>
@@ -309,6 +474,13 @@ function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
                 startIcon={<Mic />}
                 onClick={startRecording}
                 disabled={loading || isRecording}
+                sx={{
+                  borderRadius: 2,
+                  px: 3,
+                  py: 1.5,
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                }}
               >
                 Record New
               </Button>
@@ -317,22 +489,64 @@ function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
         </Box>
         
         {isRecording && (
-          <Alert severity="info" sx={{ mt: 2 }}>
-            Recording... Speak clearly and introduce yourself!
+          <Alert 
+            severity="info" 
+            sx={{ 
+              mt: 3,
+              borderRadius: 2,
+              backgroundColor: 'rgba(52, 152, 219, 0.08)',
+              border: '1px solid rgba(52, 152, 219, 0.2)',
+              '& .MuiAlert-icon': {
+                color: '#3498db',
+              },
+            }}
+          >
+            <Typography sx={{ fontWeight: 500 }}>
+              🎙️ Recording in progress... Speak clearly and introduce yourself! Share what makes you unique.
+            </Typography>
           </Alert>
         )}
       </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-        <Button onClick={onBack} disabled={loading}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 5 }}>
+        <Button 
+          onClick={onBack} 
+          disabled={loading}
+          variant="outlined"
+          sx={{
+            borderRadius: 3,
+            px: 4,
+            py: 1.5,
+            fontSize: '1rem',
+            fontWeight: 600,
+          }}
+        >
           Back
         </Button>
         <Button
           type="submit"
           variant="contained"
           disabled={loading}
+          sx={{
+            borderRadius: 3,
+            px: 4,
+            py: 1.5,
+            fontSize: '1rem',
+            fontWeight: 600,
+            background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
+            '&:hover': {
+              background: 'linear-gradient(135deg, #c2185b 0%, #e91e63 100%)',
+              transform: 'translateY(-1px)',
+              boxShadow: '0px 6px 20px rgba(233, 30, 99, 0.4)',
+            },
+            '&:disabled': {
+              background: '#e0e0e0',
+              color: '#9e9e9e',
+            },
+            transition: 'all 0.2s ease-in-out',
+          }}
         >
-          Complete Profile
+          {loading ? 'Creating Profile...' : 'Complete Profile'}
         </Button>
       </Box>
     </Box>
