@@ -12,7 +12,7 @@ import Login from './pages/Login';
 import MultiStepRegister from './components/MultiStepRegister';
 import ProfileStepsDemo from './pages/ProfileStepsDemo';
 import ModernProfileStepsDemo from './pages/ModernProfileStepsDemo';
-import Dashboard from './pages/Dashboard';
+
 import Home from './pages/Home';
 import Explore from './pages/Explore';
 import Profile from './pages/Profile';
@@ -315,13 +315,6 @@ function App() {
                   </Layout>
                 </ProtectedRoute>
               } />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Dashboard />
-                  </Layout>
-                </ProtectedRoute>
-              } />
               <Route path="/profile" element={
                 <ProtectedRoute>
                   <Layout>
@@ -365,6 +358,7 @@ function App() {
                 </ProtectedRoute>
               } />
               {/* Redirects for old routes */}
+              <Route path="/dashboard" element={<Navigate to="/home" replace />} />
               <Route path="/discover" element={<Navigate to="/explore" replace />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

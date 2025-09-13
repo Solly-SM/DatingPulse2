@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import Layout from '../components/Layout';
-import Dashboard from '../pages/Dashboard';
+import Home from '../pages/Home';
 import { AuthProvider } from '../contexts/AuthContext';
 
 // Mock user for demo
@@ -55,7 +55,7 @@ function DemoSidebar() {
   return (
     <Box sx={{ minHeight: '100vh' }}>
       <Layout>
-        <Dashboard />
+        <Home />
       </Layout>
     </Box>
   );
