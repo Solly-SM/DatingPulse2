@@ -8,7 +8,6 @@ import {
   StepLabel,
   Typography,
   Button,
-  Grid,
 } from '@mui/material';
 import { } from '@mui/icons-material';
 import PulseLogo from '../components/PulseLogo';

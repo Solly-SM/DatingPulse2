@@ -17,11 +17,8 @@ import {
   BirthDateStep,
   GenderDisplayStep,
   SexualOrientationStep,
-  PersonalDetailsStep,
-  AboutMeStep,
   InterestsStep,
   PhysicalAttributesStep,
-  PreferencesStep,
   LifestyleStep,
   MediaStep,
   ProfileData
@@ -46,10 +43,6 @@ const steps = [
   'Location'
 ];
 
-interface RegistrationData {
-  email: string;
-  profileData: ProfileData | null;
-}
 
 function MultiStepRegister() {
   const navigate = useNavigate();

@@ -8,9 +8,7 @@ import {
   CardContent,
   Fade,
   useTheme,
-  IconButton,
 } from '@mui/material';
-import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import PulseLogo from '../components/PulseLogo';
 import {
   PersonalDetailsStep,
