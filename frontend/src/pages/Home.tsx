@@ -28,6 +28,7 @@ import { DiscoverUser } from '../types/Dating';
 import PhotoViewer from '../components/PhotoViewer';
 import ProfileView from '../components/ProfileView';
 import PulseLogo from '../components/PulseLogo';
+import PulseLoader from '../components/PulseLoader';
 
 function Home() {
   const [users, setUsers] = useState<DiscoverUser[]>([]);
@@ -154,13 +155,11 @@ function Home() {
 
   if (loading) {
     return (
-      <Box sx={{ p: 4 }}>
-        <Box textAlign="center" mt={4}>
-          <Typography variant="h6" gutterBottom>
-            Finding amazing people near you...
-          </Typography>
-          <LinearProgress sx={{ mt: 2 }} />
-        </Box>
+      <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+        <PulseLoader visible={true} size={80} />
+        <Typography variant="h6" sx={{ mt: 2, textAlign: 'center' }}>
+          Finding amazing people near you...
+        </Typography>
       </Box>
     );
   }
@@ -373,7 +372,7 @@ function Home() {
   return (
     <Box sx={{ height: '100vh', overflow: 'hidden' }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, px: 3, pt: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, px: 2, pt: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <PulseLogo sx={{ fontSize: 32, color: 'primary.main' }} />
           <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
@@ -397,7 +396,7 @@ function Home() {
       </Box>
 
       {/* Progress bar */}
-      <Box sx={{ px: 3, mb: 2 }}>
+      <Box sx={{ px: 2, mb: 1 }}>
         <LinearProgress 
           variant="determinate" 
           value={progress} 
@@ -406,7 +405,7 @@ function Home() {
       </Box>
       
       {/* Two-column layout - Photos in middle, Profile on right */}
-      <Grid container spacing={3} sx={{ px: 3, height: 'calc(100vh - 200px)' }}>
+      <Grid container spacing={2} sx={{ px: 2, height: 'calc(100vh - 140px)' }}>
         {/* Middle column - Photos (bigger) */}
         <Grid item xs={7}>
           <Box sx={{ position: 'relative', height: '100%' }}>
