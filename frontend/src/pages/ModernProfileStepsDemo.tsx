@@ -78,9 +78,10 @@ function ModernProfileStepsDemo() {
     },
     physicalAttributes: {},
     preferences: {
-      interestedIn: ''
+      interestedIn: []
     },
     lifestyle: {},
+    personality: {},
     media: {
       photos: []
     }
@@ -141,8 +142,18 @@ function ModernProfileStepsDemo() {
       case 4:
         return (
           <PreferencesStep
-            data={profileData.preferences}
-            onComplete={(data) => handleNext(data, 'preferences')}
+            data={{
+              interestedIn: profileData.preferences.interestedIn?.[0] || '',
+              relationshipGoal: profileData.preferences.relationshipGoal,
+              sexualOrientation: profileData.preferences.sexualOrientation
+            }}
+            onComplete={(data) => {
+              const updatedData = {
+                ...data,
+                interestedIn: [data.interestedIn]
+              };
+              handleNext(updatedData, 'preferences');
+            }}
             onBack={handleBack}
             loading={false}
           />

@@ -23,6 +23,7 @@ interface PhysicalAttributesStepProps {
   data: PhysicalAttributesData;
   onComplete: (data: PhysicalAttributesData) => void;
   onBack: () => void;
+  onSkip?: () => void;
   loading: boolean;
 }
 
@@ -35,7 +36,7 @@ const ethnicities = [
   'Native American', 'Pacific Islander', 'Mixed', 'Other', 'Prefer not to say'
 ];
 
-function PhysicalAttributesStep({ data, onComplete, onBack, loading }: PhysicalAttributesStepProps) {
+function PhysicalAttributesStep({ data, onComplete, onBack, onSkip, loading }: PhysicalAttributesStepProps) {
   const [formData, setFormData] = useState<PhysicalAttributesData>(data);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,6 +62,18 @@ function PhysicalAttributesStep({ data, onComplete, onBack, loading }: PhysicalA
 
   return (
     <Box component="form" onSubmit={handleSubmit}>
+      {onSkip && (
+        <Box sx={{ position: 'relative', mb: 2 }}>
+          <Button
+            variant="text"
+            onClick={onSkip}
+            sx={{ position: 'absolute', top: -16, right: 0 }}
+          >
+            Skip
+          </Button>
+        </Box>
+      )}
+      
       <Typography variant="h6" gutterBottom>
         Physical Attributes
       </Typography>
@@ -101,6 +114,7 @@ function PhysicalAttributesStep({ data, onComplete, onBack, loading }: PhysicalA
               value={formData.bodyType || ''}
               onChange={handleSelectChange}
               disabled={loading}
+              label="Body Type"
             >
               {bodyTypes.map((type) => (
                 <MenuItem key={type} value={type}>{type}</MenuItem>
@@ -116,6 +130,7 @@ function PhysicalAttributesStep({ data, onComplete, onBack, loading }: PhysicalA
               value={formData.ethnicity || ''}
               onChange={handleSelectChange}
               disabled={loading}
+              label="Ethnicity"
             >
               {ethnicities.map((ethnicity) => (
                 <MenuItem key={ethnicity} value={ethnicity}>{ethnicity}</MenuItem>

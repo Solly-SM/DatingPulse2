@@ -65,11 +65,12 @@ function RegistrationModal({ open, onClose, email }: RegistrationModalProps) {
     },
     physicalAttributes: {},
     preferences: {
-      interestedIn: '',
+      interestedIn: [],
       showGender: false,
       showOrientation: false
     },
     lifestyle: {},
+    personality: {},
     media: {
       photos: []
     }
