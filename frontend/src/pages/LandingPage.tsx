@@ -237,6 +237,52 @@ function LandingPage() {
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               Join millions of people finding love every day
             </Typography>
+
+            {/* Quick Access Links for Development */}
+            {process.env.NODE_ENV === 'development' && (
+              <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => window.location.href = '/dashboard'}
+                  sx={{ fontSize: '0.8rem', py: 0.5, px: 2 }}
+                >
+                  Dashboard
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => window.location.href = '/discover'}
+                  sx={{ fontSize: '0.8rem', py: 0.5, px: 2 }}
+                >
+                  Discover
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => window.location.href = '/matches'}
+                  sx={{ fontSize: '0.8rem', py: 0.5, px: 2 }}
+                >
+                  Matches
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => window.location.href = '/messages'}
+                  sx={{ fontSize: '0.8rem', py: 0.5, px: 2 }}
+                >
+                  Messages
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => window.location.href = '/profile'}
+                  sx={{ fontSize: '0.8rem', py: 0.5, px: 2 }}
+                >
+                  Profile
+                </Button>
+              </Box>
+            )}
           </Box>
 
           {/* Terms */}
