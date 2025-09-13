@@ -39,8 +39,9 @@ const MockAuthProvider = ({ children }: { children: React.ReactNode }) => {
     <div>
       {React.cloneElement(children as React.ReactElement, {
         // Inject mock auth context
+        ...(children as any).props,
         authContext: mockAuthContext
-      })}
+      } as any)}
     </div>
   );
 };
