@@ -160,7 +160,8 @@ function PhotoViewer({
       sx={{
         position: 'relative',
         width: '100%',
-        height: 600,
+        height: '100%',
+        maxHeight: 500, // Reduced from 600 to make space for action buttons
         borderRadius: 3,
         overflow: 'hidden',
         cursor: isDragging ? 'grabbing' : 'grab',
