@@ -14,7 +14,7 @@ interface BirthDateStepProps {
   };
   onComplete: (data: { dateOfBirth: string }) => void;
   onBack: () => void;
-  onSkip: () => void;
+  onSkip?: () => void;
   loading?: boolean;
 }
 
@@ -23,6 +23,11 @@ function BirthDateStep({ data, onComplete, onBack, onSkip, loading }: BirthDateS
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const age = calculateAge(dateOfBirth);
+    if (age && age < 18) {
+      alert('You must be at least 18 years old to use this app.');
+      return;
+    }
     onComplete({ dateOfBirth });
   };
 
@@ -39,25 +44,16 @@ function BirthDateStep({ data, onComplete, onBack, onSkip, loading }: BirthDateS
   };
 
   const age = calculateAge(dateOfBirth);
+  const isValidAge = age === null || age >= 18;
 
   return (
     <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
       <CardContent sx={{ p: 4 }}>
-        <Box sx={{ position: 'relative' }}>
-          <Button
-            variant="text"
-            onClick={onSkip}
-            sx={{ position: 'absolute', top: -16, right: -16 }}
-          >
-            Skip
-          </Button>
-        </Box>
-
         <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
           When's your birthday?
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-          Your age will be displayed on your profile
+          Your age will be displayed on your profile. You must be at least 18 years old.
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit}>
@@ -75,8 +71,13 @@ function BirthDateStep({ data, onComplete, onBack, onSkip, loading }: BirthDateS
           />
 
           {age && (
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            <Typography 
+              variant="body2" 
+              color={isValidAge ? "text.secondary" : "error.main"} 
+              sx={{ mb: 3 }}
+            >
               You are {age} years old
+              {!isValidAge && " - You must be at least 18 years old"}
             </Typography>
           )}
 
@@ -92,7 +93,7 @@ function BirthDateStep({ data, onComplete, onBack, onSkip, loading }: BirthDateS
             <Button
               type="submit"
               variant="contained"
-              disabled={loading || !dateOfBirth}
+              disabled={loading || !dateOfBirth || !isValidAge}
               sx={{
                 background: 'linear-gradient(45deg, #e91e63, #ff4081)',
                 '&:hover': {

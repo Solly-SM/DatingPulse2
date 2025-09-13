@@ -11,6 +11,11 @@ export { default as NameAboutStep } from './NameAboutStep';
 export { default as BirthDateStep } from './BirthDateStep';
 export { default as GenderDisplayStep } from './GenderDisplayStep';
 export { default as SexualOrientationStep } from './SexualOrientationStep';
+export { default as InterestedInStep } from './InterestedInStep';
+export { default as LookingForStep } from './LookingForStep';
+export { default as DistancePreferenceStep } from './DistancePreferenceStep';
+export { default as PersonalityStep } from './PersonalityStep';
+export { default as AudioIntroStep } from './AudioIntroStep';
 
 // Combined data type for all profile steps
 export interface ProfileData {
@@ -36,11 +41,13 @@ export interface ProfileData {
     ethnicity?: string;
   };
   preferences: {
-    interestedIn: string;
+    interestedIn: string[];
     relationshipGoal?: string;
     sexualOrientation?: string;
     showGender?: boolean;
     showOrientation?: boolean;
+    lookingFor?: string;
+    maxDistance?: number;
   };
   lifestyle: {
     pets?: string;
@@ -51,6 +58,11 @@ export interface ProfileData {
     socialMedia?: string;
     sleepingHabits?: string;
     languages?: string[];
+  };
+  personality: {
+    communicationStyle?: string;
+    loveLanguage?: string;
+    zodiacSign?: string;
   };
   media: {
     photos: File[];

@@ -17,30 +17,33 @@ import {
   BirthDateStep,
   GenderDisplayStep,
   SexualOrientationStep,
+  InterestedInStep,
+  LookingForStep,
+  DistancePreferenceStep,
   InterestsStep,
   PhysicalAttributesStep,
   LifestyleStep,
+  PersonalityStep,
   MediaStep,
+  AudioIntroStep,
   ProfileData
 } from './registration/profile-steps';
 import { useAuth } from '../contexts/AuthContext';
 
 const steps = [
-  'Name & About', 
-  'Birth Date',
-  'Gender & Display',
-  'Orientation',
+  'First Name', 
+  'Date of Birth',
+  'Gender',
+  'Sexual Orientation',
   'Interested In',
   'Looking For',
   'Distance',
   'Lifestyle',
   'Personality',
   'Interests',
-  'Languages',
   'Physical Details',
   'Photos',
-  'Audio Intro',
-  'Location'
+  'Audio Intro'
 ];
 
 
@@ -79,11 +82,12 @@ function MultiStepRegister() {
     },
     physicalAttributes: {},
     preferences: {
-      interestedIn: '',
+      interestedIn: [],
       showGender: false,
       showOrientation: false
     },
     lifestyle: {},
+    personality: {},
     media: {
       photos: []
     }
@@ -169,7 +173,6 @@ function MultiStepRegister() {
               handleNextStep();
             }}
             onBack={handleBack}
-            onSkip={handleSkipStep}
             loading={loading}
           />
         );
@@ -215,29 +218,65 @@ function MultiStepRegister() {
             loading={loading}
           />
         );
-      case 4: // Interested In - placeholder
+      case 4: // Interested In
         return (
-          <Box sx={{ textAlign: 'center', p: 4 }}>
-            <Typography variant="h5" gutterBottom>Who You're Interested In</Typography>
-            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
-            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
-          </Box>
+          <InterestedInStep
+            data={{
+              interestedIn: profileData.preferences.interestedIn || []
+            }}
+            onComplete={(data) => {
+              setProfileData(prev => ({
+                ...prev,
+                preferences: { 
+                  ...prev.preferences, 
+                  interestedIn: data.interestedIn
+                }
+              }));
+              handleNextStep();
+            }}
+            onBack={handleBack}
+            loading={loading}
+          />
         );
-      case 5: // Looking For - placeholder
+      case 5: // Looking For
         return (
-          <Box sx={{ textAlign: 'center', p: 4 }}>
-            <Typography variant="h5" gutterBottom>What You're Looking For</Typography>
-            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
-            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
-          </Box>
+          <LookingForStep
+            data={{
+              lookingFor: profileData.preferences.lookingFor || ''
+            }}
+            onComplete={(data) => {
+              setProfileData(prev => ({
+                ...prev,
+                preferences: { 
+                  ...prev.preferences, 
+                  lookingFor: data.lookingFor
+                }
+              }));
+              handleNextStep();
+            }}
+            onBack={handleBack}
+            loading={loading}
+          />
         );
-      case 6: // Distance - placeholder
+      case 6: // Distance
         return (
-          <Box sx={{ textAlign: 'center', p: 4 }}>
-            <Typography variant="h5" gutterBottom>Distance Preference</Typography>
-            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
-            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
-          </Box>
+          <DistancePreferenceStep
+            data={{
+              maxDistance: profileData.preferences.maxDistance || 50
+            }}
+            onComplete={(data) => {
+              setProfileData(prev => ({
+                ...prev,
+                preferences: { 
+                  ...prev.preferences, 
+                  maxDistance: data.maxDistance
+                }
+              }));
+              handleNextStep();
+            }}
+            onBack={handleBack}
+            loading={loading}
+          />
         );
       case 7: // Lifestyle
         return (
@@ -248,13 +287,14 @@ function MultiStepRegister() {
             loading={loading}
           />
         );
-      case 8: // Personality - placeholder
+      case 8: // Personality
         return (
-          <Box sx={{ textAlign: 'center', p: 4 }}>
-            <Typography variant="h5" gutterBottom>Personality</Typography>
-            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
-            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
-          </Box>
+          <PersonalityStep
+            data={profileData.personality}
+            onComplete={(data) => handleProfileStepComplete(data, 'personality')}
+            onBack={handleBack}
+            loading={loading}
+          />
         );
       case 9: // Interests
         return (
@@ -265,24 +305,17 @@ function MultiStepRegister() {
             loading={loading}
           />
         );
-      case 10: // Languages - placeholder
-        return (
-          <Box sx={{ textAlign: 'center', p: 4 }}>
-            <Typography variant="h5" gutterBottom>Languages</Typography>
-            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
-            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
-          </Box>
-        );
-      case 11: // Physical Details
+      case 10: // Physical Details
         return (
           <PhysicalAttributesStep
             data={profileData.physicalAttributes}
             onComplete={(data) => handleProfileStepComplete(data, 'physicalAttributes')}
             onBack={handleBack}
+            onSkip={handleSkipStep}
             loading={loading}
           />
         );
-      case 12: // Photos
+      case 11: // Photos
         return (
           <MediaStep
             data={profileData.media}
@@ -291,23 +324,21 @@ function MultiStepRegister() {
             loading={loading}
           />
         );
-      case 13: // Audio Intro - placeholder
+      case 12: // Audio Intro - final step
         return (
-          <Box sx={{ textAlign: 'center', p: 4 }}>
-            <Typography variant="h5" gutterBottom>Audio Introduction</Typography>
-            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
-            <Button variant="contained" onClick={handleNextStep}>Continue</Button>
-          </Box>
-        );
-      case 14: // Location - final step
-        return (
-          <Box sx={{ textAlign: 'center', p: 4 }}>
-            <Typography variant="h5" gutterBottom>Your Location</Typography>
-            <Typography variant="body1" sx={{ mb: 3 }}>This step is under development</Typography>
-            <Button variant="contained" onClick={handleFinalSubmit} disabled={loading}>
-              {loading ? 'Creating Profile...' : 'Complete Setup'}
-            </Button>
-          </Box>
+          <AudioIntroStep
+            data={profileData.media}
+            onComplete={(data) => {
+              setProfileData(prev => ({
+                ...prev,
+                media: { ...prev.media, audioIntro: data.audioIntro }
+              }));
+              handleFinalSubmit();
+            }}
+            onBack={handleBack}
+            onSkip={handleFinalSubmit}
+            loading={loading}
+          />
         );
       default:
         return null;
