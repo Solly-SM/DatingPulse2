@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Typography,
-  Button,
   Box,
   Chip,
-  Alert,
   Stack,
   Fab,
   LinearProgress,
@@ -23,103 +21,85 @@ import {
   Settings,
   FilterList,
 } from '@mui/icons-material';
-import { datingService } from '../services/datingService';
 import { DiscoverUser } from '../types/Dating';
 import PhotoViewer from '../components/PhotoViewer';
 import ProfileDetail from '../components/ProfileDetail';
 
-function Discover() {
-  const [users, setUsers] = useState<DiscoverUser[]>([]);
+// Mock user data for demo
+const mockUsers: DiscoverUser[] = [
+  {
+    userID: 1,
+    username: "sarah_johnson",
+    firstName: "Sarah",
+    lastName: "Johnson",
+    age: 25,
+    bio: "Love hiking, photography, and trying new coffee shops. Looking for someone who shares my passion for adventure and good conversations.",
+    photos: [
+      { photoID: 1, userID: 1, url: "https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=400&h=600&fit=crop&crop=face", isPrimary: true, uploadedAt: "2024-01-01" }
+    ],
+    distance: 2.5,
+    education: "University of California",
+    occupation: "Graphic Designer",
+    height: 165,
+    interests: ["Photography", "Hiking", "Coffee", "Travel", "Art", "Music"],
+    verified: true
+  },
+  {
+    userID: 2,
+    username: "emma_watson",
+    firstName: "Emma",
+    lastName: "Watson",
+    age: 28,
+    bio: "Yoga instructor and book lover. Always up for outdoor adventures or cozy nights in with a good novel.",
+    photos: [
+      { photoID: 2, userID: 2, url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face", isPrimary: true, uploadedAt: "2024-01-01" }
+    ],
+    distance: 1.8,
+    education: "Stanford University",
+    occupation: "Yoga Instructor",
+    height: 170,
+    interests: ["Yoga", "Reading", "Nature", "Meditation", "Cooking"],
+    verified: true
+  }
+];
+
+function DiscoverDemo() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [lastAction, setLastAction] = useState<'like' | 'pass' | 'superlike' | null>(null);
   const [animating, setAnimating] = useState(false);
-  const [actionHistory, setActionHistory] = useState<Array<{ userID: number; action: string }>>([]);
+  const [lastAction, setLastAction] = useState<'like' | 'pass' | 'superlike' | null>(null);
   
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  
+  const currentUser = mockUsers[currentIndex];
+  const progress = ((currentIndex) / mockUsers.length) * 100;
 
-  useEffect(() => {
-    loadUsers();
-  }, []);
-
-  const loadUsers = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const discoverUsers = await datingService.getDiscoverUsers(0, 10);
-      setUsers(discoverUsers);
-    } catch (err: any) {
-      setError('Failed to load users');
-      console.error('Error loading users:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const currentUser = users[currentIndex];
-  const progress = users.length > 0 ? ((currentIndex) / users.length) * 100 : 0;
-
-  const handleLike = async () => {
-    if (currentIndex >= users.length || animating) return;
-    
+  const handleLike = () => {
+    if (animating) return;
     setAnimating(true);
     setLastAction('like');
     
-    try {
-      const result = await datingService.likeUser(currentUser.userID);
-      setActionHistory(prev => [...prev, { userID: currentUser.userID, action: 'like' }]);
-      
-      if (result.isMatch) {
-        // Show match notification
-        console.log('It\'s a match! 🎉');
-      }
-    } catch (err) {
-      console.error('Failed to like user:', err);
-    }
-    
     setTimeout(() => {
       nextUser();
       setAnimating(false);
     }, 300);
   };
 
-  const handlePass = async () => {
-    if (currentIndex >= users.length || animating) return;
-    
+  const handlePass = () => {
+    if (animating) return;
     setAnimating(true);
     setLastAction('pass');
     
-    try {
-      await datingService.passUser(currentUser.userID);
-      setActionHistory(prev => [...prev, { userID: currentUser.userID, action: 'pass' }]);
-    } catch (err) {
-      console.error('Failed to pass user:', err);
-    }
-    
     setTimeout(() => {
       nextUser();
       setAnimating(false);
     }, 300);
   };
 
-  const handleSuperLike = async () => {
-    if (currentIndex >= users.length || animating) return;
-    
+  const handleSuperLike = () => {
+    if (animating) return;
     setAnimating(true);
     setLastAction('superlike');
-    
-    try {
-      const result = await datingService.superLikeUser(currentUser.userID);
-      setActionHistory(prev => [...prev, { userID: currentUser.userID, action: 'superlike' }]);
-      
-      if (result.isMatch) {
-        console.log('Super Like Match! 🌟');
-      }
-    } catch (err) {
-      console.error('Failed to super like user:', err);
-    }
     
     setTimeout(() => {
       nextUser();
@@ -128,95 +108,20 @@ function Discover() {
   };
 
   const handleUndo = () => {
-    if (currentIndex > 0 && actionHistory.length > 0) {
+    if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
-      setActionHistory(prev => prev.slice(0, -1));
       setLastAction(null);
     }
   };
 
   const nextUser = () => {
-    if (currentIndex < users.length - 1) {
+    if (currentIndex < mockUsers.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      // Load more users when reaching the end
-      loadMoreUsers();
+      // Reset to beginning for demo
+      setCurrentIndex(0);
     }
   };
-
-  const loadMoreUsers = async () => {
-    try {
-      const moreUsers = await datingService.getDiscoverUsers(users.length, 10);
-      setUsers(prev => [...prev, ...moreUsers]);
-    } catch (err) {
-      console.error('Failed to load more users:', err);
-    }
-  };
-
-  if (loading) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Box textAlign="center" mt={4}>
-          <Typography variant="h6" gutterBottom>
-            Finding amazing people near you...
-          </Typography>
-          <LinearProgress sx={{ mt: 2 }} />
-        </Box>
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Alert severity="error" sx={{ mt: 4 }}>
-          {error}
-          <Button onClick={loadUsers} sx={{ ml: 2 }}>
-            Retry
-          </Button>
-        </Alert>
-      </Box>
-    );
-  }
-
-  if (users.length === 0) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Box textAlign="center" mt={4}>
-          <Typography variant="h5" gutterBottom>
-            No more users in your area
-          </Typography>
-          <Typography variant="body1" color="text.secondary" gutterBottom>
-            Check back later for new profiles!
-          </Typography>
-          <Button variant="contained" onClick={loadUsers} sx={{ mt: 2 }}>
-            Refresh
-          </Button>
-        </Box>
-      </Box>
-    );
-  }
-
-  if (currentIndex >= users.length) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Box textAlign="center" mt={4}>
-          <Typography variant="h5" gutterBottom>
-            You've seen everyone!
-          </Typography>
-          <Typography variant="body1" color="text.secondary" gutterBottom>
-            Come back later to discover new people in your area.
-          </Typography>
-          <Button variant="contained" onClick={() => {
-            setCurrentIndex(0);
-            loadUsers();
-          }} sx={{ mt: 2 }}>
-            Start Over
-          </Button>
-        </Box>
-      </Box>
-    );
-  }
 
   // Mobile layout - fall back to single column like before
   if (isMobile) {
@@ -225,12 +130,12 @@ function Discover() {
         {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-            Discover
+            Discover (Demo)
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Chip 
               icon={<LocationOn />} 
-              label={`${users.length - currentIndex} nearby`}
+              label={`${mockUsers.length - currentIndex} nearby`}
               variant="outlined"
               size="small"
             />
@@ -253,7 +158,7 @@ function Discover() {
         {/* Card Stack */}
         <Box sx={{ position: 'relative', minHeight: 600, mb: 3 }}>
           {/* Next card (background) */}
-          {currentIndex + 1 < users.length && (
+          {currentIndex + 1 < mockUsers.length && (
             <Box
               sx={{
                 position: 'absolute',
@@ -267,7 +172,7 @@ function Discover() {
               }}
             >
               <PhotoViewer
-                user={users[currentIndex + 1]}
+                user={mockUsers[currentIndex + 1]}
                 onLike={() => {}}
                 onPass={() => {}}
                 onSuperLike={() => {}}
@@ -373,12 +278,12 @@ function Discover() {
       {/* Header */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, px: 3, pt: 3 }}>
         <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          Discover
+          Discover (Demo)
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Chip 
             icon={<LocationOn />} 
-            label={`${users.length - currentIndex} nearby`}
+            label={`${mockUsers.length - currentIndex} nearby`}
             variant="outlined"
             size="small"
           />
@@ -406,7 +311,7 @@ function Discover() {
         <Grid item xs={5.5}>
           <Box sx={{ position: 'relative', height: '100%' }}>
             {/* Next card (background) */}
-            {currentIndex + 1 < users.length && (
+            {currentIndex + 1 < mockUsers.length && (
               <Box
                 sx={{
                   position: 'absolute',
@@ -420,7 +325,7 @@ function Discover() {
                 }}
               >
                 <PhotoViewer
-                  user={users[currentIndex + 1]}
+                  user={mockUsers[currentIndex + 1]}
                   onLike={() => {}}
                   onPass={() => {}}
                   onSuperLike={() => {}}
@@ -535,4 +440,4 @@ function Discover() {
   );
 }
 
-export default Discover;
+export default DiscoverDemo;
