@@ -7,6 +7,7 @@ import { usePerformanceMonitoring } from './hooks/usePerformanceMonitoring';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import LoadingScreen from './components/LoadingScreen';
+import SimpleLoadingScreen from './components/SimpleLoadingScreen';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import MultiStepRegister from './components/MultiStepRegister';
@@ -254,13 +255,18 @@ function App() {
   
   const [isLoading, setIsLoading] = useState(true);
   const [appInitialized, setAppInitialized] = useState(false);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   useEffect(() => {
+    // Check if this is the first time loading the app
+    const hasLoadedBefore = localStorage.getItem('datingPulseHasLoaded');
+    setIsFirstLoad(!hasLoadedBefore);
+
     // Simulate app initialization
     const initializeApp = async () => {
       // Add any actual initialization logic here
       // For now, just simulate loading time
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 500));
       setAppInitialized(true);
     };
 
@@ -269,17 +275,26 @@ function App() {
 
   const handleLoadingComplete = () => {
     setIsLoading(false);
+    // Mark that the app has been loaded at least once
+    localStorage.setItem('datingPulseHasLoaded', 'true');
   };
 
-  // Show loading screen if app is not initialized or still loading
+  // Show appropriate loading screen based on first load or subsequent loads
   if (!appInitialized || isLoading) {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <LoadingScreen 
-          onComplete={handleLoadingComplete}
-          duration={2500}
-        />
+        {isFirstLoad ? (
+          <LoadingScreen 
+            onComplete={handleLoadingComplete}
+            duration={3000}
+          />
+        ) : (
+          <SimpleLoadingScreen 
+            onComplete={handleLoadingComplete}
+            duration={1500}
+          />
+        )}
       </ThemeProvider>
     );
   }

@@ -29,6 +29,7 @@ import PhotoViewer from '../components/PhotoViewer';
 import ProfileView from '../components/ProfileView';
 import PulseLogo from '../components/PulseLogo';
 import PulseLoader from '../components/PulseLoader';
+import SimpleLoadingScreen from '../components/SimpleLoadingScreen';
 
 function Home() {
   const [users, setUsers] = useState<DiscoverUser[]>([]);
@@ -454,20 +455,22 @@ function Home() {
         </Grid>
       </Grid>
 
-      {/* Action Buttons - Fixed at bottom */}
+      {/* Action Buttons - Fixed at bottom with better positioning */}
       <Box sx={{ 
         position: 'fixed', 
-        bottom: 0, 
+        bottom: 20, 
         left: '50%', 
         transform: 'translateX(-50%)',
-        p: 3 
+        p: 2,
+        zIndex: 1000
       }}>
         <Paper 
-          elevation={4}
+          elevation={6}
           sx={{ 
             p: 2, 
             borderRadius: 3,
             backgroundColor: 'background.paper',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
           }}
         >
           <Stack direction="row" justifyContent="center" spacing={2}>
