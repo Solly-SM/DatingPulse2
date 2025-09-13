@@ -33,54 +33,119 @@ function GenderDisplayStep({ data, onComplete, onBack, onSkip, loading }: Gender
   };
 
   const genderOptions = [
-    { value: 'man', label: 'Man' },
-    { value: 'woman', label: 'Woman' },
-    { value: 'non-binary', label: 'Non-binary' },
-    { value: 'other', label: 'Other' },
+    { value: 'man', label: 'Man', symbol: '♂' },
+    { value: 'woman', label: 'Woman', symbol: '♀' },
+    { value: 'non-binary', label: 'Non-binary', symbol: '⚧' },
+    { value: 'other', label: 'Other', symbol: '◊' },
   ];
 
   return (
-    <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
-      <CardContent sx={{ p: 4 }}>
+    <Card 
+      elevation={0} 
+      sx={{ 
+        border: '1px solid', 
+        borderColor: 'divider',
+        borderRadius: 4,
+        background: 'linear-gradient(135deg, #ffffff 0%, #fafbfc 100%)',
+      }}
+    >
+      <CardContent sx={{ p: 5 }}>
         <Box sx={{ position: 'relative' }}>
           <Button
             variant="text"
             onClick={onSkip}
-            sx={{ position: 'absolute', top: -16, right: -16 }}
+            sx={{ 
+              position: 'absolute', 
+              top: -24, 
+              right: -24,
+              color: 'text.secondary',
+              '&:hover': {
+                backgroundColor: 'rgba(233, 30, 99, 0.08)',
+                color: 'primary.main',
+              },
+            }}
           >
             Skip
           </Button>
         </Box>
 
-        <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          What's your gender?
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-          Choose how you identify
-        </Typography>
+        <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Typography 
+            variant="h4" 
+            gutterBottom 
+            sx={{ 
+              fontWeight: 700, 
+              color: 'primary.main',
+              background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              mb: 2,
+            }}
+          >
+            What's your gender?
+          </Typography>
+          <Typography 
+            variant="body1" 
+            color="text.secondary" 
+            sx={{ 
+              fontSize: '1.1rem',
+              fontWeight: 400,
+              lineHeight: 1.6,
+            }}
+          >
+            Choose how you identify
+          </Typography>
+        </Box>
 
         <Box component="form" onSubmit={handleSubmit}>
-          <FormControl component="fieldset" sx={{ mb: 4 }}>
+          <FormControl component="fieldset" sx={{ mb: 4, width: '100%' }}>
             <RadioGroup
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-              sx={{ gap: 1 }}
+              sx={{ gap: 2 }}
             >
               {genderOptions.map((option) => (
                 <FormControlLabel
                   key={option.value}
                   value={option.value}
                   control={<Radio />}
-                  label={option.label}
+                  label={
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Typography 
+                        component="span" 
+                        sx={{ 
+                          fontSize: '1.5rem', 
+                          color: gender === option.value ? 'primary.main' : 'text.secondary',
+                          fontWeight: 600,
+                        }}
+                      >
+                        {option.symbol}
+                      </Typography>
+                      <Typography 
+                        component="span" 
+                        sx={{ 
+                          fontSize: '1rem',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {option.label}
+                      </Typography>
+                    </Box>
+                  }
                   sx={{
                     m: 0,
-                    p: 2,
-                    border: '1px solid',
+                    p: 2.5,
+                    border: '2px solid',
                     borderColor: gender === option.value ? 'primary.main' : 'divider',
-                    borderRadius: 2,
+                    borderRadius: 3,
                     backgroundColor: gender === option.value ? 'primary.light' : 'transparent',
+                    transition: 'all 0.2s ease-in-out',
                     '&:hover': {
-                      backgroundColor: 'primary.light',
+                      backgroundColor: gender === option.value ? 'primary.light' : 'rgba(233, 30, 99, 0.08)',
+                      borderColor: 'primary.main',
+                      transform: 'translateY(-1px)',
+                      boxShadow: '0px 4px 12px rgba(233, 30, 99, 0.15)',
                     },
                   }}
                 />
@@ -94,17 +159,39 @@ function GenderDisplayStep({ data, onComplete, onBack, onSkip, loading }: Gender
                 checked={showGender}
                 onChange={(e) => setShowGender(e.target.checked)}
                 color="primary"
+                sx={{
+                  '&.Mui-checked': {
+                    color: 'primary.main',
+                  },
+                }}
               />
             }
-            label="Show my gender on my profile"
-            sx={{ mb: 3 }}
+            label={
+              <Typography sx={{ fontSize: '0.95rem', fontWeight: 500 }}>
+                Show my gender on my profile
+              </Typography>
+            }
+            sx={{ 
+              mb: 4,
+              p: 2,
+              borderRadius: 2,
+              backgroundColor: showGender ? 'rgba(233, 30, 99, 0.05)' : 'transparent',
+              transition: 'background-color 0.2s ease-in-out',
+            }}
           />
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
             <Button
               variant="outlined"
               onClick={onBack}
               disabled={loading}
+              sx={{
+                borderRadius: 3,
+                px: 4,
+                py: 1.5,
+                fontSize: '1rem',
+                fontWeight: 600,
+              }}
             >
               Back
             </Button>
@@ -114,10 +201,22 @@ function GenderDisplayStep({ data, onComplete, onBack, onSkip, loading }: Gender
               variant="contained"
               disabled={loading || !gender}
               sx={{
-                background: 'linear-gradient(45deg, #e91e63, #ff4081)',
+                borderRadius: 3,
+                px: 4,
+                py: 1.5,
+                fontSize: '1rem',
+                fontWeight: 600,
+                background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
                 '&:hover': {
-                  background: 'linear-gradient(45deg, #c2185b, #e91e63)',
+                  background: 'linear-gradient(135deg, #c2185b 0%, #e91e63 100%)',
+                  transform: 'translateY(-1px)',
+                  boxShadow: '0px 6px 20px rgba(233, 30, 99, 0.4)',
                 },
+                '&:disabled': {
+                  background: '#e0e0e0',
+                  color: '#9e9e9e',
+                },
+                transition: 'all 0.2s ease-in-out',
               }}
             >
               {loading ? 'Saving...' : 'Continue'}
