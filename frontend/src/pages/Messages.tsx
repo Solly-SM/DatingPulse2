@@ -1,31 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Container,
-  Typography,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Avatar,
   Box,
+  Typography,
   Alert,
-  Paper,
-  Divider,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import { Chat } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { datingService } from '../services/datingService';
 import { Conversation } from '../types/Dating';
+import InboxComponent from '../components/InboxComponent';
+import ConversationView from '../components/ConversationView';
+import ProfileView from '../components/ProfileView';
 
 function Messages() {
-  const navigate = useNavigate();
+  const location = useLocation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
 
   useEffect(() => {
     loadConversations();
-  }, []);
+    
+    // Check if we're coming from matches with a selected conversation
+    if (location.state?.selectedConversation) {
+      setSelectedConversation(location.state.selectedConversation);
+    }
+  }, [location.state]);
 
   const loadConversations = async () => {
     try {
@@ -39,102 +45,134 @@ function Messages() {
     }
   };
 
-  const handleConversationClick = (conversationId: number) => {
-    navigate(`/chat/${conversationId}`);
+  const handleConversationSelect = (conversation: Conversation) => {
+    setSelectedConversation(conversation);
+  };
+
+  const handleBackToInbox = () => {
+    setSelectedConversation(null);
   };
 
   if (loading) {
     return (
-      <Container maxWidth="md">
-        <Box textAlign="center" mt={4}>
-          <Typography variant="h6">Loading your conversations...</Typography>
-        </Box>
-      </Container>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <Typography variant="h6">Loading your conversations...</Typography>
+      </Box>
     );
   }
 
   if (error) {
     return (
-      <Container maxWidth="md">
-        <Alert severity="error" sx={{ mt: 4 }}>
+      <Box sx={{ p: 3 }}>
+        <Alert severity="error">
           {error}
         </Alert>
-      </Container>
+      </Box>
     );
   }
 
-  return (
-    <Container maxWidth="md">
-      <Typography variant="h4" component="h1" gutterBottom>
-        Messages 💬
-      </Typography>
-
-      {conversations.length === 0 ? (
-        <Box textAlign="center" mt={4}>
-          <Chat sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
-          <Typography variant="h5" gutterBottom>
-            No conversations yet
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Start chatting with your matches to see conversations here!
-          </Typography>
+  // Mobile layout - stack or single view
+  if (isMobile) {
+    if (selectedConversation) {
+      return (
+        <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <ConversationView
+            conversation={selectedConversation}
+            onBack={handleBackToInbox}
+          />
         </Box>
-      ) : (
-        <Paper sx={{ mt: 2 }}>
-          <List>
-            {conversations.map((conversation, index) => (
-              <React.Fragment key={conversation.conversationID}>
-                <ListItem
-                  component="div"
-                  onClick={() => handleConversationClick(conversation.conversationID)}
-                  sx={{
-                    cursor: 'pointer',
-                    '&:hover': {
-                      backgroundColor: 'action.hover',
-                    },
-                  }}
-                >
-                  <ListItemAvatar>
-                    <Avatar
-                      src={conversation.otherUser.photos?.find(p => p.isPrimary)?.url}
-                    >
-                      {conversation.otherUser.firstName?.[0] || conversation.otherUser.username[0]}
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={conversation.otherUser.firstName || conversation.otherUser.username}
-                    secondary={
-                      <Box>
-                        {conversation.lastMessage && (
-                          <Typography 
-                            variant="body2" 
-                            color="text.secondary"
-                            sx={{ 
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
-                              maxWidth: '200px',
-                            }}
-                          >
-                            {conversation.lastMessage}
-                          </Typography>
-                        )}
-                        {conversation.lastMessageAt && (
-                          <Typography variant="caption" color="text.secondary">
-                            {new Date(conversation.lastMessageAt).toLocaleString()}
-                          </Typography>
-                        )}
-                      </Box>
-                    }
-                  />
-                </ListItem>
-                {index < conversations.length - 1 && <Divider />}
-              </React.Fragment>
-            ))}
-          </List>
-        </Paper>
-      )}
-    </Container>
+      );
+    }
+
+    // Full-width inbox for mobile
+    return (
+      <Box sx={{ height: 'calc(100vh - 100px)', p: 2 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Messages 💬
+        </Typography>
+        
+        {conversations.length === 0 ? (
+          <Box textAlign="center" mt={4}>
+            <Chat sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
+            <Typography variant="h5" gutterBottom>
+              No conversations yet
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Start chatting with your matches to see conversations here!
+            </Typography>
+          </Box>
+        ) : (
+          <Box sx={{ height: 'calc(100% - 100px)' }}>
+            <InboxComponent
+              onConversationSelect={handleConversationSelect}
+              selectedConversationId={undefined}
+            />
+          </Box>
+        )}
+      </Box>
+    );
+  }
+
+  // Desktop layout
+  if (!selectedConversation) {
+    // Full-width inbox when no conversation is selected
+    return (
+      <Box sx={{ height: 'calc(100vh - 100px)', p: 2 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Messages 💬
+        </Typography>
+        
+        {conversations.length === 0 ? (
+          <Box textAlign="center" mt={4}>
+            <Chat sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
+            <Typography variant="h5" gutterBottom>
+              No conversations yet
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Start chatting with your matches to see conversations here!
+            </Typography>
+          </Box>
+        ) : (
+          <Box sx={{ height: 'calc(100% - 100px)', maxWidth: '800px', mx: 'auto' }}>
+            <InboxComponent
+              onConversationSelect={handleConversationSelect}
+              selectedConversationId={undefined}
+            />
+          </Box>
+        )}
+      </Box>
+    );
+  }
+
+  // Split layout when conversation is selected (conversation + profile)
+  return (
+    <Box sx={{ height: 'calc(100vh - 100px)', display: 'flex', gap: 2, p: 2 }}>
+      {/* Left Section - Inbox (25%) */}
+      <Box sx={{ flex: 0.25, minWidth: '280px' }}>
+        <InboxComponent
+          onConversationSelect={handleConversationSelect}
+          selectedConversationId={selectedConversation?.conversationID}
+          compact={true}
+        />
+      </Box>
+
+      {/* Middle Section - Conversation (45%) */}
+      <Box sx={{ flex: 0.45 }}>
+        <ConversationView
+          conversation={selectedConversation}
+          onBack={handleBackToInbox}
+          compact={false}
+        />
+      </Box>
+
+      {/* Right Section - Profile (30%) */}
+      <Box sx={{ flex: 0.3, minWidth: '300px' }}>
+        <ProfileView
+          user={selectedConversation.otherUser}
+          compact={false}
+        />
+      </Box>
+    </Box>
   );
 }
 

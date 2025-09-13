@@ -1,25 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Container,
+  Box,
   Typography,
   Grid,
   Card,
   CardContent,
   Avatar,
-  Box,
   Button,
   Alert,
+  Paper,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import { Chat, Favorite } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { datingService } from '../services/datingService';
-import { Match } from '../types/Dating';
+import { Match, Conversation } from '../types/Dating';
+import InboxComponent from '../components/InboxComponent';
+import ConversationView from '../components/ConversationView';
+import ProfileView from '../components/ProfileView';
 
 function Matches() {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     loadMatches();
@@ -38,116 +48,251 @@ function Matches() {
   };
 
   const handleStartConversation = (match: Match) => {
-    // For now, we'll navigate to messages page
-    // In a real app, we'd create a conversation and navigate to it
-    navigate('/messages');
+    // Create a mock conversation from the match
+    const conversation: Conversation = {
+      conversationID: match.matchID,
+      user1ID: match.user1ID,
+      user2ID: match.user2ID,
+      createdAt: match.createdAt,
+      lastMessageAt: new Date().toISOString(),
+      lastMessage: '',
+      hasUnreadMessages: false,
+      otherUser: match.user2, // Assuming current user is user1
+    };
+    
+    // Navigate to messages with the conversation selected
+    navigate('/messages', { state: { selectedConversation: conversation } });
+  };
+
+  const handleConversationSelect = (conversation: Conversation) => {
+    setSelectedConversation(conversation);
+    setShowProfile(false);
+  };
+
+  const handleShowProfile = () => {
+    setShowProfile(true);
   };
 
   if (loading) {
     return (
-      <Container maxWidth="lg">
-        <Box textAlign="center" mt={4}>
-          <Typography variant="h6">Loading your matches...</Typography>
-        </Box>
-      </Container>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <Typography variant="h6">Loading your matches...</Typography>
+      </Box>
     );
   }
 
   if (error) {
     return (
-      <Container maxWidth="lg">
-        <Alert severity="error" sx={{ mt: 4 }}>
+      <Box sx={{ p: 3 }}>
+        <Alert severity="error">
           {error}
         </Alert>
-      </Container>
+      </Box>
     );
   }
 
-  return (
-    <Container maxWidth="lg">
-      <Typography variant="h4" component="h1" gutterBottom>
-        Your Matches 💕
-      </Typography>
+  // Mobile layout - stack vertically
+  if (isMobile) {
+    if (selectedConversation) {
+      return (
+        <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <ConversationView
+            conversation={selectedConversation}
+            onBack={() => setSelectedConversation(null)}
+          />
+        </Box>
+      );
+    }
 
-      {matches.length === 0 ? (
-        <Box textAlign="center" mt={4}>
-          <Favorite sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
-          <Typography variant="h5" gutterBottom>
-            No matches yet
+    return (
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Your Matches 💕
+        </Typography>
+
+        {matches.length === 0 ? (
+          <Box textAlign="center" mt={4}>
+            <Favorite sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
+            <Typography variant="h5" gutterBottom>
+              No matches yet
+            </Typography>
+            <Typography variant="body1" color="text.secondary" gutterBottom>
+              Keep swiping to find your perfect match!
+            </Typography>
+            <Button 
+              variant="contained" 
+              onClick={() => navigate('/discover')}
+              sx={{ mt: 2 }}
+            >
+              Start Discovering
+            </Button>
+          </Box>
+        ) : (
+          <>
+            <Grid container spacing={2} sx={{ mb: 3 }}>
+              {matches.map((match) => {
+                const otherUser = match.user2;
+                return (
+                  <Grid item xs={6} sm={4} key={match.matchID}>
+                    <Card 
+                      sx={{ 
+                        cursor: 'pointer',
+                        transition: 'transform 0.2s, box-shadow 0.2s',
+                        '&:hover': {
+                          transform: 'translateY(-2px)',
+                          boxShadow: 4,
+                        },
+                      }}
+                      onClick={() => handleStartConversation(match)}
+                    >
+                      <Box sx={{ p: 1, textAlign: 'center' }}>
+                        <Avatar
+                          sx={{ width: 60, height: 60, mx: 'auto', mb: 1 }}
+                          src={otherUser.photos?.find(p => p.isPrimary)?.url}
+                        >
+                          {otherUser.firstName?.[0] || otherUser.username[0]}
+                        </Avatar>
+                        <Typography variant="body2" fontWeight="bold">
+                          {otherUser.firstName || otherUser.username}
+                        </Typography>
+                      </Box>
+                    </Card>
+                  </Grid>
+                );
+              })}
+            </Grid>
+            
+            <Box sx={{ height: '50vh' }}>
+              <InboxComponent
+                onConversationSelect={handleConversationSelect}
+                compact={true}
+              />
+            </Box>
+          </>
+        )}
+      </Box>
+    );
+  }
+
+  // Desktop layout - split view
+  return (
+    <Box sx={{ height: 'calc(100vh - 100px)', display: 'flex', gap: 2, p: 2 }}>
+      {/* Left/Middle Section - Matches */}
+      <Box sx={{ flex: selectedConversation ? 0.4 : 0.7 }}>
+        <Paper sx={{ height: '100%', p: 2, overflow: 'auto' }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Your Matches 💕
           </Typography>
-          <Typography variant="body1" color="text.secondary" gutterBottom>
-            Keep swiping to find your perfect match!
-          </Typography>
-          <Button 
-            variant="contained" 
-            onClick={() => navigate('/discover')}
-            sx={{ mt: 2 }}
-          >
-            Start Discovering
-          </Button>
+
+          {matches.length === 0 ? (
+            <Box textAlign="center" mt={4}>
+              <Favorite sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
+              <Typography variant="h5" gutterBottom>
+                No matches yet
+              </Typography>
+              <Typography variant="body1" color="text.secondary" gutterBottom>
+                Keep swiping to find your perfect match!
+              </Typography>
+              <Button 
+                variant="contained" 
+                onClick={() => navigate('/discover')}
+                sx={{ mt: 2 }}
+              >
+                Start Discovering
+              </Button>
+            </Box>
+          ) : (
+            <Grid container spacing={2}>
+              {matches.map((match) => {
+                const otherUser = match.user2;
+                return (
+                  <Grid item xs={12} sm={6} md={4} key={match.matchID}>
+                    <Card 
+                      sx={{ 
+                        cursor: 'pointer',
+                        transition: 'transform 0.2s, box-shadow 0.2s',
+                        '&:hover': {
+                          transform: 'translateY(-4px)',
+                          boxShadow: 4,
+                        },
+                      }}
+                      onClick={() => handleStartConversation(match)}
+                    >
+                      <Box sx={{ p: 2, textAlign: 'center' }}>
+                        <Avatar
+                          sx={{ width: 60, height: 60, mx: 'auto', mb: 1 }}
+                          src={otherUser.photos?.find(p => p.isPrimary)?.url}
+                        >
+                          {otherUser.firstName?.[0] || otherUser.username[0]}
+                        </Avatar>
+                        
+                        <Typography variant="subtitle1" gutterBottom>
+                          {otherUser.firstName || otherUser.username}
+                        </Typography>
+                        
+                        <Typography 
+                          variant="caption" 
+                          color="text.secondary" 
+                          display="block"
+                          gutterBottom
+                        >
+                          {new Date(match.createdAt).toLocaleDateString()}
+                        </Typography>
+                      </Box>
+                      
+                      <CardContent sx={{ pt: 0 }}>
+                        <Button
+                          fullWidth
+                          variant="contained"
+                          startIcon={<Chat />}
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStartConversation(match);
+                          }}
+                        >
+                          Chat
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          )}
+        </Paper>
+      </Box>
+
+      {/* Right Section - Inbox or Chat+Profile */}
+      {!selectedConversation ? (
+        <Box sx={{ flex: 0.3 }}>
+          <InboxComponent
+            onConversationSelect={handleConversationSelect}
+            compact={true}
+          />
         </Box>
       ) : (
-        <Grid container spacing={3}>
-          {matches.map((match) => {
-            // Determine which user is the other user (not the current user)
-            // For this demo, we'll just use user2
-            const otherUser = match.user2;
-            
-            return (
-              <Grid item xs={12} sm={6} md={4} key={match.matchID}>
-                <Card 
-                  sx={{ 
-                    height: '100%',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s, box-shadow 0.2s',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: 4,
-                    },
-                  }}
-                  onClick={() => handleStartConversation(match)}
-                >
-                  <Box sx={{ p: 2, textAlign: 'center' }}>
-                    <Avatar
-                      sx={{ width: 80, height: 80, mx: 'auto', mb: 2 }}
-                      src={otherUser.photos?.find(p => p.isPrimary)?.url}
-                    >
-                      {otherUser.firstName?.[0] || otherUser.username[0]}
-                    </Avatar>
-                    
-                    <Typography variant="h6" gutterBottom>
-                      {otherUser.firstName || otherUser.username}
-                    </Typography>
-                    
-                    <Typography 
-                      variant="body2" 
-                      color="text.secondary" 
-                      gutterBottom
-                    >
-                      Matched on {new Date(match.createdAt).toLocaleDateString()}
-                    </Typography>
-                  </Box>
-                  
-                  <CardContent sx={{ pt: 0 }}>
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      startIcon={<Chat />}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleStartConversation(match);
-                      }}
-                    >
-                      Start Conversation
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Grid>
-            );
-          })}
-        </Grid>
+        <>
+          {/* Middle Section - Conversation */}
+          <Box sx={{ flex: 0.4 }}>
+            <ConversationView
+              conversation={selectedConversation}
+              onBack={() => setSelectedConversation(null)}
+              compact={true}
+            />
+          </Box>
+
+          {/* Right Section - Profile */}
+          <Box sx={{ flex: 0.3 }}>
+            <ProfileView
+              user={selectedConversation.otherUser}
+              onClose={() => setShowProfile(false)}
+              compact={true}
+            />
+          </Box>
+        </>
       )}
-    </Container>
+    </Box>
   );
 }
 

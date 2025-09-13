@@ -40,7 +40,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
               }
             }, 100);
           }
-        } else if (process.env.NODE_ENV === 'development' && window.location.pathname.includes('/dashboard')) {
+        } else if (process.env.NODE_ENV === 'development' && (window.location.pathname.includes('/dashboard') || window.location.pathname.includes('/matches') || window.location.pathname.includes('/messages'))) {
           // Enable demo mode automatically for dashboard testing
           const demoUser = {
             userID: 1,
