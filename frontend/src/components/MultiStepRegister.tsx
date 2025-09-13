@@ -31,10 +31,10 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 
 const steps = [
-  'Name & About', 
-  'Birth Date',
-  'Gender & Display',
-  'Orientation',
+  'First Name', 
+  'Date of Birth',
+  'Gender',
+  'Sexual Orientation',
   'Interested In',
   'Looking For',
   'Distance',
