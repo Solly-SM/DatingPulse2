@@ -19,15 +19,16 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false); // Changed from true to false
+  const [loading, setLoading] = useState(true); // Set to true to prevent premature redirects
 
   useEffect(() => {
-    // Check if user is already logged in (non-blocking)
+    // Check if user is already logged in
     const initializeAuth = async () => {
       try {
         const storedUser = authService.getStoredUser();
         if (storedUser && authService.isAuthenticated()) {
           setUser(storedUser);
+          console.log('✅ User authenticated from stored credentials');
           // Skip backend validation in development mode for demo
           if (process.env.NODE_ENV !== 'development') {
             // Optionally validate token with backend in background (non-blocking)
@@ -40,27 +41,35 @@ export function AuthProvider({ children }: AuthProviderProps) {
               }
             }, 100);
           }
-        } else if (process.env.NODE_ENV === 'development' && (window.location.pathname.includes('/dashboard') || window.location.pathname.includes('/matches') || window.location.pathname.includes('/messages'))) {
-          // Enable demo mode automatically for dashboard testing
-          const demoUser = {
-            userID: 1,
-            username: "demouser",
-            email: "demo@datingpulse.com", 
-            phone: "0821234567",
-            role: "USER",
-            status: "ACTIVE",
-            createdAt: "2024-01-01T00:00:00.000Z",
-            updatedAt: "2024-01-01T00:00:00.000Z",
-            lastLogin: "2024-01-01T00:00:00.000Z",
-            isVerified: true
-          };
-          localStorage.setItem('authToken', 'demo-jwt-token');
-          localStorage.setItem('user', JSON.stringify(demoUser));
-          setUser(demoUser);
-          console.log('🎭 Demo mode enabled - Auto-logged in as demo user for dashboard testing');
+        } else if (process.env.NODE_ENV === 'development') {
+          // Enable demo mode automatically for protected routes in development
+          const protectedPaths = ['/dashboard', '/discover', '/matches', '/messages', '/profile', '/settings', '/chat'];
+          const currentPath = window.location.pathname;
+          const isProtectedRoute = protectedPaths.some(path => currentPath.startsWith(path));
+          
+          if (isProtectedRoute) {
+            const demoUser = {
+              userID: 1,
+              username: "demouser",
+              email: "demo@datingpulse.com", 
+              phone: "0821234567",
+              role: "USER",
+              status: "ACTIVE",
+              createdAt: "2024-01-01T00:00:00.000Z",
+              updatedAt: "2024-01-01T00:00:00.000Z",
+              lastLogin: "2024-01-01T00:00:00.000Z",
+              isVerified: true
+            };
+            localStorage.setItem('authToken', 'demo-jwt-token');
+            localStorage.setItem('user', JSON.stringify(demoUser));
+            setUser(demoUser);
+            console.log('🎭 Demo mode enabled - Auto-logged in as demo user for protected route:', currentPath);
+          }
         }
       } catch (error) {
         console.warn('Auth initialization failed:', error);
+      } finally {
+        setLoading(false); // Always set loading to false when done
       }
     };
     
