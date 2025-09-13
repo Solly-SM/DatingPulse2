@@ -14,7 +14,6 @@ import {
   useTheme,
 } from '@mui/material';
 import {
-  Dashboard,
   Search,
   Favorite,
   Chat,

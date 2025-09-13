@@ -244,10 +244,10 @@ function LandingPage() {
                 <Button
                   variant="outlined"
                   size="small"
-                  onClick={() => window.location.href = '/dashboard'}
+                  onClick={() => window.location.href = '/home'}
                   sx={{ fontSize: '0.8rem', py: 0.5, px: 2 }}
                 >
-                  Dashboard
+                  Home
                 </Button>
                 <Button
                   variant="outlined"
