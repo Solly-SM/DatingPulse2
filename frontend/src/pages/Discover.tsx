@@ -250,55 +250,57 @@ function Discover() {
           sx={{ mb: 3, height: 4, borderRadius: 2 }}
         />
         
-        {/* Card Stack */}
-        <Box sx={{ position: 'relative', minHeight: 600, mb: 3 }}>
-          {/* Next card (background) */}
-          {currentIndex + 1 < users.length && (
-            <Box
-              sx={{
-                position: 'absolute',
-                top: 4,
-                left: 4,
-                right: 4,
-                bottom: 4,
-                zIndex: 1,
-                opacity: 0.5,
-                transform: 'scale(0.95)',
-              }}
-            >
+        {/* Card Stack with Action Buttons */}
+        <Box sx={{ position: 'relative', mb: 3 }}>
+          {/* Photo Stack Container - reduced height to make space for action buttons */}
+          <Box sx={{ position: 'relative', minHeight: 500, mb: 2 }}>
+            {/* Next card (background) */}
+            {currentIndex + 1 < users.length && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 4,
+                  left: 4,
+                  right: 4,
+                  bottom: 4,
+                  zIndex: 1,
+                  opacity: 0.5,
+                  transform: 'scale(0.95)',
+                }}
+              >
+                <PhotoViewer
+                  user={users[currentIndex + 1]}
+                  onLike={() => {}}
+                  onPass={() => {}}
+                  onSuperLike={() => {}}
+                  isAnimating={false}
+                  lastAction={null}
+                />
+              </Box>
+            )}
+            
+            {/* Current card */}
+            <Box sx={{ position: 'relative', zIndex: 2 }}>
               <PhotoViewer
-                user={users[currentIndex + 1]}
-                onLike={() => {}}
-                onPass={() => {}}
-                onSuperLike={() => {}}
-                isAnimating={false}
-                lastAction={null}
+                user={currentUser}
+                onLike={handleLike}
+                onPass={handlePass}
+                onSuperLike={handleSuperLike}
+                isAnimating={animating}
+                lastAction={lastAction}
               />
             </Box>
-          )}
-          
-          {/* Current card */}
-          <Box sx={{ position: 'relative', zIndex: 2 }}>
-            <PhotoViewer
-              user={currentUser}
-              onLike={handleLike}
-              onPass={handlePass}
-              onSuperLike={handleSuperLike}
-              isAnimating={animating}
-              lastAction={lastAction}
-            />
           </Box>
-        </Box>
 
-        {/* Action Buttons */}
-        <Paper 
-          elevation={2}
-          sx={{ 
-            p: 2, 
-            borderRadius: 3,
-            backgroundColor: 'background.paper',
-          }}
-        >
+          {/* Action Buttons - now directly below photos */}
+          <Paper 
+            elevation={2}
+            sx={{ 
+              p: 2, 
+              borderRadius: 3,
+              backgroundColor: 'background.paper',
+            }}
+          >
           <Stack direction="row" justifyContent="center" spacing={2}>
             <Fab
               size="medium"
@@ -363,6 +365,7 @@ function Discover() {
             Swipe or drag • Tap for Super Like
           </Typography>
         </Paper>
+        </Box>
       </Box>
     );
   }
@@ -402,45 +405,123 @@ function Discover() {
       
       {/* Three-column layout */}
       <Grid container spacing={3} sx={{ px: 3, height: 'calc(100vh - 200px)' }}>
-        {/* Middle column - Photos (slightly bigger) */}
+        {/* Middle column - Photos with Action Buttons (slightly bigger) */}
         <Grid item xs={5.5}>
-          <Box sx={{ position: 'relative', height: '100%' }}>
-            {/* Next card (background) */}
-            {currentIndex + 1 < users.length && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 4,
-                  left: 4,
-                  right: 4,
-                  bottom: 4,
-                  zIndex: 1,
-                  opacity: 0.5,
-                  transform: 'scale(0.95)',
-                }}
-              >
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            {/* Photo Stack Container - reduced height to make space for action buttons */}
+            <Box sx={{ position: 'relative', flexGrow: 1, mb: 2, minHeight: 0 }}>
+              {/* Next card (background) */}
+              {currentIndex + 1 < users.length && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 4,
+                    left: 4,
+                    right: 4,
+                    bottom: 4,
+                    zIndex: 1,
+                    opacity: 0.5,
+                    transform: 'scale(0.95)',
+                  }}
+                >
+                  <PhotoViewer
+                    user={users[currentIndex + 1]}
+                    onLike={() => {}}
+                    onPass={() => {}}
+                    onSuperLike={() => {}}
+                    isAnimating={false}
+                    lastAction={null}
+                  />
+                </Box>
+              )}
+              
+              {/* Current card */}
+              <Box sx={{ position: 'relative', zIndex: 2, height: '100%' }}>
                 <PhotoViewer
-                  user={users[currentIndex + 1]}
-                  onLike={() => {}}
-                  onPass={() => {}}
-                  onSuperLike={() => {}}
-                  isAnimating={false}
-                  lastAction={null}
+                  user={currentUser}
+                  onLike={handleLike}
+                  onPass={handlePass}
+                  onSuperLike={handleSuperLike}
+                  isAnimating={animating}
+                  lastAction={lastAction}
                 />
               </Box>
-            )}
-            
-            {/* Current card */}
-            <Box sx={{ position: 'relative', zIndex: 2, height: '100%' }}>
-              <PhotoViewer
-                user={currentUser}
-                onLike={handleLike}
-                onPass={handlePass}
-                onSuperLike={handleSuperLike}
-                isAnimating={animating}
-                lastAction={lastAction}
-              />
             </Box>
+
+            {/* Action Buttons - now directly below photos */}
+            <Paper 
+              elevation={4}
+              sx={{ 
+                p: 2, 
+                borderRadius: 3,
+                backgroundColor: 'background.paper',
+                flexShrink: 0,
+              }}
+            >
+              <Stack direction="row" justifyContent="center" spacing={2}>
+                <Fab
+                  size="medium"
+                  onClick={handleUndo}
+                  disabled={currentIndex === 0 || animating}
+                  sx={{ 
+                    backgroundColor: 'warning.light',
+                    '&:hover': { backgroundColor: 'warning.main' },
+                    '&:disabled': { backgroundColor: 'grey.200' },
+                  }}
+                >
+                  <Undo />
+                </Fab>
+                
+                <Fab
+                  size="large"
+                  onClick={handlePass}
+                  disabled={animating}
+                  sx={{ 
+                    backgroundColor: 'error.light',
+                    '&:hover': { backgroundColor: 'error.main' },
+                    color: 'white',
+                  }}
+                >
+                  <Close />
+                </Fab>
+                
+                <Fab
+                  size="medium"
+                  onClick={handleSuperLike}
+                  disabled={animating}
+                  sx={{ 
+                    backgroundColor: 'info.light',
+                    '&:hover': { backgroundColor: 'info.main' },
+                    color: 'white',
+                  }}
+                >
+                  <Star />
+                </Fab>
+                
+                <Fab
+                  size="large"
+                  onClick={handleLike}
+                  disabled={animating}
+                  sx={{ 
+                    backgroundColor: 'success.light',
+                    '&:hover': { backgroundColor: 'success.main' },
+                    color: 'white',
+                  }}
+                >
+                  <Favorite />
+                </Fab>
+              </Stack>
+              
+              <Typography 
+                variant="caption" 
+                display="block" 
+                textAlign="center" 
+                color="text.secondary"
+                sx={{ mt: 1 }}
+              >
+                Swipe or drag • Tap for Super Like
+              </Typography>
+            </Paper>
           </Box>
         </Grid>
 
@@ -449,88 +530,6 @@ function Discover() {
           <ProfileDetail user={currentUser} />
         </Grid>
       </Grid>
-
-      {/* Action Buttons - Fixed at bottom */}
-      <Box sx={{ 
-        position: 'fixed', 
-        bottom: 0, 
-        left: '50%', 
-        transform: 'translateX(-50%)',
-        p: 3 
-      }}>
-        <Paper 
-          elevation={4}
-          sx={{ 
-            p: 2, 
-            borderRadius: 3,
-            backgroundColor: 'background.paper',
-          }}
-        >
-          <Stack direction="row" justifyContent="center" spacing={2}>
-            <Fab
-              size="medium"
-              onClick={handleUndo}
-              disabled={currentIndex === 0 || animating}
-              sx={{ 
-                backgroundColor: 'warning.light',
-                '&:hover': { backgroundColor: 'warning.main' },
-                '&:disabled': { backgroundColor: 'grey.200' },
-              }}
-            >
-              <Undo />
-            </Fab>
-            
-            <Fab
-              size="large"
-              onClick={handlePass}
-              disabled={animating}
-              sx={{ 
-                backgroundColor: 'error.light',
-                '&:hover': { backgroundColor: 'error.main' },
-                color: 'white',
-              }}
-            >
-              <Close />
-            </Fab>
-            
-            <Fab
-              size="medium"
-              onClick={handleSuperLike}
-              disabled={animating}
-              sx={{ 
-                backgroundColor: 'info.light',
-                '&:hover': { backgroundColor: 'info.main' },
-                color: 'white',
-              }}
-            >
-              <Star />
-            </Fab>
-            
-            <Fab
-              size="large"
-              onClick={handleLike}
-              disabled={animating}
-              sx={{ 
-                backgroundColor: 'success.light',
-                '&:hover': { backgroundColor: 'success.main' },
-                color: 'white',
-              }}
-            >
-              <Favorite />
-            </Fab>
-          </Stack>
-          
-          <Typography 
-            variant="caption" 
-            display="block" 
-            textAlign="center" 
-            color="text.secondary"
-            sx={{ mt: 1 }}
-          >
-            Swipe or drag • Tap for Super Like
-          </Typography>
-        </Paper>
-      </Box>
     </Box>
   );
 }
