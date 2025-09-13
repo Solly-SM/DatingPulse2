@@ -3,19 +3,15 @@ import {
   Typography,
   Button,
   Box,
-  Chip,
   Paper,
   Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Card,
   CardContent,
   Stack,
-  Divider,
   Alert,
   LinearProgress,
+  Fab,
+  IconButton,
 } from '@mui/material';
 import {
   FilterList,
@@ -28,315 +24,250 @@ import {
   DirectionsRun,
   Restaurant,
   MusicNote,
+  Favorite,
+  Close,
+  Star,
+  Undo,
+  LocationOn,
+  Settings,
+  ArrowBack,
 } from '@mui/icons-material';
 import { datingService } from '../services/datingService';
 import { DiscoverUser } from '../types/Dating';
 import ProfileView from '../components/ProfileView';
+import PhotoViewer from '../components/PhotoViewer';
+import PulseLogo from '../components/PulseLogo';
 
-interface FilterOptions {
-  relationshipGoal: string;
-  familyPlans: string;
-  lifestyle: string;
-  interests: string[];
-  ageRange: { min: number; max: number };
+// Category definition with icon and description
+interface ExploreCategory {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
+  filterCriteria: {
+    relationshipGoal?: string;
+    lifestyle?: string;
+    interests?: string[];
+    ageRange?: { min: number; max: number };
+  };
 }
 
+const exploreCategories: ExploreCategory[] = [
+  {
+    id: 'serious-dating',
+    title: 'Serious Dating',
+    description: 'People looking for long-term relationships',
+    icon: <FavoriteBorder sx={{ fontSize: 40 }} />,
+    color: '#e91e63',
+    filterCriteria: {
+      relationshipGoal: 'Long-term relationship',
+    },
+  },
+  {
+    id: 'casual-fun',
+    title: 'Casual & Fun',
+    description: 'Relaxed dating and new connections',
+    icon: <HomeIcon sx={{ fontSize: 40 }} />,
+    color: '#ff4081',
+    filterCriteria: {
+      relationshipGoal: 'Casual dating',
+    },
+  },
+  {
+    id: 'fitness-active',
+    title: 'Fitness & Active',
+    description: 'Sports enthusiasts and fitness lovers',
+    icon: <DirectionsRun sx={{ fontSize: 40 }} />,
+    color: '#4caf50',
+    filterCriteria: {
+      lifestyle: 'Active/Fitness focused',
+      interests: ['Sports', 'Hiking', 'Yoga'],
+    },
+  },
+  {
+    id: 'career-focused',
+    title: 'Career Focused',
+    description: 'Ambitious professionals and entrepreneurs',
+    icon: <Work sx={{ fontSize: 40 }} />,
+    color: '#2196f3',
+    filterCriteria: {
+      lifestyle: 'Career focused',
+      interests: ['Business', 'Technology'],
+    },
+  },
+  {
+    id: 'creative-artistic',
+    title: 'Creative & Artistic',
+    description: 'Artists, musicians, and creative minds',
+    icon: <MusicNote sx={{ fontSize: 40 }} />,
+    color: '#9c27b0',
+    filterCriteria: {
+      lifestyle: 'Artistic/Creative',
+      interests: ['Art', 'Music', 'Photography'],
+    },
+  },
+  {
+    id: 'foodie-culture',
+    title: 'Foodie & Culture',
+    description: 'Food lovers and culture enthusiasts',
+    icon: <Restaurant sx={{ fontSize: 40 }} />,
+    color: '#ff9800',
+    filterCriteria: {
+      interests: ['Cooking', 'Travel', 'Art'],
+    },
+  },
+  {
+    id: 'family-oriented',
+    title: 'Family Oriented',
+    description: 'People who want or have children',
+    icon: <ChildCare sx={{ fontSize: 40 }} />,
+    color: '#795548',
+    filterCriteria: {
+      relationshipGoal: 'Marriage',
+    },
+  },
+  {
+    id: 'intellectual',
+    title: 'Intellectual',
+    description: 'Book lovers and deep thinkers',
+    icon: <School sx={{ fontSize: 40 }} />,
+    color: '#607d8b',
+    filterCriteria: {
+      interests: ['Reading', 'Technology', 'Business'],
+    },
+  },
+];
+
 function Explore() {
-  const [showFilters, setShowFilters] = useState(true);
-  const [filters, setFilters] = useState<FilterOptions>({
-    relationshipGoal: '',
-    familyPlans: '',
-    lifestyle: '',
-    interests: [],
-    ageRange: { min: 18, max: 50 },
-  });
-  const [filteredUsers, setFilteredUsers] = useState<DiscoverUser[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<ExploreCategory | null>(null);
+  const [users, setUsers] = useState<DiscoverUser[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [lastAction, setLastAction] = useState<'like' | 'pass' | 'superlike' | null>(null);
+  const [animating, setAnimating] = useState(false);
+  const [actionHistory, setActionHistory] = useState<Array<{ userID: number; action: string }>>([]);
 
-  const relationshipGoals = [
-    'Long-term relationship',
-    'Casual dating', 
-    'Friendship',
-    'Marriage',
-    'Something casual',
-    'Not sure yet'
-  ];
-
-  const familyPlanOptions = [
-    'Want children',
-    "Don't want children",
-    'Have children',
-    'Open to children',
-    'Prefer not to say'
-  ];
-
-  const lifestyleOptions = [
-    'Active/Fitness focused',
-    'Social/Party lover',
-    'Quiet/Homebody',
-    'Travel enthusiast',
-    'Career focused',
-    'Artistic/Creative'
-  ];
-
-  const interestOptions = [
-    'Travel', 'Photography', 'Hiking', 'Cooking', 'Music', 'Art',
-    'Sports', 'Reading', 'Movies', 'Gaming', 'Dancing', 'Yoga',
-    'Technology', 'Business', 'Animals', 'Volunteering'
-  ];
-
-  const handleFilterChange = (filterType: keyof FilterOptions, value: any) => {
-    setFilters(prev => ({
-      ...prev,
-      [filterType]: value
-    }));
-  };
-
-  const handleInterestToggle = (interest: string) => {
-    setFilters(prev => ({
-      ...prev,
-      interests: prev.interests.includes(interest)
-        ? prev.interests.filter(i => i !== interest)
-        : [...prev.interests, interest]
-    }));
-  };
-
-  const applyFilters = async () => {
+  const loadUsersForCategory = async (category: ExploreCategory) => {
     setLoading(true);
     setError('');
+    setCurrentIndex(0);
+    setUsers([]);
     
     try {
-      // In a real app, this would send filters to the backend
-      const users = await datingService.getDiscoverUsers(0, 20);
-      
-      // For demo purposes, we'll just show all users
-      // In real implementation, backend would filter based on preferences
-      setFilteredUsers(users);
-      setShowFilters(false);
+      // Use the actual API method which returns DiscoverUser[] directly
+      const response = await datingService.getDiscoverUsers(0, 20);
+      setUsers(response || []);
     } catch (err: any) {
-      setError('Failed to load filtered users');
-      console.error('Error loading filtered users:', err);
+      setError(err.message || 'Failed to load users for this category');
+      console.error('Failed to load users:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const resetFilters = () => {
-    setFilters({
-      relationshipGoal: '',
-      familyPlans: '',
-      lifestyle: '',
-      interests: [],
-      ageRange: { min: 18, max: 50 },
-    });
-    setFilteredUsers([]);
-    setShowFilters(true);
+  const handleCategorySelect = (category: ExploreCategory) => {
+    setSelectedCategory(category);
+    loadUsersForCategory(category);
   };
 
-  if (showFilters) {
-    return (
-      <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
-        <Box sx={{ mb: 4, textAlign: 'center' }}>
-          <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-            Explore
-          </Typography>
-          <Typography variant="h6" color="text.secondary">
-            Find people who share your relationship goals and values
-          </Typography>
-        </Box>
+  const handleBackToCategories = () => {
+    setSelectedCategory(null);
+    setUsers([]);
+    setCurrentIndex(0);
+    setError('');
+  };
 
-        <Paper sx={{ p: 4, mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-            <FilterList color="primary" />
-            <Typography variant="h5" fontWeight="bold">
-              Set Your Preferences
-            </Typography>
-          </Box>
+  const currentUser = users[currentIndex];
+  const progress = users.length > 0 ? ((currentIndex) / users.length) * 100 : 0;
 
-          <Grid container spacing={3}>
-            {/* Relationship Goals */}
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>Relationship Goal</InputLabel>
-                <Select
-                  value={filters.relationshipGoal}
-                  label="Relationship Goal"
-                  onChange={(e) => handleFilterChange('relationshipGoal', e.target.value)}
-                >
-                  {relationshipGoals.map((goal) => (
-                    <MenuItem key={goal} value={goal}>
-                      {goal}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+  const nextUser = () => {
+    if (currentIndex < users.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    }
+  };
 
-            {/* Family Plans */}
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>Family Plans</InputLabel>
-                <Select
-                  value={filters.familyPlans}
-                  label="Family Plans"
-                  onChange={(e) => handleFilterChange('familyPlans', e.target.value)}
-                >
-                  {familyPlanOptions.map((plan) => (
-                    <MenuItem key={plan} value={plan}>
-                      {plan}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+  const handleLike = async () => {
+    if (currentIndex >= users.length || animating) return;
+    
+    setAnimating(true);
+    setLastAction('like');
+    
+    try {
+      const result = await datingService.likeUser(currentUser.userID);
+      setActionHistory(prev => [...prev, { userID: currentUser.userID, action: 'like' }]);
+      
+      if (result.isMatch) {
+        console.log('It\'s a match! 🎉');
+      }
+    } catch (err) {
+      console.error('Failed to like user:', err);
+    }
+    
+    setTimeout(() => {
+      nextUser();
+      setAnimating(false);
+    }, 300);
+  };
 
-            {/* Lifestyle */}
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>Lifestyle</InputLabel>
-                <Select
-                  value={filters.lifestyle}
-                  label="Lifestyle"
-                  onChange={(e) => handleFilterChange('lifestyle', e.target.value)}
-                >
-                  {lifestyleOptions.map((lifestyle) => (
-                    <MenuItem key={lifestyle} value={lifestyle}>
-                      {lifestyle}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+  const handlePass = async () => {
+    if (currentIndex >= users.length || animating) return;
+    
+    setAnimating(true);
+    setLastAction('pass');
+    
+    try {
+      await datingService.passUser(currentUser.userID);
+      setActionHistory(prev => [...prev, { userID: currentUser.userID, action: 'pass' }]);
+    } catch (err) {
+      console.error('Failed to pass user:', err);
+    }
+    
+    setTimeout(() => {
+      nextUser();
+      setAnimating(false);
+    }, 300);
+  };
 
-            {/* Age Range */}
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle1" gutterBottom>
-                Age Range: {filters.ageRange.min} - {filters.ageRange.max}
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <FormControl sx={{ minWidth: 80 }}>
-                  <InputLabel>Min</InputLabel>
-                  <Select
-                    value={filters.ageRange.min}
-                    label="Min"
-                    onChange={(e) => handleFilterChange('ageRange', { ...filters.ageRange, min: e.target.value })}
-                  >
-                    {Array.from({ length: 33 }, (_, i) => i + 18).map((age) => (
-                      <MenuItem key={age} value={age}>
-                        {age}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl sx={{ minWidth: 80 }}>
-                  <InputLabel>Max</InputLabel>
-                  <Select
-                    value={filters.ageRange.max}
-                    label="Max"
-                    onChange={(e) => handleFilterChange('ageRange', { ...filters.ageRange, max: e.target.value })}
-                  >
-                    {Array.from({ length: 33 }, (_, i) => i + 18).map((age) => (
-                      <MenuItem key={age} value={age}>
-                        {age}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Grid>
+  const handleSuperLike = async () => {
+    if (currentIndex >= users.length || animating) return;
+    
+    setAnimating(true);
+    setLastAction('superlike');
+    
+    try {
+      const result = await datingService.superLikeUser(currentUser.userID);
+      setActionHistory(prev => [...prev, { userID: currentUser.userID, action: 'superlike' }]);
+      
+      if (result.isMatch) {
+        console.log('Super match! 🌟');
+      }
+    } catch (err) {
+      console.error('Failed to super like user:', err);
+    }
+    
+    setTimeout(() => {
+      nextUser();
+      setAnimating(false);
+    }, 300);
+  };
 
-            {/* Interests */}
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>
-                Interests (select any that are important to you)
-              </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
-                {interestOptions.map((interest) => (
-                  <Chip
-                    key={interest}
-                    label={interest}
-                    onClick={() => handleInterestToggle(interest)}
-                    color={filters.interests.includes(interest) ? 'primary' : 'default'}
-                    variant={filters.interests.includes(interest) ? 'filled' : 'outlined'}
-                    sx={{ 
-                      cursor: 'pointer',
-                      '&:hover': {
-                        backgroundColor: filters.interests.includes(interest) 
-                          ? 'primary.dark' 
-                          : 'rgba(0, 0, 0, 0.04)'
-                      }
-                    }}
-                  />
-                ))}
-              </Box>
-            </Grid>
-          </Grid>
+  const handleUndo = async () => {
+    if (currentIndex === 0 || animating || actionHistory.length === 0) return;
+    
+    // For now, just go back one user without API call since undoAction doesn't exist
+    setActionHistory(prev => prev.slice(0, -1));
+    setCurrentIndex(prev => Math.max(0, prev - 1));
+  };
 
-          <Divider sx={{ my: 3 }} />
-
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-            <Button
-              variant="outlined"
-              onClick={resetFilters}
-              size="large"
-            >
-              Reset Filters
-            </Button>
-            <Button
-              variant="contained"
-              onClick={applyFilters}
-              size="large"
-              startIcon={<Search />}
-              disabled={!filters.relationshipGoal && !filters.familyPlans && !filters.lifestyle && filters.interests.length === 0}
-              sx={{
-                background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #c2185b 0%, #e91e63 100%)',
-                },
-              }}
-            >
-              Find Matches
-            </Button>
-          </Box>
-        </Paper>
-
-        {/* Selected Filters Summary */}
-        {(filters.relationshipGoal || filters.familyPlans || filters.lifestyle || filters.interests.length > 0) && (
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              Your Preferences
-            </Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-              {filters.relationshipGoal && (
-                <Chip icon={<FavoriteBorder />} label={`Goal: ${filters.relationshipGoal}`} color="primary" />
-              )}
-              {filters.familyPlans && (
-                <Chip icon={<ChildCare />} label={`Family: ${filters.familyPlans}`} color="secondary" />
-              )}
-              {filters.lifestyle && (
-                <Chip icon={<DirectionsRun />} label={`Lifestyle: ${filters.lifestyle}`} color="info" />
-              )}
-              {filters.interests.map((interest) => (
-                <Chip key={interest} label={interest} size="small" variant="outlined" />
-              ))}
-            </Stack>
-          </Paper>
-        )}
-      </Box>
-    );
-  }
-
-  // Show filtered results
   if (loading) {
     return (
       <Box sx={{ p: 4 }}>
-        <Box textAlign="center" mt={4}>
-          <Typography variant="h6" gutterBottom>
-            Finding people who match your preferences...
-          </Typography>
-          <LinearProgress sx={{ mt: 2 }} />
-        </Box>
+        <LinearProgress sx={{ mb: 4 }} />
+        <Typography variant="h6" textAlign="center" color="text.secondary">
+          Finding amazing people in {selectedCategory?.title}...
+        </Typography>
       </Box>
     );
   }
@@ -346,101 +277,295 @@ function Explore() {
       <Box sx={{ p: 4 }}>
         <Alert severity="error" sx={{ mt: 4 }}>
           {error}
-          <Button onClick={() => setShowFilters(true)} sx={{ ml: 2 }}>
-            Back to Filters
+          <Button onClick={handleBackToCategories} sx={{ ml: 2 }}>
+            Back to Categories
           </Button>
         </Alert>
       </Box>
     );
   }
 
-  return (
-    <Box sx={{ p: 3 }}>
-      {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          Your Matches
-        </Typography>
-        <Button
-          variant="outlined"
-          onClick={resetFilters}
-          startIcon={<FilterList />}
-        >
-          Change Filters
-        </Button>
-      </Box>
-
-      {/* Active Filters Summary */}
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-          Showing people matching your preferences:
-        </Typography>
-        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-          {filters.relationshipGoal && (
-            <Chip label={filters.relationshipGoal} size="small" color="primary" />
-          )}
-          {filters.familyPlans && (
-            <Chip label={filters.familyPlans} size="small" color="secondary" />
-          )}
-          {filters.lifestyle && (
-            <Chip label={filters.lifestyle} size="small" color="info" />
-          )}
-          <Chip label={`Age ${filters.ageRange.min}-${filters.ageRange.max}`} size="small" />
-          {filters.interests.slice(0, 3).map((interest) => (
-            <Chip key={interest} label={interest} size="small" variant="outlined" />
-          ))}
-          {filters.interests.length > 3 && (
-            <Chip label={`+${filters.interests.length - 3} more`} size="small" variant="outlined" />
-          )}
-        </Stack>
-      </Paper>
-
-      {/* Results Grid */}
-      {filteredUsers.length === 0 ? (
-        <Box textAlign="center" sx={{ mt: 4 }}>
-          <Typography variant="h6" gutterBottom>
-            No matches found
+  // Category Selection View
+  if (!selectedCategory) {
+    return (
+      <Box sx={{ p: 3 }}>
+        {/* Header */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+          <PulseLogo sx={{ fontSize: 32, color: 'primary.main' }} />
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+            Explore
           </Typography>
-          <Typography variant="body1" color="text.secondary" gutterBottom>
-            Try adjusting your filters to see more profiles
-          </Typography>
-          <Button variant="contained" onClick={resetFilters} sx={{ mt: 2 }}>
-            Update Filters
-          </Button>
         </Box>
-      ) : (
+
+        <Typography variant="h6" color="text.secondary" gutterBottom sx={{ mb: 4 }}>
+          Choose what you're looking for today ✨
+        </Typography>
+
+        {/* Categories Grid */}
         <Grid container spacing={3}>
-          {filteredUsers.map((user, index) => (
-            <Grid item xs={12} sm={6} md={4} key={user.userID}>
-              <Card sx={{ 
-                height: '100%',
-                cursor: 'pointer',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: 4,
-                },
-              }}>
-                <ProfileView user={user} compact={true} />
+          {exploreCategories.map((category) => (
+            <Grid item xs={12} sm={6} md={4} key={category.id}>
+              <Card
+                sx={{
+                  height: '100%',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  border: '2px solid transparent',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: `0 12px 32px rgba(0,0,0,0.15)`,
+                    border: `2px solid ${category.color}`,
+                  },
+                }}
+                onClick={() => handleCategorySelect(category)}
+              >
+                <CardContent sx={{ p: 3, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <Box
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: `${category.color}15`,
+                      color: category.color,
+                      margin: '0 auto 16px auto',
+                    }}
+                  >
+                    {category.icon}
+                  </Box>
+                  <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ color: category.color }}>
+                    {category.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
+                    {category.description}
+                  </Typography>
+                </CardContent>
               </Card>
             </Grid>
           ))}
         </Grid>
-      )}
+      </Box>
+    );
+  }
 
-      {filteredUsers.length > 0 && (
-        <Box sx={{ textAlign: 'center', mt: 4 }}>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
-            Showing {filteredUsers.length} matches
+  // Single User View (similar to Home page)
+  if (users.length === 0) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+          <IconButton onClick={handleBackToCategories}>
+            <ArrowBack />
+          </IconButton>
+          <Typography variant="h5" sx={{ fontWeight: 'bold', color: selectedCategory.color }}>
+            {selectedCategory.title}
           </Typography>
-          <Button variant="outlined" onClick={() => {
-            // Load more users logic
-            console.log('Load more users');
-          }}>
-            Load More
-          </Button>
         </Box>
-      )}
+        <Typography variant="body1" color="text.secondary" textAlign="center" sx={{ mt: 4 }}>
+          No one in this category right now. Try another category!
+        </Typography>
+      </Box>
+    );
+  }
+
+  if (currentIndex >= users.length) {
+    return (
+      <Box sx={{ p: 4, textAlign: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, justifyContent: 'center' }}>
+          <IconButton onClick={handleBackToCategories}>
+            <ArrowBack />
+          </IconButton>
+          <Typography variant="h5" sx={{ fontWeight: 'bold', color: selectedCategory.color }}>
+            {selectedCategory.title}
+          </Typography>
+        </Box>
+        <Typography variant="h6" gutterBottom>
+          You've seen everyone in {selectedCategory.title}! 🎉
+        </Typography>
+        <Typography variant="body1" color="text.secondary" gutterBottom>
+          Check back later for new profiles or explore other categories.
+        </Typography>
+        <Button variant="contained" onClick={handleBackToCategories} sx={{ mt: 2 }}>
+          Explore Other Categories
+        </Button>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Header */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 3, pb: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <IconButton onClick={handleBackToCategories}>
+            <ArrowBack />
+          </IconButton>
+          <Box
+            sx={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: `${selectedCategory.color}15`,
+              color: selectedCategory.color,
+            }}
+          >
+            {React.cloneElement(selectedCategory.icon as React.ReactElement, { sx: { fontSize: 20 } } as any)}
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 'bold', color: selectedCategory.color }}>
+            {selectedCategory.title}
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Typography variant="body2" color="text.secondary">
+            {users.length - currentIndex} left
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* Progress bar */}
+      <Box sx={{ px: 3, mb: 2 }}>
+        <LinearProgress 
+          variant="determinate" 
+          value={progress} 
+          sx={{ height: 4, borderRadius: 2 }}
+        />
+      </Box>
+      
+      {/* Two-column layout - Photos in middle, Profile on right */}
+      <Grid container spacing={3} sx={{ px: 3, height: 'calc(100vh - 200px)' }}>
+        {/* Middle column - Photos (bigger) */}
+        <Grid item xs={7}>
+          <Box sx={{ position: 'relative', height: '100%' }}>
+            {/* Next card (background) */}
+            {currentIndex + 1 < users.length && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 4,
+                  left: 4,
+                  right: 4,
+                  bottom: 4,
+                  zIndex: 1,
+                  opacity: 0.5,
+                  transform: 'scale(0.95)',
+                }}
+              >
+                <PhotoViewer
+                  user={users[currentIndex + 1]}
+                  onLike={() => {}}
+                  onPass={() => {}}
+                  onSuperLike={() => {}}
+                  isAnimating={false}
+                  lastAction={null}
+                />
+              </Box>
+            )}
+            
+            {/* Current card */}
+            <Box sx={{ position: 'relative', zIndex: 2, height: '100%' }}>
+              <PhotoViewer
+                user={currentUser}
+                onLike={handleLike}
+                onPass={handlePass}
+                onSuperLike={handleSuperLike}
+                isAnimating={animating}
+                lastAction={lastAction}
+              />
+            </Box>
+          </Box>
+        </Grid>
+
+        {/* Right column - Profile details WITHOUT pictures */}
+        <Grid item xs={5}>
+          <ProfileView user={currentUser} compact={true} hidePhotos={true} />
+        </Grid>
+      </Grid>
+
+      {/* Action Buttons - Fixed at bottom */}
+      <Box sx={{ 
+        position: 'fixed', 
+        bottom: 0, 
+        left: '50%', 
+        transform: 'translateX(-50%)',
+        p: 3 
+      }}>
+        <Paper 
+          elevation={4}
+          sx={{ 
+            p: 2, 
+            borderRadius: 3,
+            backgroundColor: 'background.paper',
+          }}
+        >
+          <Stack direction="row" justifyContent="center" spacing={2}>
+            <Fab
+              size="medium"
+              onClick={handleUndo}
+              disabled={currentIndex === 0 || animating}
+              sx={{ 
+                backgroundColor: 'warning.light',
+                '&:hover': { backgroundColor: 'warning.main' },
+                '&:disabled': { backgroundColor: 'grey.200' },
+              }}
+            >
+              <Undo />
+            </Fab>
+            
+            <Fab
+              size="large"
+              onClick={handlePass}
+              disabled={animating}
+              sx={{ 
+                backgroundColor: 'error.light',
+                '&:hover': { backgroundColor: 'error.main' },
+                color: 'white',
+              }}
+            >
+              <Close />
+            </Fab>
+            
+            <Fab
+              size="medium"
+              onClick={handleSuperLike}
+              disabled={animating}
+              sx={{ 
+                backgroundColor: 'info.light',
+                '&:hover': { backgroundColor: 'info.main' },
+                color: 'white',
+              }}
+            >
+              <Star />
+            </Fab>
+            
+            <Fab
+              size="large"
+              onClick={handleLike}
+              disabled={animating}
+              sx={{ 
+                backgroundColor: 'success.light',
+                '&:hover': { backgroundColor: 'success.main' },
+                color: 'white',
+              }}
+            >
+              <Favorite />
+            </Fab>
+          </Stack>
+          
+          <Typography 
+            variant="caption" 
+            display="block" 
+            textAlign="center" 
+            color="text.secondary"
+            sx={{ mt: 1 }}
+          >
+            Swipe or drag • Tap for Super Like
+          </Typography>
+        </Paper>
+      </Box>
     </Box>
   );
 }
