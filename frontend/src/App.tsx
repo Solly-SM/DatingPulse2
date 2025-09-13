@@ -21,6 +21,7 @@ import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import DemoSidebar from './pages/DemoSidebar';
 import DiscoverDemo from './pages/DiscoverDemo';
+import ComponentsDemo from './pages/ComponentsDemo';
 import './App.css';
 // Conditionally import demo auth only in development
 if (process.env.NODE_ENV === 'development') {
@@ -295,6 +296,7 @@ function App() {
               <Route path="/demo-old" element={<ProfileStepsDemo />} />
               <Route path="/demo-sidebar" element={<DemoSidebar />} />
               <Route path="/demo-discover" element={<DiscoverDemo />} />
+              <Route path="/demo-components" element={<ComponentsDemo />} />
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Layout>
