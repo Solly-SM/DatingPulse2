@@ -61,5 +61,6 @@ export interface Conversation {
   lastMessageAt?: string;
   lastMessage?: string;
   unreadCount?: number;
+  hasUnreadMessages?: boolean;
   otherUser: DiscoverUser;
 }
