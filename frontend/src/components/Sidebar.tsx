@@ -47,14 +47,14 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const menuItems = [
     {
-      text: 'Dashboard',
-      icon: <Dashboard />,
-      path: '/dashboard',
+      text: 'Home',
+      icon: <PulseLogo sx={{ fontSize: 24 }} />,
+      path: '/home',
     },
     {
-      text: 'Discover',
+      text: 'Explore',
       icon: <Search />,
-      path: '/discover',
+      path: '/explore',
     },
     {
       text: 'Matches',
@@ -65,11 +65,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       text: 'Messages',
       icon: <Chat />,
       path: '/messages',
-    },
-    {
-      text: 'Profile',
-      icon: <Person />,
-      path: '/profile',
     },
     {
       text: 'Settings',

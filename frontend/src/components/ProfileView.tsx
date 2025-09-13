@@ -33,9 +33,10 @@ interface ProfileViewProps {
   user: DiscoverUser;
   onClose?: () => void;
   compact?: boolean;
+  hidePhotos?: boolean;
 }
 
-function ProfileView({ user, onClose, compact = false }: ProfileViewProps) {
+function ProfileView({ user, onClose, compact = false, hidePhotos = false }: ProfileViewProps) {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   
   // Mock user data with more details for demo
@@ -117,81 +118,83 @@ function ProfileView({ user, onClose, compact = false }: ProfileViewProps) {
       </Box>
 
       <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
-        {/* Photo Carousel */}
-        <Box sx={{ position: 'relative', height: compact ? 200 : 300 }}>
-          <Box
-            component="img"
-            src={profileUser.photos[currentPhotoIndex]?.url}
-            alt={`${profileUser.firstName || profileUser.username} photo ${currentPhotoIndex + 1}`}
-            sx={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
-          />
-          
-          {/* Photo Navigation */}
-          {profileUser.photos.length > 1 && (
-            <>
-              <IconButton
-                onClick={prevPhoto}
-                sx={{
-                  position: 'absolute',
-                  left: 8,
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  backgroundColor: 'rgba(0,0,0,0.5)',
-                  color: 'white',
-                  '&:hover': { backgroundColor: 'rgba(0,0,0,0.7)' },
-                }}
-                size={compact ? "small" : "medium"}
-              >
-                <ArrowBackIos />
-              </IconButton>
-              
-              <IconButton
-                onClick={nextPhoto}
-                sx={{
-                  position: 'absolute',
-                  right: 8,
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  backgroundColor: 'rgba(0,0,0,0.5)',
-                  color: 'white',
-                  '&:hover': { backgroundColor: 'rgba(0,0,0,0.7)' },
-                }}
-                size={compact ? "small" : "medium"}
-              >
-                <ArrowForwardIos />
-              </IconButton>
+        {/* Photo Carousel - only show if hidePhotos is false */}
+        {!hidePhotos && (
+          <Box sx={{ position: 'relative', height: compact ? 200 : 300 }}>
+            <Box
+              component="img"
+              src={profileUser.photos[currentPhotoIndex]?.url}
+              alt={`${profileUser.firstName || profileUser.username} photo ${currentPhotoIndex + 1}`}
+              sx={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
+            
+            {/* Photo Navigation */}
+            {profileUser.photos.length > 1 && (
+              <>
+                <IconButton
+                  onClick={prevPhoto}
+                  sx={{
+                    position: 'absolute',
+                    left: 8,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    color: 'white',
+                    '&:hover': { backgroundColor: 'rgba(0,0,0,0.7)' },
+                  }}
+                  size={compact ? "small" : "medium"}
+                >
+                  <ArrowBackIos />
+                </IconButton>
+                
+                <IconButton
+                  onClick={nextPhoto}
+                  sx={{
+                    position: 'absolute',
+                    right: 8,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    color: 'white',
+                    '&:hover': { backgroundColor: 'rgba(0,0,0,0.7)' },
+                  }}
+                  size={compact ? "small" : "medium"}
+                >
+                  <ArrowForwardIos />
+                </IconButton>
 
-              {/* Photo Indicators */}
-              <Box sx={{
-                position: 'absolute',
-                bottom: 16,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                display: 'flex',
-                gap: 1,
-              }}>
-                {profileUser.photos.map((_: any, index: number) => (
-                  <Box
-                    key={index}
-                    onClick={() => setCurrentPhotoIndex(index)}
-                    sx={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: '50%',
-                      backgroundColor: index === currentPhotoIndex ? 'white' : 'rgba(255,255,255,0.5)',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.2s',
-                    }}
-                  />
-                ))}
-              </Box>
-            </>
-          )}
-        </Box>
+                {/* Photo Indicators */}
+                <Box sx={{
+                  position: 'absolute',
+                  bottom: 16,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  display: 'flex',
+                  gap: 1,
+                }}>
+                  {profileUser.photos.map((_: any, index: number) => (
+                    <Box
+                      key={index}
+                      onClick={() => setCurrentPhotoIndex(index)}
+                      sx={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: '50%',
+                        backgroundColor: index === currentPhotoIndex ? 'white' : 'rgba(255,255,255,0.5)',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.2s',
+                      }}
+                    />
+                  ))}
+                </Box>
+              </>
+            )}
+          </Box>
+        )}
 
         {/* Profile Info */}
         <Box sx={{ p: compact ? 1 : 2 }}>
