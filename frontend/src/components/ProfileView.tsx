@@ -202,7 +202,8 @@ function ProfileView({ user, onClose, compact = false, hidePhotos = false }: Pro
           p: compact ? 1 : 2, 
           flexGrow: 1, 
           overflow: hidePhotos ? 'auto' : 'visible',
-          minHeight: 0
+          minHeight: 0,
+          maxHeight: hidePhotos ? 'calc(100vh - 140px)' : 'none' // Ensure constrained height for scrolling
         }}>
           {/* Name and Age */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
