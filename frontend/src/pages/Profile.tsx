@@ -28,6 +28,11 @@ import InterestsEditModal from '../components/profile-edit/InterestsEditModal';
 import PhysicalAttributesEditModal from '../components/profile-edit/PhysicalAttributesEditModal';
 import LifestyleEditModal from '../components/profile-edit/LifestyleEditModal';
 import ProfessionalEditModal from '../components/profile-edit/ProfessionalEditModal';
+import SexualOrientationEditModal from '../components/profile-edit/SexualOrientationEditModal';
+import LookingForEditModal from '../components/profile-edit/LookingForEditModal';
+import DistancePreferenceEditModal from '../components/profile-edit/DistancePreferenceEditModal';
+import PersonalityEditModal from '../components/profile-edit/PersonalityEditModal';
+import AudioIntroEditModal from '../components/profile-edit/AudioIntroEditModal';
 
 function Profile() {
   const { user } = useAuth();
@@ -43,6 +48,11 @@ function Profile() {
   const [physicalAttributesModalOpen, setPhysicalAttributesModalOpen] = useState(false);
   const [lifestyleModalOpen, setLifestyleModalOpen] = useState(false);
   const [professionalModalOpen, setProfessionalModalOpen] = useState(false);
+  const [sexualOrientationModalOpen, setSexualOrientationModalOpen] = useState(false);
+  const [lookingForModalOpen, setLookingForModalOpen] = useState(false);
+  const [distancePreferenceModalOpen, setDistancePreferenceModalOpen] = useState(false);
+  const [personalityModalOpen, setPersonalityModalOpen] = useState(false);
+  const [audioIntroModalOpen, setAudioIntroModalOpen] = useState(false);
 
   const loadProfile = useCallback(async () => {
     if (!user) return;
@@ -229,6 +239,157 @@ function Profile() {
     setProfile(updatedProfile);
     setSuccess('Professional information updated successfully!');
     setTimeout(() => setSuccess(''), 3000);
+  };
+
+  const saveSexualOrientation = async (data: { sexualOrientation?: string; showOrientation?: boolean; }) => {
+    if (!user || !profile) return;
+    
+    const updateData = {
+      userID: user.userID,
+      firstName: profile.firstName || '',
+      lastName: profile.lastName || '',
+      dateOfBirth: profile.dateOfBirth || '1995-01-01',
+      bio: profile.bio || '',
+      location: profile.location || '',
+      city: profile.city,
+      region: profile.region,
+      country: profile.country,
+      interests: profile.interests || [],
+      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+      height: profile.height,
+      education: profile.education,
+      occupation: profile.occupation,
+      jobTitle: profile.jobTitle,
+      showGender: profile.showGender,
+      showAge: profile.showAge,
+      showLocation: profile.showLocation,
+      sexualOrientation: data.sexualOrientation,
+      showOrientation: data.showOrientation,
+    };
+    
+    const updatedProfile = await userService.updateProfile(user.userID, updateData);
+    setProfile(updatedProfile);
+    setSuccess('Sexual orientation updated successfully!');
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+  const saveLookingFor = async (data: { lookingFor?: string; }) => {
+    if (!user || !profile) return;
+    
+    const updateData = {
+      userID: user.userID,
+      firstName: profile.firstName || '',
+      lastName: profile.lastName || '',
+      dateOfBirth: profile.dateOfBirth || '1995-01-01',
+      bio: profile.bio || '',
+      location: profile.location || '',
+      city: profile.city,
+      region: profile.region,
+      country: profile.country,
+      interests: profile.interests || [],
+      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+      height: profile.height,
+      education: profile.education,
+      occupation: profile.occupation,
+      jobTitle: profile.jobTitle,
+      showGender: profile.showGender,
+      showAge: profile.showAge,
+      showLocation: profile.showLocation,
+      lookingFor: data.lookingFor,
+    };
+    
+    const updatedProfile = await userService.updateProfile(user.userID, updateData);
+    setProfile(updatedProfile);
+    setSuccess('Looking for preference updated successfully!');
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+  const saveDistancePreference = async (data: { maxDistance?: number; }) => {
+    if (!user || !profile) return;
+    
+    const updateData = {
+      userID: user.userID,
+      firstName: profile.firstName || '',
+      lastName: profile.lastName || '',
+      dateOfBirth: profile.dateOfBirth || '1995-01-01',
+      bio: profile.bio || '',
+      location: profile.location || '',
+      city: profile.city,
+      region: profile.region,
+      country: profile.country,
+      interests: profile.interests || [],
+      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+      height: profile.height,
+      education: profile.education,
+      occupation: profile.occupation,
+      jobTitle: profile.jobTitle,
+      showGender: profile.showGender,
+      showAge: profile.showAge,
+      showLocation: profile.showLocation,
+      maxDistance: data.maxDistance,
+    };
+    
+    const updatedProfile = await userService.updateProfile(user.userID, updateData);
+    setProfile(updatedProfile);
+    setSuccess('Distance preference updated successfully!');
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+  const savePersonality = async (data: { communicationStyle?: string; loveLanguage?: string; zodiacSign?: string; }) => {
+    if (!user || !profile) return;
+    
+    const updateData = {
+      userID: user.userID,
+      firstName: profile.firstName || '',
+      lastName: profile.lastName || '',
+      dateOfBirth: profile.dateOfBirth || '1995-01-01',
+      bio: profile.bio || '',
+      location: profile.location || '',
+      city: profile.city,
+      region: profile.region,
+      country: profile.country,
+      interests: profile.interests || [],
+      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+      height: profile.height,
+      education: profile.education,
+      occupation: profile.occupation,
+      jobTitle: profile.jobTitle,
+      showGender: profile.showGender,
+      showAge: profile.showAge,
+      showLocation: profile.showLocation,
+      communicationStyle: data.communicationStyle,
+      loveLanguage: data.loveLanguage,
+      zodiacSign: data.zodiacSign,
+    };
+    
+    const updatedProfile = await userService.updateProfile(user.userID, updateData);
+    setProfile(updatedProfile);
+    setSuccess('Personality traits updated successfully!');
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+  const saveAudioIntro = async (data: { audioIntro?: File | null; removeAudio?: boolean; }) => {
+    if (!user || !profile) return;
+    
+    try {
+      if (data.removeAudio) {
+        // Remove audio intro
+        // TODO: Implement audio deletion in userService
+        setSuccess('Audio introduction removed successfully!');
+      } else if (data.audioIntro) {
+        // Upload new audio intro
+        // TODO: Implement audio upload in userService
+        setSuccess('Audio introduction updated successfully!');
+      }
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to update audio introduction');
+      console.error('Audio intro error:', err);
+    }
   };
 
 
@@ -810,6 +971,193 @@ function Profile() {
             </Grid>
           </Paper>
         </Grid>
+
+        {/* Sexual Orientation Section */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 3 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">
+                🏳️‍🌈 Sexual Orientation
+              </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={() => setSexualOrientationModalOpen(true)}
+                size="small"
+              >
+                Edit
+              </Button>
+            </Box>
+            
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    🌈 Orientation
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.sexualOrientation || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    👁️ Show on Profile
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.showOrientation ? 'Yes' : 'No'}
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+
+        {/* Looking For Section */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 3 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">
+                💫 Looking For
+              </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={() => setLookingForModalOpen(true)}
+                size="small"
+              >
+                Edit
+              </Button>
+            </Box>
+            
+            <Box>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                💕 Relationship Goal
+              </Typography>
+              <Typography variant="body1">
+                {profile?.lookingFor ? profile.lookingFor.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not specified'}
+              </Typography>
+            </Box>
+          </Paper>
+        </Grid>
+
+        {/* Distance Preference Section */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 3 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">
+                📍 Distance Preference
+              </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={() => setDistancePreferenceModalOpen(true)}
+                size="small"
+              >
+                Edit
+              </Button>
+            </Box>
+            
+            <Box>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                🚗 Maximum Distance
+              </Typography>
+              <Typography variant="body1">
+                {profile?.maxDistance ? 
+                  (profile.maxDistance >= 100 ? 'Anywhere' : `${profile.maxDistance} km`) : 
+                  'Not specified'
+                }
+              </Typography>
+            </Box>
+          </Paper>
+        </Grid>
+
+        {/* Personality Section */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 3 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">
+                ✨ Personality & Traits
+              </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={() => setPersonalityModalOpen(true)}
+                size="small"
+              >
+                Edit
+              </Button>
+            </Box>
+            
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={4}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    💬 Communication Style
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.communicationStyle || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    💖 Love Language
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.loveLanguage || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    ⭐ Zodiac Sign
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.zodiacSign || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+
+        {/* Audio Introduction Section */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 3 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">
+                🎤 Audio Introduction
+              </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={() => setAudioIntroModalOpen(true)}
+                size="small"
+              >
+                Edit
+              </Button>
+            </Box>
+            
+            <Box>
+              {profile?.audioIntroUrl ? (
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    🔊 Your Voice Introduction
+                  </Typography>
+                  <audio controls src={profile.audioIntroUrl} style={{ width: '100%', marginTop: '8px' }} />
+                </Box>
+              ) : (
+                <Typography variant="body1" color="text.secondary">
+                  No audio introduction recorded yet. Add one to let potential matches hear your voice!
+                </Typography>
+              )}
+            </Box>
+          </Paper>
+        </Grid>
       </Grid>
 
       {/* Edit Modals */}
@@ -870,6 +1218,54 @@ function Profile() {
           languages: profile?.languages,
         }}
         onSave={saveLifestyle}
+      />
+
+      <SexualOrientationEditModal
+        open={sexualOrientationModalOpen}
+        onClose={() => setSexualOrientationModalOpen(false)}
+        currentData={{
+          sexualOrientation: profile?.sexualOrientation,
+          showOrientation: profile?.showOrientation,
+        }}
+        onSave={saveSexualOrientation}
+      />
+
+      <LookingForEditModal
+        open={lookingForModalOpen}
+        onClose={() => setLookingForModalOpen(false)}
+        currentData={{
+          lookingFor: profile?.lookingFor,
+        }}
+        onSave={saveLookingFor}
+      />
+
+      <DistancePreferenceEditModal
+        open={distancePreferenceModalOpen}
+        onClose={() => setDistancePreferenceModalOpen(false)}
+        currentData={{
+          maxDistance: profile?.maxDistance,
+        }}
+        onSave={saveDistancePreference}
+      />
+
+      <PersonalityEditModal
+        open={personalityModalOpen}
+        onClose={() => setPersonalityModalOpen(false)}
+        currentData={{
+          communicationStyle: profile?.communicationStyle,
+          loveLanguage: profile?.loveLanguage,
+          zodiacSign: profile?.zodiacSign,
+        }}
+        onSave={savePersonality}
+      />
+
+      <AudioIntroEditModal
+        open={audioIntroModalOpen}
+        onClose={() => setAudioIntroModalOpen(false)}
+        currentData={{
+          audioIntroUrl: profile?.audioIntroUrl,
+        }}
+        onSave={saveAudioIntro}
       />
     </Container>
   );

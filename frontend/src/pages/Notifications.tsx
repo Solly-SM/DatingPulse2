@@ -139,7 +139,7 @@ function Notifications() {
   }
 
   return (
-    <Box sx={{ height: '100%', p: 2 }}>
+    <Box sx={{ height: '100%', width: '100%', p: 2 }}>
       <Typography variant="h4" component="h1" gutterBottom>
         Notifications 🔔
       </Typography>
@@ -155,8 +155,8 @@ function Notifications() {
           </Typography>
         </Box>
       ) : (
-        <Paper sx={{ height: 'calc(100% - 100px)', overflow: 'auto' }}>
-          <List>
+        <Paper sx={{ height: 'calc(100% - 100px)', width: '100%', overflow: 'auto' }}>
+          <List sx={{ width: '100%' }}>
             {notifications.map((notification) => (
               <ListItem
                 key={notification.id}
@@ -165,6 +165,7 @@ function Notifications() {
                   borderLeft: notification.isRead ? 'none' : '4px solid #e91e63',
                   mb: 1,
                   borderRadius: 1,
+                  width: '100%',
                 }}
                 secondaryAction={
                   !notification.isRead && (
