@@ -1,12 +1,4 @@
-export { default as PersonalDetailsStep } from './PersonalDetailsStep';
-export { default as AboutMeStep } from './AboutMeStep';
-export { default as InterestsStep } from './InterestsStep';
-export { default as PhysicalAttributesStep } from './PhysicalAttributesStep';
-export { default as PreferencesStep } from './PreferencesStep';
-export { default as LifestyleStep } from './LifestyleStep';
-export { default as MediaStep } from './MediaStep';
-
-// New simplified steps
+// New simplified steps - the only ones to keep
 export { default as NameAboutStep } from './NameAboutStep';
 export { default as BirthDateStep } from './BirthDateStep';
 export { default as GenderDisplayStep } from './GenderDisplayStep';
@@ -14,7 +6,11 @@ export { default as SexualOrientationStep } from './SexualOrientationStep';
 export { default as InterestedInStep } from './InterestedInStep';
 export { default as LookingForStep } from './LookingForStep';
 export { default as DistancePreferenceStep } from './DistancePreferenceStep';
+export { default as InterestsStep } from './InterestsStep';
+export { default as PhysicalAttributesStep } from './PhysicalAttributesStep';
+export { default as LifestyleStep } from './LifestyleStep';
 export { default as PersonalityStep } from './PersonalityStep';
+export { default as MediaStep } from './MediaStep';
 export { default as AudioIntroStep } from './AudioIntroStep';
 
 // Combined data type for all profile steps

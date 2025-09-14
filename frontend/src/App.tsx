@@ -11,8 +11,6 @@ import SimpleLoadingScreen from './components/SimpleLoadingScreen';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import MultiStepRegister from './components/MultiStepRegister';
-import ProfileStepsDemo from './pages/ProfileStepsDemo';
-import ModernProfileStepsDemo from './pages/ModernProfileStepsDemo';
 
 import Home from './pages/Home';
 import Explore from './pages/Explore';
@@ -312,8 +310,6 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<MultiStepRegister />} />
-              <Route path="/demo" element={<ModernProfileStepsDemo />} />
-              <Route path="/demo-old" element={<ProfileStepsDemo />} />
               <Route path="/demo-sidebar" element={<DemoSidebar />} />
               <Route path="/demo-notifications" element={<DemoNotifications />} />
               <Route path="/demo-discover" element={<DiscoverDemo />} />
