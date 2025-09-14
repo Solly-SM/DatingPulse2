@@ -60,6 +60,9 @@ export interface UserProfile {
   loveLanguage?: string;
   zodiacSign?: string;
   
+  // Media
+  audioIntroUrl?: string;
+  
   // Field visibility controls
   showGender?: boolean;
   showAge?: boolean;

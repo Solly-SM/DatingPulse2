@@ -73,14 +73,14 @@ function InboxComponent({ onConversationSelect, selectedConversationId, compact 
   }
 
   return (
-    <Paper sx={{ height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+    <Paper sx={{ height: '100%', width: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
         <Typography variant={compact ? "subtitle1" : "h6"} fontWeight="bold">
           Messages
         </Typography>
       </Box>
       
-      <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+      <Box sx={{ flexGrow: 1, overflow: 'auto', width: '100%' }}>
         {conversations.length === 0 ? (
           <Box sx={{ p: 3, textAlign: 'center' }}>
             <Typography variant="body2" color="text.secondary">
@@ -88,7 +88,7 @@ function InboxComponent({ onConversationSelect, selectedConversationId, compact 
             </Typography>
           </Box>
         ) : (
-          <List sx={{ p: 0 }}>
+          <List sx={{ p: 0, width: '100%' }}>
             {conversations.map((conversation, index) => (
               <React.Fragment key={conversation.conversationID}>
                 <ListItem

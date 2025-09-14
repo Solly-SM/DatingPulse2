@@ -75,7 +75,7 @@ function Messages() {
   if (isMobile) {
     if (selectedConversation) {
       return (
-        <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', width: '100%' }}>
           <ConversationView
             conversation={selectedConversation}
             onBack={handleBackToInbox}
@@ -86,7 +86,7 @@ function Messages() {
 
     // Full-width inbox for mobile
     return (
-      <Box sx={{ height: '100%', p: 2 }}>
+      <Box sx={{ height: '100%', width: '100%', p: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Messages 💬
         </Typography>
@@ -102,7 +102,7 @@ function Messages() {
             </Typography>
           </Box>
         ) : (
-          <Box sx={{ height: 'calc(100% - 100px)' }}>
+          <Box sx={{ height: 'calc(100% - 100px)', width: '100%' }}>
             <InboxComponent
               onConversationSelect={handleConversationSelect}
               selectedConversationId={undefined}
@@ -117,7 +117,7 @@ function Messages() {
   if (!selectedConversation) {
     // Full-width inbox when no conversation is selected
     return (
-      <Box sx={{ height: '100%', p: 2 }}>
+      <Box sx={{ height: '100%', width: '100%', p: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Messages 💬
         </Typography>
@@ -133,7 +133,7 @@ function Messages() {
             </Typography>
           </Box>
         ) : (
-          <Box sx={{ height: 'calc(100% - 100px)', maxWidth: '800px', mx: 'auto' }}>
+          <Box sx={{ height: 'calc(100% - 100px)', width: '100%' }}>
             <InboxComponent
               onConversationSelect={handleConversationSelect}
               selectedConversationId={undefined}
