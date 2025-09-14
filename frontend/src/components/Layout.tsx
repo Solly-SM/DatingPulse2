@@ -17,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       {/* Sidebar */}
       <Box
         component="nav"
@@ -46,8 +46,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         sx={{
           flexGrow: 1,
           width: { md: `calc(100% - ${SIDEBAR_WIDTH}px)` },
-          minHeight: '100vh',
+          height: '100vh',
           backgroundColor: theme.palette.background.default,
+          overflow: 'auto',
         }}
       >
         {/* Mobile menu button */}
@@ -73,8 +74,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         
         {/* Page content */}
         <Box sx={{ 
-          p: { xs: 1, md: 2 },
-          pt: { xs: 0.5, md: 1 } 
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column'
         }}>
           {children}
         </Box>
