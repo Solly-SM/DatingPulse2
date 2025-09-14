@@ -62,7 +62,6 @@ function Profile() {
       const updateData = {
         userID: user.userID,
         firstName: profile.firstName || '',
-        lastName: profile.lastName || '',
         dateOfBirth: profile.dateOfBirth || '1995-01-01',
         bio: profile.bio || '',
         location: profile.location || '',
@@ -100,7 +99,6 @@ function Profile() {
       const updateData = {
         userID: user.userID,
         firstName: profile.firstName || '',
-        lastName: profile.lastName || '',
         dateOfBirth: profile.dateOfBirth || '1995-01-01',
         bio: profile.bio || '',
         location: location,
@@ -361,14 +359,6 @@ function Profile() {
                   value={profile?.firstName || ''}
                   onSave={(value) => updateProfileField('firstName', value)}
                   placeholder="Enter your first name"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="Last Name"
-                  value={profile?.lastName || ''}
-                  onSave={(value) => updateProfileField('lastName', value)}
-                  placeholder="Enter your last name"
                 />
               </Grid>
               

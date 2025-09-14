@@ -21,7 +21,7 @@ export { default as AudioIntroStep } from './AudioIntroStep';
 export interface ProfileData {
   personalDetails: {
     firstName: string;
-    lastName: string;
+    lastName?: string;
     dateOfBirth: string;
     gender: string;
     location: string;
