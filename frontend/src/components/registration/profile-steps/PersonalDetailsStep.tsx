@@ -14,7 +14,7 @@ import {
 
 interface PersonalDetailsData {
   firstName: string;
-  lastName?: string;
+  lastName: string;
   dateOfBirth: string;
   gender: string;
   location: string;
@@ -74,6 +74,10 @@ function PersonalDetailsStep({ data, onComplete, onBack, loading }: PersonalDeta
       errors.firstName = 'First name is required';
     }
 
+    if (!formData.lastName.trim()) {
+      errors.lastName = 'Last name is required';
+    }
+
     if (!formData.dateOfBirth) {
       errors.dateOfBirth = 'Date of birth is required';
     } else {
@@ -125,6 +129,19 @@ function PersonalDetailsStep({ data, onComplete, onBack, loading }: PersonalDeta
             onChange={handleChange}
             error={!!formErrors.firstName}
             helperText={formErrors.firstName}
+            disabled={loading}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            required
+            fullWidth
+            name="lastName"
+            label="Last Name"
+            value={formData.lastName}
+            onChange={handleChange}
+            error={!!formErrors.lastName}
+            helperText={formErrors.lastName}
             disabled={loading}
           />
         </Grid>
