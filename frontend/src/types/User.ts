@@ -112,7 +112,7 @@ export interface OTPVerificationRequest {
 export interface ProfileSetupRequest {
   userID: number;
   firstName: string;
-  lastName?: string;
+  lastName: string;
   dateOfBirth: string;
   bio: string;
   location: string;
