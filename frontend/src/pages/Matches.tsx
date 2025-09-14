@@ -17,8 +17,6 @@ import { useNavigate } from 'react-router-dom';
 import { datingService } from '../services/datingService';
 import { Match, Conversation } from '../types/Dating';
 import InboxComponent from '../components/InboxComponent';
-import ConversationView from '../components/ConversationView';
-import ProfileView from '../components/ProfileView';
 
 function Matches() {
   const navigate = useNavigate();
@@ -28,8 +26,6 @@ function Matches() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
-  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     loadMatches();
@@ -47,8 +43,8 @@ function Matches() {
     }
   };
 
-  const handleStartConversation = (match: Match) => {
-    // Create a mock conversation from the match
+  const handleSayHi = (match: Match) => {
+    // Create a conversation from the match
     const conversation: Conversation = {
       conversationID: match.matchID,
       user1ID: match.user1ID,
@@ -60,17 +56,13 @@ function Matches() {
       otherUser: match.user2, // Assuming current user is user1
     };
     
-    // Show conversation inline instead of navigating
-    setSelectedConversation(conversation);
+    // Navigate to Messages with the selected conversation
+    navigate('/messages', { state: { selectedConversation: conversation } });
   };
 
   const handleConversationSelect = (conversation: Conversation) => {
-    setSelectedConversation(conversation);
-    setShowProfile(false);
-  };
-
-  const handleShowProfile = () => {
-    setShowProfile(true);
+    // Navigate to Messages with the selected conversation
+    navigate('/messages', { state: { selectedConversation: conversation } });
   };
 
   if (loading) {
@@ -93,17 +85,6 @@ function Matches() {
 
   // Mobile layout - stack vertically
   if (isMobile) {
-    if (selectedConversation) {
-      return (
-        <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-          <ConversationView
-            conversation={selectedConversation}
-            onBack={() => setSelectedConversation(null)}
-          />
-        </Box>
-      );
-    }
-
     return (
       <Box sx={{ p: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
@@ -143,7 +124,7 @@ function Matches() {
                           boxShadow: 4,
                         },
                       }}
-                      onClick={() => handleStartConversation(match)}
+                      onClick={() => handleSayHi(match)}
                     >
                       <Box sx={{ p: 1, textAlign: 'center' }}>
                         <Avatar
@@ -178,7 +159,7 @@ function Matches() {
   return (
     <Box sx={{ height: 'calc(100vh - 100px)', display: 'flex', gap: 2, p: 2 }}>
       {/* Left/Middle Section - Matches */}
-      <Box sx={{ flex: selectedConversation ? 0.35 : 1 }}>
+      <Box sx={{ flex: 1 }}>
         <Paper sx={{ height: '100%', p: 2, overflow: 'auto' }}>
           <Typography variant="h4" component="h1" gutterBottom>
             Your Matches 💕
@@ -206,7 +187,7 @@ function Matches() {
               {matches.map((match) => {
                 const otherUser = match.user2;
                 return (
-                  <Grid item xs={12} sm={6} md={selectedConversation ? 6 : 4} key={match.matchID}>
+                  <Grid item xs={12} sm={6} md={4} key={match.matchID}>
                     <Card 
                       sx={{ 
                         cursor: 'pointer',
@@ -216,7 +197,7 @@ function Matches() {
                           boxShadow: 4,
                         },
                       }}
-                      onClick={() => handleStartConversation(match)}
+                      onClick={() => handleSayHi(match)}
                     >
                       <Box sx={{ p: 2, textAlign: 'center' }}>
                         <Avatar
@@ -248,10 +229,10 @@ function Matches() {
                           size="small"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleStartConversation(match);
+                            handleSayHi(match);
                           }}
                         >
-                          Chat
+                          Say Hi
                         </Button>
                       </CardContent>
                     </Card>
@@ -262,28 +243,6 @@ function Matches() {
           )}
         </Paper>
       </Box>
-
-      {/* Show conversation + profile when a conversation is selected */}
-      {selectedConversation && (
-        <>
-          {/* Middle Section - Conversation (40%) */}
-          <Box sx={{ flex: 0.4 }}>
-            <ConversationView
-              conversation={selectedConversation}
-              onBack={() => setSelectedConversation(null)}
-              compact={false}
-            />
-          </Box>
-
-          {/* Right Section - Profile (25%) */}
-          <Box sx={{ flex: 0.25, minWidth: '300px' }}>
-            <ProfileView
-              user={selectedConversation.otherUser}
-              compact={false}
-            />
-          </Box>
-        </>
-      )}
     </Box>
   );
 }
