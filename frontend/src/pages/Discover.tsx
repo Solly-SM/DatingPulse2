@@ -253,7 +253,7 @@ function Discover() {
         {/* Card Stack with Action Buttons */}
         <Box sx={{ position: 'relative', mb: 3 }}>
           {/* Photo Stack Container - reduced height to make space for action buttons */}
-          <Box sx={{ position: 'relative', minHeight: 500, mb: 2 }}>
+          <Box sx={{ position: 'relative', minHeight: 500, mb: 4 }}>
             {/* Next card (background) */}
             {currentIndex + 1 < users.length && (
               <Box
@@ -409,7 +409,7 @@ function Discover() {
         <Grid item xs={5.5}>
           <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             {/* Photo Stack Container - reduced height to make space for action buttons */}
-            <Box sx={{ position: 'relative', flexGrow: 1, mb: 2, minHeight: 0 }}>
+            <Box sx={{ position: 'relative', flexGrow: 1, mb: 4, minHeight: 0 }}>
               {/* Next card (background) */}
               {currentIndex + 1 < users.length && (
                 <Box

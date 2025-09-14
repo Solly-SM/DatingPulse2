@@ -147,17 +147,8 @@ function Messages() {
   // Split layout when conversation is selected (conversation + profile)
   return (
     <Box sx={{ height: 'calc(100vh - 100px)', display: 'flex', gap: 2, p: 2 }}>
-      {/* Left Section - Inbox (25%) */}
-      <Box sx={{ flex: 0.25, minWidth: '280px' }}>
-        <InboxComponent
-          onConversationSelect={handleConversationSelect}
-          selectedConversationId={selectedConversation?.conversationID}
-          compact={true}
-        />
-      </Box>
-
-      {/* Middle Section - Conversation (45%) */}
-      <Box sx={{ flex: 0.45 }}>
+      {/* Middle Section - Conversation (60%) */}
+      <Box sx={{ flex: 0.6 }}>
         <ConversationView
           conversation={selectedConversation}
           onBack={handleBackToInbox}
@@ -165,8 +156,8 @@ function Messages() {
         />
       </Box>
 
-      {/* Right Section - Profile (30%) */}
-      <Box sx={{ flex: 0.3, minWidth: '300px' }}>
+      {/* Right Section - Profile (40%) */}
+      <Box sx={{ flex: 0.4, minWidth: '300px' }}>
         <ProfileView
           user={selectedConversation.otherUser}
           compact={false}
