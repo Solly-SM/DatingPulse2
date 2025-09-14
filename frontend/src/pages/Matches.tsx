@@ -157,7 +157,7 @@ function Matches() {
 
   // Desktop layout - split view
   return (
-    <Box sx={{ height: 'calc(100vh - 100px)', display: 'flex', gap: 2, p: 2 }}>
+    <Box sx={{ height: '100%', display: 'flex', gap: 2, p: 2 }}>
       {/* Left/Middle Section - Matches */}
       <Box sx={{ flex: 1 }}>
         <Paper sx={{ height: '100%', p: 2, overflow: 'auto' }}>

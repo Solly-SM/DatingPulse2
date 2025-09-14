@@ -20,6 +20,7 @@ import Profile from './pages/Profile';
 import Discover from './pages/Discover';
 import Matches from './pages/Matches';
 import Messages from './pages/Messages';
+import Notifications from './pages/Notifications';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import DemoSidebar from './pages/DemoSidebar';
@@ -355,6 +356,13 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <Messages />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/notifications" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Notifications />
                   </Layout>
                 </ProtectedRoute>
               } />
