@@ -18,12 +18,16 @@ import {
   Delete, 
   Star, 
   StarBorder,
+  Edit,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/userService';
 import { UserProfile, Photo } from '../types/User';
-import InlineEditField from '../components/InlineEditField';
-import LocationField from '../components/LocationField';
+import PersonalDetailsEditModal from '../components/profile-edit/PersonalDetailsEditModal';
+import InterestsEditModal from '../components/profile-edit/InterestsEditModal';
+import PhysicalAttributesEditModal from '../components/profile-edit/PhysicalAttributesEditModal';
+import LifestyleEditModal from '../components/profile-edit/LifestyleEditModal';
+import ProfessionalEditModal from '../components/profile-edit/ProfessionalEditModal';
 
 function Profile() {
   const { user } = useAuth();
@@ -32,6 +36,13 @@ function Profile() {
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+
+  // Modal states
+  const [personalDetailsModalOpen, setPersonalDetailsModalOpen] = useState(false);
+  const [interestsModalOpen, setInterestsModalOpen] = useState(false);
+  const [physicalAttributesModalOpen, setPhysicalAttributesModalOpen] = useState(false);
+  const [lifestyleModalOpen, setLifestyleModalOpen] = useState(false);
+  const [professionalModalOpen, setProfessionalModalOpen] = useState(false);
 
   const loadProfile = useCallback(async () => {
     if (!user) return;
@@ -53,84 +64,174 @@ function Profile() {
     loadProfile();
   }, [loadProfile]);
 
-  // Individual field update functions
-  const updateProfileField = async (fieldName: string, value: any) => {
+  // Save functions for modals
+  const savePersonalDetails = async (data: { firstName: string; lastName: string; dateOfBirth: string; gender: string; location: string; }) => {
     if (!user || !profile) return;
-
-    try {
-      // Create a proper ProfileSetupRequest object
-      const updateData = {
-        userID: user.userID,
-        firstName: profile.firstName || '',
-        lastName: profile.lastName || '',
-        dateOfBirth: profile.dateOfBirth || '1995-01-01',
-        bio: profile.bio || '',
-        location: profile.location || '',
-        city: profile.city,
-        region: profile.region,
-        country: profile.country,
-        interests: profile.interests || [],
-        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
-        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-        height: profile.height,
-        education: profile.education,
-        occupation: profile.occupation,
-        jobTitle: profile.jobTitle,
-        showGender: profile.showGender,
-        showAge: profile.showAge,
-        showLocation: profile.showLocation,
-        [fieldName]: value,
-      };
-      
-      const updatedProfile = await userService.updateProfile(user.userID, updateData);
-      
-      setProfile(updatedProfile);
-      setSuccess(`${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} updated successfully!`);
-      setTimeout(() => setSuccess(''), 3000);
-    } catch (err: any) {
-      throw new Error(err.response?.data?.message || `Failed to update ${fieldName}`);
-    }
+    
+    const updateData = {
+      userID: user.userID,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      dateOfBirth: data.dateOfBirth,
+      bio: profile.bio || '',
+      location: data.location,
+      city: profile.city,
+      region: profile.region,
+      country: profile.country,
+      interests: profile.interests || [],
+      gender: data.gender as 'male' | 'female' | 'other',
+      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+      height: profile.height,
+      education: profile.education,
+      occupation: profile.occupation,
+      jobTitle: profile.jobTitle,
+      showGender: profile.showGender,
+      showAge: profile.showAge,
+      showLocation: profile.showLocation,
+    };
+    
+    const updatedProfile = await userService.updateProfile(user.userID, updateData);
+    setProfile(updatedProfile);
+    setSuccess('Personal details updated successfully!');
+    setTimeout(() => setSuccess(''), 3000);
   };
 
-  const updateLocationField = async (location: string, coordinates?: { latitude: number; longitude: number }) => {
+  const saveInterests = async (interests: string[]) => {
     if (!user || !profile) return;
-
-    try {
-      // Create a proper ProfileSetupRequest object
-      const updateData = {
-        userID: user.userID,
-        firstName: profile.firstName || '',
-        lastName: profile.lastName || '',
-        dateOfBirth: profile.dateOfBirth || '1995-01-01',
-        bio: profile.bio || '',
-        location: location,
-        city: profile.city,
-        region: profile.region,
-        country: profile.country,
-        interests: profile.interests || [],
-        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
-        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-        height: profile.height,
-        education: profile.education,
-        occupation: profile.occupation,
-        jobTitle: profile.jobTitle,
-        showGender: profile.showGender,
-        showAge: profile.showAge,
-        showLocation: profile.showLocation,
-      };
-      
-      // If coordinates are provided, you could store them separately
-      // For now, we'll just update the location string
-      
-      const updatedProfile = await userService.updateProfile(user.userID, updateData);
-      
-      setProfile(updatedProfile);
-      setSuccess('Location updated successfully!');
-      setTimeout(() => setSuccess(''), 3000);
-    } catch (err: any) {
-      throw new Error(err.response?.data?.message || 'Failed to update location');
-    }
+    
+    const updateData = {
+      userID: user.userID,
+      firstName: profile.firstName || '',
+      lastName: profile.lastName || '',
+      dateOfBirth: profile.dateOfBirth || '1995-01-01',
+      bio: profile.bio || '',
+      location: profile.location || '',
+      city: profile.city,
+      region: profile.region,
+      country: profile.country,
+      interests: interests,
+      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+      height: profile.height,
+      education: profile.education,
+      occupation: profile.occupation,
+      jobTitle: profile.jobTitle,
+      showGender: profile.showGender,
+      showAge: profile.showAge,
+      showLocation: profile.showLocation,
+    };
+    
+    const updatedProfile = await userService.updateProfile(user.userID, updateData);
+    setProfile(updatedProfile);
+    setSuccess('Interests updated successfully!');
+    setTimeout(() => setSuccess(''), 3000);
   };
+
+  const savePhysicalAttributes = async (data: { height?: number; weight?: number; bodyType?: string; ethnicity?: string; }) => {
+    if (!user || !profile) return;
+    
+    const updateData = {
+      userID: user.userID,
+      firstName: profile.firstName || '',
+      lastName: profile.lastName || '',
+      dateOfBirth: profile.dateOfBirth || '1995-01-01',
+      bio: profile.bio || '',
+      location: profile.location || '',
+      city: profile.city,
+      region: profile.region,
+      country: profile.country,
+      interests: profile.interests || [],
+      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+      height: data.height,
+      education: profile.education,
+      occupation: profile.occupation,
+      jobTitle: profile.jobTitle,
+      showGender: profile.showGender,
+      showAge: profile.showAge,
+      showLocation: profile.showLocation,
+      weight: data.weight,
+      bodyType: data.bodyType,
+      ethnicity: data.ethnicity,
+    };
+    
+    const updatedProfile = await userService.updateProfile(user.userID, updateData);
+    setProfile(updatedProfile);
+    setSuccess('Physical attributes updated successfully!');
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+  const saveLifestyle = async (data: { pets?: string; drinking?: string; smoking?: string; workout?: string; dietaryPreference?: string; socialMedia?: string; sleepingHabits?: string; languages?: string[]; }) => {
+    if (!user || !profile) return;
+    
+    const updateData = {
+      userID: user.userID,
+      firstName: profile.firstName || '',
+      lastName: profile.lastName || '',
+      dateOfBirth: profile.dateOfBirth || '1995-01-01',
+      bio: profile.bio || '',
+      location: profile.location || '',
+      city: profile.city,
+      region: profile.region,
+      country: profile.country,
+      interests: profile.interests || [],
+      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+      height: profile.height,
+      education: profile.education,
+      occupation: profile.occupation,
+      jobTitle: profile.jobTitle,
+      showGender: profile.showGender,
+      showAge: profile.showAge,
+      showLocation: profile.showLocation,
+      pets: data.pets,
+      drinking: data.drinking,
+      smoking: data.smoking,
+      workout: data.workout,
+      dietaryPreference: data.dietaryPreference,
+      socialMedia: data.socialMedia,
+      sleepingHabits: data.sleepingHabits,
+      languages: data.languages,
+    };
+    
+    const updatedProfile = await userService.updateProfile(user.userID, updateData);
+    setProfile(updatedProfile);
+    setSuccess('Lifestyle preferences updated successfully!');
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+  const saveProfessional = async (data: { education?: string; occupation?: string; jobTitle?: string; }) => {
+    if (!user || !profile) return;
+    
+    const updateData = {
+      userID: user.userID,
+      firstName: profile.firstName || '',
+      lastName: profile.lastName || '',
+      dateOfBirth: profile.dateOfBirth || '1995-01-01',
+      bio: profile.bio || '',
+      location: profile.location || '',
+      city: profile.city,
+      region: profile.region,
+      country: profile.country,
+      interests: profile.interests || [],
+      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+      height: profile.height,
+      education: data.education,
+      occupation: data.occupation,
+      jobTitle: data.jobTitle,
+      showGender: profile.showGender,
+      showAge: profile.showAge,
+      showLocation: profile.showLocation,
+    };
+    
+    const updatedProfile = await userService.updateProfile(user.userID, updateData);
+    setProfile(updatedProfile);
+    setSuccess('Professional information updated successfully!');
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!user || !e.target.files || e.target.files.length === 0) return;
@@ -346,30 +447,44 @@ function Profile() {
           </Paper>
         </Grid>
 
-        {/* Profile Information with Inline Editing */}
+        {/* Profile Information with Modal Editing */}
         <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              👤 Profile Information
-            </Typography>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">
+                👤 Profile Information
+              </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={() => setPersonalDetailsModalOpen(true)}
+                size="small"
+              >
+                Edit
+              </Button>
+            </Box>
             
             <Grid container spacing={3}>
-              {/* Basic Information */}
+              {/* Basic Information - Read Only Display */}
               <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="First Name"
-                  value={profile?.firstName || ''}
-                  onSave={(value) => updateProfileField('firstName', value)}
-                  placeholder="Enter your first name"
-                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    First Name
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.firstName || 'Not specified'}
+                  </Typography>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="Last Name"
-                  value={profile?.lastName || ''}
-                  onSave={(value) => updateProfileField('lastName', value)}
-                  placeholder="Enter your last name"
-                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Last Name
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.lastName || 'Not specified'}
+                  </Typography>
+                </Box>
               </Grid>
               
               {/* Age and Date of Birth - Read only */}
@@ -394,480 +509,368 @@ function Profile() {
                 </Box>
               </Grid>
 
-              {/* Location with Detection */}
+              {/* Location and Gender */}
               <Grid item xs={12} sm={6}>
-                <LocationField
-                  value={profile?.location || ''}
-                  onSave={updateLocationField}
-                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Location
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.location || 'Not specified'}
+                  </Typography>
+                </Box>
               </Grid>
 
-              {/* Gender and Interested In */}
               <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="Gender"
-                  value={profile?.gender || ''}
-                  type="select"
-                  options={[
-                    { value: 'male', label: 'Male' },
-                    { value: 'female', label: 'Female' },
-                    { value: 'other', label: 'Other' },
-                  ]}
-                  onSave={(value) => updateProfileField('gender', value)}
-                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Gender
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.gender || 'Not specified'}
+                  </Typography>
+                </Box>
               </Grid>
+
               <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="Interested In"
-                  value={profile?.interestedIn || ''}
-                  type="select"
-                  options={[
-                    { value: 'male', label: 'Men' },
-                    { value: 'female', label: 'Women' },
-                    { value: 'both', label: 'Both' },
-                  ]}
-                  onSave={(value) => updateProfileField('interestedIn', value)}
-                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Interested In
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.interestedIn || 'Not specified'}
+                  </Typography>
+                </Box>
               </Grid>
 
-              {/* Bio */}
+              {/* Bio - Could be separate modal or included in personal details */}
               <Grid item xs={12}>
-                <InlineEditField
-                  label="Bio"
-                  value={profile?.bio || ''}
-                  type="textarea"
-                  onSave={(value) => updateProfileField('bio', value)}
-                  placeholder="Tell others about yourself..."
-                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Bio
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.bio || 'Tell others about yourself...'}
+                  </Typography>
+                </Box>
               </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
 
-              {/* Interests */}
-              <Grid item xs={12}>
-                <InlineEditField
-                  label="Interests"
-                  value={profile?.interests || []}
-                  type="chips"
-                  onSave={(value) => updateProfileField('interests', value)}
-                  placeholder="Music, Sports, Travel, etc. (comma separated)"
-                />
-              </Grid>
-
-              {/* Physical Attributes */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  💪 Physical Attributes
+        {/* Interests Section */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 3 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">
+                🎯 Interests
+              </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={() => setInterestsModalOpen(true)}
+                size="small"
+              >
+                Edit
+              </Button>
+            </Box>
+            
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              {profile?.interests && profile.interests.length > 0 ? (
+                profile.interests.map((interest, index) => (
+                  <Chip key={index} label={interest} color="primary" variant="outlined" />
+                ))
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No interests specified
                 </Typography>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="📏 Height (cm)"
-                  value={profile?.height?.toString() || ''}
-                  onSave={(value) => updateProfileField('height', value ? parseInt(value as string) : undefined)}
-                  placeholder="Enter your height"
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="⚖️ Weight (kg)"
-                  value={profile?.weight?.toString() || ''}
-                  onSave={(value) => updateProfileField('weight', value ? parseInt(value as string) : undefined)}
-                  placeholder="Enter your weight"
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="🏃‍♂️ Body Type"
-                  value={profile?.bodyType || ''}
-                  type="select"
-                  options={[
-                    { value: 'Slim', label: 'Slim' },
-                    { value: 'Athletic', label: 'Athletic' },
-                    { value: 'Average', label: 'Average' },
-                    { value: 'Curvy', label: 'Curvy' },
-                    { value: 'Muscular', label: 'Muscular' },
-                    { value: 'Plus Size', label: 'Plus Size' },
-                    { value: 'Other', label: 'Other' },
-                    { value: 'Prefer not to say', label: 'Prefer not to say' },
-                  ]}
-                  onSave={(value) => updateProfileField('bodyType', value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="🌍 Ethnicity"
-                  value={profile?.ethnicity || ''}
-                  type="select"
-                  options={[
-                    { value: 'African', label: 'African' },
-                    { value: 'Asian', label: 'Asian' },
-                    { value: 'Caucasian', label: 'Caucasian' },
-                    { value: 'Hispanic/Latino', label: 'Hispanic/Latino' },
-                    { value: 'Middle Eastern', label: 'Middle Eastern' },
-                    { value: 'Native American', label: 'Native American' },
-                    { value: 'Pacific Islander', label: 'Pacific Islander' },
-                    { value: 'Mixed', label: 'Mixed' },
-                    { value: 'Other', label: 'Other' },
-                    { value: 'Prefer not to say', label: 'Prefer not to say' },
-                  ]}
-                  onSave={(value) => updateProfileField('ethnicity', value)}
-                />
-              </Grid>
+              )}
+            </Box>
+          </Paper>
+        </Grid>
 
-              {/* Professional Information */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  💼 Professional Information
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="🎓 Education"
-                  value={profile?.education || ''}
-                  onSave={(value) => updateProfileField('education', value)}
-                  placeholder="University, degree, etc."
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="💼 Occupation"
-                  value={profile?.occupation || ''}
-                  onSave={(value) => updateProfileField('occupation', value)}
-                  placeholder="Your profession"
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="🏷️ Job Title"
-                  value={profile?.jobTitle || ''}
-                  onSave={(value) => updateProfileField('jobTitle', value)}
-                  placeholder="Software Engineer, Teacher, etc."
-                />
-              </Grid>
-
-              {/* Lifestyle & Preferences */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  🌟 Lifestyle & Preferences
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="🐾 Pets"
-                  value={profile?.pets || ''}
-                  type="select"
-                  options={[
-                    { value: '❤️ Love them', label: '❤️ Love them' },
-                    { value: '🐕 Have dogs', label: '🐕 Have dogs' },
-                    { value: '🐱 Have cats', label: '🐱 Have cats' },
-                    { value: '🐰 Have small pets', label: '🐰 Have small pets' },
-                    { value: '🐦 Have birds', label: '🐦 Have birds' },
-                    { value: '🐢 Have reptiles', label: '🐢 Have reptiles' },
-                    { value: '🐠 Have fish', label: '🐠 Have fish' },
-                    { value: '🤧 Allergic', label: '🤧 Allergic' },
-                    { value: '🚫 Not a fan', label: '🚫 Not a fan' },
-                    { value: '💭 Want pets someday', label: '💭 Want pets someday' },
-                  ]}
-                  onSave={(value) => updateProfileField('pets', value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="🍷 Drinking"
-                  value={profile?.drinking || ''}
-                  type="select"
-                  options={[
-                    { value: '🚫 Never', label: '🚫 Never' },
-                    { value: '🍷 Rarely', label: '🍷 Rarely' },
-                    { value: '🥂 Socially', label: '🥂 Socially' },
-                    { value: '🍺 Regularly', label: '🍺 Regularly' },
-                    { value: '🤐 Prefer not to say', label: '🤐 Prefer not to say' },
-                  ]}
-                  onSave={(value) => updateProfileField('drinking', value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="🚬 Smoking"
-                  value={profile?.smoking || ''}
-                  type="select"
-                  options={[
-                    { value: '🚫 Never', label: '🚫 Never' },
-                    { value: '🚬 Socially', label: '🚬 Socially' },
-                    { value: '🚬 Regularly', label: '🚬 Regularly' },
-                    { value: '🚭 Trying to quit', label: '🚭 Trying to quit' },
-                    { value: '🤐 Prefer not to say', label: '🤐 Prefer not to say' },
-                  ]}
-                  onSave={(value) => updateProfileField('smoking', value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="💪 Workout"
-                  value={profile?.workout || ''}
-                  type="select"
-                  options={[
-                    { value: '💪 Daily', label: '💪 Daily' },
-                    { value: '🏃‍♂️ Often', label: '🏃‍♂️ Often' },
-                    { value: '🚶‍♂️ Sometimes', label: '🚶‍♂️ Sometimes' },
-                    { value: '🛋️ Rarely', label: '🛋️ Rarely' },
-                    { value: '😴 Never', label: '😴 Never' },
-                  ]}
-                  onSave={(value) => updateProfileField('workout', value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="🥗 Diet"
-                  value={profile?.dietaryPreference || ''}
-                  type="select"
-                  options={[
-                    { value: '🍖 Omnivore', label: '🍖 Omnivore' },
-                    { value: '🥗 Vegetarian', label: '🥗 Vegetarian' },
-                    { value: '🌱 Vegan', label: '🌱 Vegan' },
-                    { value: '🐟 Pescatarian', label: '🐟 Pescatarian' },
-                    { value: '🥑 Keto', label: '🥑 Keto' },
-                    { value: '🍎 Paleo', label: '🍎 Paleo' },
-                    { value: '🤷‍♂️ Other', label: '🤷‍♂️ Other' },
-                  ]}
-                  onSave={(value) => updateProfileField('dietaryPreference', value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="📱 Social Media"
-                  value={profile?.socialMedia || ''}
-                  type="select"
-                  options={[
-                    { value: '📱 Very active', label: '📱 Very active' },
-                    { value: '📲 Active', label: '📲 Active' },
-                    { value: '🤳 Rarely use', label: '🤳 Rarely use' },
-                    { value: '🚫 Not on social media', label: '🚫 Not on social media' },
-                  ]}
-                  onSave={(value) => updateProfileField('socialMedia', value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="😴 Sleep Schedule"
-                  value={profile?.sleepingHabits || ''}
-                  type="select"
-                  options={[
-                    { value: '🌅 Early bird', label: '🌅 Early bird' },
-                    { value: '🦉 Night owl', label: '🦉 Night owl' },
-                    { value: '🤷‍♂️ Depends on the day', label: '🤷‍♂️ Depends on the day' },
-                    { value: '😵‍💫 Inconsistent schedule', label: '😵‍💫 Inconsistent schedule' },
-                  ]}
-                  onSave={(value) => updateProfileField('sleepingHabits', value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <InlineEditField
-                  label="🗣️ Languages"
-                  value={profile?.languages || []}
-                  type="chips"
-                  onSave={(value) => updateProfileField('languages', value)}
-                  placeholder="English, Spanish, French, etc. (comma separated)"
-                />
-              </Grid>
-
-              {/* Dating Preferences */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  💕 Dating Preferences
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="💘 Relationship Goal"
-                  value={profile?.relationshipGoal || ''}
-                  type="select"
-                  options={[
-                    { value: 'Looking for love', label: 'Looking for love' },
-                    { value: 'Open to dating', label: 'Open to dating' },
-                    { value: 'Want to chat first', label: 'Want to chat first' },
-                    { value: 'Looking for friends', label: 'Looking for friends' },
-                    { value: 'Something casual', label: 'Something casual' },
-                    { value: 'Long-term relationship', label: 'Long-term relationship' },
-                  ]}
-                  onSave={(value) => updateProfileField('relationshipGoal', value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="🏳️‍🌈 Sexual Orientation"
-                  value={profile?.sexualOrientation || ''}
-                  type="select"
-                  options={[
-                    { value: 'Straight', label: 'Straight' },
-                    { value: 'Gay', label: 'Gay' },
-                    { value: 'Lesbian', label: 'Lesbian' },
-                    { value: 'Bisexual', label: 'Bisexual' },
-                    { value: 'Pansexual', label: 'Pansexual' },
-                    { value: 'Asexual', label: 'Asexual' },
-                    { value: 'Demisexual', label: 'Demisexual' },
-                    { value: 'Prefer not to say', label: 'Prefer not to say' },
-                  ]}
-                  onSave={(value) => updateProfileField('sexualOrientation', value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="🔍 Looking For"
-                  value={profile?.lookingFor || ''}
-                  onSave={(value) => updateProfileField('lookingFor', value)}
-                  placeholder="What you're seeking in a partner"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <InlineEditField
-                  label="📍 Max Distance (km)"
-                  value={profile?.maxDistance?.toString() || ''}
-                  onSave={(value) => updateProfileField('maxDistance', value ? parseInt(value as string) : undefined)}
-                  placeholder="Maximum distance for matches"
-                />
-              </Grid>
-
-              {/* Personality */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  🧠 Personality
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="💬 Communication Style"
-                  value={profile?.communicationStyle || ''}
-                  onSave={(value) => updateProfileField('communicationStyle', value)}
-                  placeholder="Direct, thoughtful, playful, etc."
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="❤️ Love Language"
-                  value={profile?.loveLanguage || ''}
-                  type="select"
-                  options={[
-                    { value: 'Words of Affirmation', label: 'Words of Affirmation' },
-                    { value: 'Acts of Service', label: 'Acts of Service' },
-                    { value: 'Receiving Gifts', label: 'Receiving Gifts' },
-                    { value: 'Quality Time', label: 'Quality Time' },
-                    { value: 'Physical Touch', label: 'Physical Touch' },
-                  ]}
-                  onSave={(value) => updateProfileField('loveLanguage', value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="♈ Zodiac Sign"
-                  value={profile?.zodiacSign || ''}
-                  type="select"
-                  options={[
-                    { value: 'Aries', label: '♈ Aries' },
-                    { value: 'Taurus', label: '♉ Taurus' },
-                    { value: 'Gemini', label: '♊ Gemini' },
-                    { value: 'Cancer', label: '♋ Cancer' },
-                    { value: 'Leo', label: '♌ Leo' },
-                    { value: 'Virgo', label: '♍ Virgo' },
-                    { value: 'Libra', label: '♎ Libra' },
-                    { value: 'Scorpio', label: '♏ Scorpio' },
-                    { value: 'Sagittarius', label: '♐ Sagittarius' },
-                    { value: 'Capricorn', label: '♑ Capricorn' },
-                    { value: 'Aquarius', label: '♒ Aquarius' },
-                    { value: 'Pisces', label: '♓ Pisces' },
-                  ]}
-                  onSave={(value) => updateProfileField('zodiacSign', value)}
-                />
-              </Grid>
-
-              {/* Location Details */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  🗺️ Location Details
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="City"
-                  value={profile?.city || ''}
-                  onSave={(value) => updateProfileField('city', value)}
-                  placeholder="New York"
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="Region/State"
-                  value={profile?.region || ''}
-                  onSave={(value) => updateProfileField('region', value)}
-                  placeholder="New York"
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <InlineEditField
-                  label="Country"
-                  value={profile?.country || ''}
-                  onSave={(value) => updateProfileField('country', value)}
-                  placeholder="United States"
-                />
-              </Grid>
-
-              {/* Privacy Settings */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  🔒 Privacy Settings
-                </Typography>
+        {/* Physical Attributes */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 3 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">
+                💪 Physical Attributes
+              </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={() => setPhysicalAttributesModalOpen(true)}
+                size="small"
+              >
+                Edit
+              </Button>
+            </Box>
+            
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={3}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    📏 Height
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.height ? `${profile.height} cm` : 'Not specified'}
+                  </Typography>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={3}>
-                <InlineEditField
-                  label="👤 Gender Visibility"
-                  value={profile?.showGender !== false ? 'visible' : 'hidden'}
-                  type="select"
-                  options={[
-                    { value: 'visible', label: 'Visible' },
-                    { value: 'hidden', label: 'Hidden' },
-                  ]}
-                  onSave={(value) => updateProfileField('showGender', value === 'visible')}
-                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    ⚖️ Weight
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.weight ? `${profile.weight} kg` : 'Not specified'}
+                  </Typography>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={3}>
-                <InlineEditField
-                  label="🎂 Age Visibility"
-                  value={profile?.showAge !== false ? 'visible' : 'hidden'}
-                  type="select"
-                  options={[
-                    { value: 'visible', label: 'Visible' },
-                    { value: 'hidden', label: 'Hidden' },
-                  ]}
-                  onSave={(value) => updateProfileField('showAge', value === 'visible')}
-                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    🏃‍♂️ Body Type
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.bodyType || 'Not specified'}
+                  </Typography>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={3}>
-                <InlineEditField
-                  label="📍 Location Visibility"
-                  value={profile?.showLocation !== false ? 'visible' : 'hidden'}
-                  type="select"
-                  options={[
-                    { value: 'visible', label: 'Visible' },
-                    { value: 'hidden', label: 'Hidden' },
-                  ]}
-                  onSave={(value) => updateProfileField('showLocation', value === 'visible')}
-                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    🌍 Ethnicity
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.ethnicity || 'Not specified'}
+                  </Typography>
+                </Box>
               </Grid>
-              <Grid item xs={12} sm={3}>
-                <InlineEditField
-                  label="🏳️‍🌈 Orientation Visibility"
-                  value={profile?.showOrientation !== false ? 'visible' : 'hidden'}
-                  type="select"
-                  options={[
-                    { value: 'visible', label: 'Visible' },
-                    { value: 'hidden', label: 'Hidden' },
-                  ]}
-                  onSave={(value) => updateProfileField('showOrientation', value === 'visible')}
-                />
+            </Grid>
+          </Paper>
+        </Grid>
+
+        {/* Professional Information */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 3 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">
+                💼 Professional Information
+              </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={() => setProfessionalModalOpen(true)}
+                size="small"
+              >
+                Edit
+              </Button>
+            </Box>
+            
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={4}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    🎓 Education
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.education || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    💼 Occupation
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.occupation || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    🏷️ Job Title
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.jobTitle || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+
+        {/* Lifestyle & Preferences */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 3 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">
+                🌟 Lifestyle & Preferences
+              </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={() => setLifestyleModalOpen(true)}
+                size="small"
+              >
+                Edit
+              </Button>
+            </Box>
+            
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={4}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    🐾 Pets
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.pets || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    🍷 Drinking
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.drinking || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    🚬 Smoking
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.smoking || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    💪 Workout
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.workout || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    🥗 Diet
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.dietaryPreference || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    📱 Social Media
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.socialMedia || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    😴 Sleep Schedule
+                  </Typography>
+                  <Typography variant="body1">
+                    {profile?.sleepingHabits || 'Not specified'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    🗣️ Languages
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {profile?.languages && profile.languages.length > 0 ? (
+                      profile.languages.map((language, index) => (
+                        <Chip key={index} label={language} size="small" variant="outlined" />
+                      ))
+                    ) : (
+                      <Typography variant="body1">Not specified</Typography>
+                    )}
+                  </Box>
+                </Box>
               </Grid>
             </Grid>
           </Paper>
         </Grid>
       </Grid>
+
+      {/* Edit Modals */}
+      <PersonalDetailsEditModal
+        open={personalDetailsModalOpen}
+        onClose={() => setPersonalDetailsModalOpen(false)}
+        currentData={{
+          firstName: profile?.firstName || '',
+          lastName: profile?.lastName || '',
+          dateOfBirth: profile?.dateOfBirth || '',
+          gender: profile?.gender || '',
+          location: profile?.location || '',
+        }}
+        onSave={savePersonalDetails}
+      />
+
+      <InterestsEditModal
+        open={interestsModalOpen}
+        onClose={() => setInterestsModalOpen(false)}
+        currentInterests={profile?.interests || []}
+        onSave={saveInterests}
+      />
+
+      <PhysicalAttributesEditModal
+        open={physicalAttributesModalOpen}
+        onClose={() => setPhysicalAttributesModalOpen(false)}
+        currentData={{
+          height: profile?.height,
+          weight: profile?.weight,
+          bodyType: profile?.bodyType,
+          ethnicity: profile?.ethnicity,
+        }}
+        onSave={savePhysicalAttributes}
+      />
+
+      <ProfessionalEditModal
+        open={professionalModalOpen}
+        onClose={() => setProfessionalModalOpen(false)}
+        currentData={{
+          education: profile?.education,
+          occupation: profile?.occupation,
+          jobTitle: profile?.jobTitle,
+        }}
+        onSave={saveProfessional}
+      />
+
+      <LifestyleEditModal
+        open={lifestyleModalOpen}
+        onClose={() => setLifestyleModalOpen(false)}
+        currentData={{
+          pets: profile?.pets,
+          drinking: profile?.drinking,
+          smoking: profile?.smoking,
+          workout: profile?.workout,
+          dietaryPreference: profile?.dietaryPreference,
+          socialMedia: profile?.socialMedia,
+          sleepingHabits: profile?.sleepingHabits,
+          languages: profile?.languages,
+        }}
+        onSave={saveLifestyle}
+      />
     </Container>
   );
 }
