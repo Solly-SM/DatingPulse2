@@ -21,6 +21,8 @@ import {
   Chip,
   Stack,
   SelectChangeEvent,
+  TextField,
+  Grid,
 } from '@mui/material';
 import {
   Notifications,
@@ -32,6 +34,7 @@ import {
   Info,
   Logout,
   Delete,
+  AccountCircle,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -91,7 +94,7 @@ const defaultPreferences: UserPreferences = {
 };
 
 function Settings() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
   const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
   const [saving, setSaving] = useState(false);
@@ -208,6 +211,45 @@ function Settings() {
       )}
 
       <Stack spacing={3}>
+        {/* Account Information */}
+        <Paper sx={{ p: 3 }}>
+          <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <AccountCircle />
+            Account Information
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                label="Username"
+                value={user?.username || ''}
+                disabled
+                variant="filled"
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                label="Email"
+                value={user?.email || ''}
+                disabled
+                variant="filled"
+              />
+            </Grid>
+            {user?.phone && (
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  fullWidth
+                  label="Phone"
+                  value={user.phone}
+                  disabled
+                  variant="filled"
+                />
+              </Grid>
+            )}
+          </Grid>
+        </Paper>
+
         {/* Discovery Preferences */}
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
