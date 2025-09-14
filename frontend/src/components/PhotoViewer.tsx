@@ -43,6 +43,8 @@ function PhotoViewer({
     : [{ photoID: 0, userID: user.userID, url: '', isPrimary: true, uploadedAt: '' }];
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    if (isAnimating) return;
+    
     setIsDragging(true);
     const startX = e.clientX;
     const startY = e.clientY;
@@ -59,13 +61,14 @@ function PhotoViewer({
     const handleMouseUp = () => {
       setIsDragging(false);
       
-      if (Math.abs(dragOffset.x) > 100) {
+      const threshold = 100;
+      if (Math.abs(dragOffset.x) > threshold) {
         if (dragOffset.x > 0) {
           onLike();
         } else {
           onPass();
         }
-      } else if (dragOffset.y < -100) {
+      } else if (dragOffset.y < -threshold) {
         onSuperLike();
       }
       
@@ -79,6 +82,8 @@ function PhotoViewer({
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (isAnimating) return;
+    
     setIsDragging(true);
     const touch = e.touches[0];
     const startX = touch.clientX;
@@ -88,6 +93,8 @@ function PhotoViewer({
       if (isAnimating) return;
       
       const touch = moveEvent.touches[0];
+      if (!touch) return;
+      
       const deltaX = touch.clientX - startX;
       const deltaY = touch.clientY - startY;
       
@@ -97,13 +104,14 @@ function PhotoViewer({
     const handleTouchEnd = () => {
       setIsDragging(false);
       
-      if (Math.abs(dragOffset.x) > 100) {
+      const threshold = 100;
+      if (Math.abs(dragOffset.x) > threshold) {
         if (dragOffset.x > 0) {
           onLike();
         } else {
           onPass();
         }
-      } else if (dragOffset.y < -100) {
+      } else if (dragOffset.y < -threshold) {
         onSuperLike();
       }
       
@@ -112,7 +120,7 @@ function PhotoViewer({
       document.removeEventListener('touchend', handleTouchEnd);
     };
 
-    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
     document.addEventListener('touchend', handleTouchEnd);
   };
 
@@ -161,7 +169,6 @@ function PhotoViewer({
         position: 'relative',
         width: '100%',
         height: '100%',
-        maxHeight: 500, // Reduced from 600 to make space for action buttons
         borderRadius: 3,
         overflow: 'hidden',
         cursor: isDragging ? 'grabbing' : 'grab',
@@ -224,7 +231,10 @@ function PhotoViewer({
                 cursor: 'pointer',
                 zIndex: 2,
               }}
-              onClick={prevPhoto}
+              onClick={(e) => {
+                e.stopPropagation();
+                prevPhoto();
+              }}
             />
             <Box
               sx={{
@@ -236,7 +246,10 @@ function PhotoViewer({
                 cursor: 'pointer',
                 zIndex: 2,
               }}
-              onClick={nextPhoto}
+              onClick={(e) => {
+                e.stopPropagation();
+                nextPhoto();
+              }}
             />
             
             {/* Photo Indicators */}

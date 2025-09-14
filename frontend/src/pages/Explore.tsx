@@ -359,7 +359,7 @@ function Explore() {
   // Category Selection View
   if (!selectedCategory) {
     return (
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
         {/* Header */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
           <PulseLogo sx={{ fontSize: 32, color: 'primary.main' }} />
@@ -373,50 +373,52 @@ function Explore() {
         </Typography>
 
         {/* Categories Grid */}
-        <Grid container spacing={3}>
-          {exploreCategories.map((category) => (
-            <Grid item xs={12} sm={6} md={4} key={category.id}>
-              <Card
-                sx={{
-                  height: '100%',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  border: '2px solid transparent',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: `0 12px 32px rgba(0,0,0,0.15)`,
-                    border: `2px solid ${category.color}`,
-                  },
-                }}
-                onClick={() => handleCategorySelect(category)}
-              >
-                <CardContent sx={{ p: 3, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <Box
-                    sx={{
-                      width: 80,
-                      height: 80,
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: `${category.color}15`,
-                      color: category.color,
-                      margin: '0 auto 16px auto',
-                    }}
-                  >
-                    {category.icon}
-                  </Box>
-                  <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ color: category.color }}>
-                    {category.title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
-                    {category.description}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+        <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+          <Grid container spacing={3}>
+            {exploreCategories.map((category) => (
+              <Grid item xs={12} sm={6} md={4} key={category.id}>
+                <Card
+                  sx={{
+                    height: '100%',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    border: '2px solid transparent',
+                    '&:hover': {
+                      transform: 'translateY(-8px)',
+                      boxShadow: `0 12px 32px rgba(0,0,0,0.15)`,
+                      border: `2px solid ${category.color}`,
+                    },
+                  }}
+                  onClick={() => handleCategorySelect(category)}
+                >
+                  <CardContent sx={{ p: 3, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <Box
+                      sx={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: `${category.color}15`,
+                        color: category.color,
+                        margin: '0 auto 16px auto',
+                      }}
+                    >
+                      {category.icon}
+                    </Box>
+                    <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ color: category.color }}>
+                      {category.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
+                      {category.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       </Box>
     );
   }
@@ -424,7 +426,7 @@ function Explore() {
   // Single User View (similar to Home page)
   if (users.length === 0) {
     return (
-      <Box sx={{ p: 4 }}>
+      <Box sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
           <IconButton onClick={handleBackToCategories}>
             <ArrowBack />
@@ -442,7 +444,7 @@ function Explore() {
 
   if (currentIndex >= users.length) {
     return (
-      <Box sx={{ p: 4, textAlign: 'center' }}>
+      <Box sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, justifyContent: 'center' }}>
           <IconButton onClick={handleBackToCategories}>
             <ArrowBack />
@@ -465,9 +467,9 @@ function Explore() {
   }
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 3 }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 3, pb: 1 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <IconButton onClick={handleBackToCategories}>
             <ArrowBack />
@@ -498,7 +500,7 @@ function Explore() {
       </Box>
 
       {/* Progress bar */}
-      <Box sx={{ px: 3, mb: 2 }}>
+      <Box sx={{ mb: 2 }}>
         <LinearProgress 
           variant="determinate" 
           value={progress} 
@@ -507,10 +509,11 @@ function Explore() {
       </Box>
       
       {/* Two-column layout - Photos in middle, Profile on right */}
-      <Grid container spacing={3} sx={{ px: 3, height: 'calc(100vh - 200px)' }}>
-        {/* Middle column - Photos (bigger) */}
-        <Grid item xs={7}>
-          <Box sx={{ position: 'relative', height: '100%' }}>
+      <Grid container spacing={3} sx={{ flexGrow: 1, overflow: 'hidden' }}>
+        {/* Middle column - Photos with Action Buttons directly below */}
+        <Grid item xs={7} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          {/* Photo container */}
+          <Box sx={{ position: 'relative', flexGrow: 1, mb: 2, minHeight: 0 }}>
             {/* Next card (background) */}
             {currentIndex + 1 < users.length && (
               <Box
@@ -548,6 +551,81 @@ function Explore() {
               />
             </Box>
           </Box>
+
+          {/* Action Buttons - positioned directly below photos with matching width */}
+          <Paper 
+            elevation={4}
+            sx={{ 
+              p: 2, 
+              borderRadius: 3,
+              backgroundColor: 'background.paper',
+              flexShrink: 0,
+            }}
+          >
+            <Stack direction="row" justifyContent="center" spacing={2}>
+              <Fab
+                size="medium"
+                onClick={handleUndo}
+                disabled={currentIndex === 0 || animating}
+                sx={{ 
+                  backgroundColor: 'warning.light',
+                  '&:hover': { backgroundColor: 'warning.main' },
+                  '&:disabled': { backgroundColor: 'grey.200' },
+                }}
+              >
+                <Undo />
+              </Fab>
+              
+              <Fab
+                size="large"
+                onClick={handlePass}
+                disabled={animating}
+                sx={{ 
+                  backgroundColor: 'error.light',
+                  '&:hover': { backgroundColor: 'error.main' },
+                  color: 'white',
+                }}
+              >
+                <Close />
+              </Fab>
+              
+              <Fab
+                size="medium"
+                onClick={handleSuperLike}
+                disabled={animating}
+                sx={{ 
+                  backgroundColor: 'info.light',
+                  '&:hover': { backgroundColor: 'info.main' },
+                  color: 'white',
+                }}
+              >
+                <Star />
+              </Fab>
+              
+              <Fab
+                size="large"
+                onClick={handleLike}
+                disabled={animating}
+                sx={{ 
+                  backgroundColor: 'success.light',
+                  '&:hover': { backgroundColor: 'success.main' },
+                  color: 'white',
+                }}
+              >
+                <Favorite />
+              </Fab>
+            </Stack>
+            
+            <Typography 
+              variant="caption" 
+              display="block" 
+              textAlign="center" 
+              color="text.secondary"
+              sx={{ mt: 1 }}
+            >
+              Swipe or drag • Tap for Super Like
+            </Typography>
+          </Paper>
         </Grid>
 
         {/* Right column - Profile details WITHOUT pictures */}
@@ -555,88 +633,6 @@ function Explore() {
           <ProfileView user={currentUser} compact={true} hidePhotos={true} />
         </Grid>
       </Grid>
-
-      {/* Action Buttons - Fixed at bottom */}
-      <Box sx={{ 
-        position: 'fixed', 
-        bottom: 0, 
-        left: '50%', 
-        transform: 'translateX(-50%)',
-        p: 3 
-      }}>
-        <Paper 
-          elevation={4}
-          sx={{ 
-            p: 2, 
-            borderRadius: 3,
-            backgroundColor: 'background.paper',
-          }}
-        >
-          <Stack direction="row" justifyContent="center" spacing={2}>
-            <Fab
-              size="medium"
-              onClick={handleUndo}
-              disabled={currentIndex === 0 || animating}
-              sx={{ 
-                backgroundColor: 'warning.light',
-                '&:hover': { backgroundColor: 'warning.main' },
-                '&:disabled': { backgroundColor: 'grey.200' },
-              }}
-            >
-              <Undo />
-            </Fab>
-            
-            <Fab
-              size="large"
-              onClick={handlePass}
-              disabled={animating}
-              sx={{ 
-                backgroundColor: 'error.light',
-                '&:hover': { backgroundColor: 'error.main' },
-                color: 'white',
-              }}
-            >
-              <Close />
-            </Fab>
-            
-            <Fab
-              size="medium"
-              onClick={handleSuperLike}
-              disabled={animating}
-              sx={{ 
-                backgroundColor: 'info.light',
-                '&:hover': { backgroundColor: 'info.main' },
-                color: 'white',
-              }}
-            >
-              <Star />
-            </Fab>
-            
-            <Fab
-              size="large"
-              onClick={handleLike}
-              disabled={animating}
-              sx={{ 
-                backgroundColor: 'success.light',
-                '&:hover': { backgroundColor: 'success.main' },
-                color: 'white',
-              }}
-            >
-              <Favorite />
-            </Fab>
-          </Stack>
-          
-          <Typography 
-            variant="caption" 
-            display="block" 
-            textAlign="center" 
-            color="text.secondary"
-            sx={{ mt: 1 }}
-          >
-            Swipe or drag • Tap for Super Like
-          </Typography>
-        </Paper>
-      </Box>
     </Box>
   );
 }
