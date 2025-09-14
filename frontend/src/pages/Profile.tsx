@@ -18,6 +18,8 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 import { 
   PhotoCamera, 
@@ -47,12 +49,20 @@ function Profile() {
     age: '',
     bio: '',
     location: '',
+    city: '',
+    region: '',
+    country: '',
     interests: '',
     gender: '' as 'male' | 'female' | 'other' | '',
     interestedIn: '' as 'male' | 'female' | 'both' | '',
     height: '',
     education: '',
     occupation: '',
+    jobTitle: '',
+    // Privacy controls
+    showGender: true,
+    showAge: true,
+    showLocation: true,
   });
 
   const loadProfile = useCallback(async () => {
@@ -69,12 +79,20 @@ function Profile() {
         age: profileData.age?.toString() || '',
         bio: profileData.bio || '',
         location: profileData.location || '',
+        city: profileData.city || '',
+        region: profileData.region || '',
+        country: profileData.country || '',
         interests: profileData.interests?.join(', ') || '',
         gender: profileData.gender || '',
         interestedIn: profileData.interestedIn || '',
         height: profileData.height?.toString() || '',
         education: profileData.education || '',
         occupation: profileData.occupation || '',
+        jobTitle: profileData.jobTitle || '',
+        // Privacy controls
+        showGender: profileData.showGender !== false, // Default to true
+        showAge: profileData.showAge !== false, // Default to true  
+        showLocation: profileData.showLocation !== false, // Default to true
       });
     } catch (err) {
       setError('Failed to load profile');
@@ -101,6 +119,14 @@ function Profile() {
     setFormData(prev => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  const handleSwitchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: checked,
     }));
   };
 
@@ -196,12 +222,20 @@ function Profile() {
         dateOfBirth: profile?.dateOfBirth || '1995-01-01', // Keep existing or default
         bio: formData.bio,
         location: formData.location,
+        city: formData.city || undefined,
+        region: formData.region || undefined,
+        country: formData.country || undefined,
         interests: formData.interests.split(',').map(i => i.trim()).filter(i => i),
         gender: formData.gender as 'male' | 'female' | 'other',
         interestedIn: formData.interestedIn as 'male' | 'female' | 'both',
         height: formData.height ? parseInt(formData.height) : undefined,
         education: formData.education || undefined,
         occupation: formData.occupation || undefined,
+        jobTitle: formData.jobTitle || undefined,
+        // Privacy controls
+        showGender: formData.showGender,
+        showAge: formData.showAge,
+        showLocation: formData.showLocation,
       };
 
       const updatedProfile = await userService.updateProfile(user.userID, {
@@ -228,12 +262,20 @@ function Profile() {
         age: profile.age?.toString() || '',
         bio: profile.bio || '',
         location: profile.location || '',
+        city: profile.city || '',
+        region: profile.region || '',
+        country: profile.country || '',
         interests: profile.interests?.join(', ') || '',
         gender: profile.gender || '',
         interestedIn: profile.interestedIn || '',
         height: profile.height?.toString() || '',
         education: profile.education || '',
         occupation: profile.occupation || '',
+        jobTitle: profile.jobTitle || '',
+        // Privacy controls
+        showGender: profile.showGender !== false,
+        showAge: profile.showAge !== false,
+        showLocation: profile.showLocation !== false,
       });
     }
     setEditing(false);
@@ -513,6 +555,131 @@ function Profile() {
                   </Box>
                 </Grid>
                 
+                {/* Display additional profile information in view mode */}
+                {!editing && (
+                  <>
+                    {(profile?.education || profile?.occupation || profile?.jobTitle) && (
+                      <>
+                        <Grid item xs={12}>
+                          <Typography variant="subtitle2" gutterBottom>
+                            Professional Information
+                          </Typography>
+                        </Grid>
+                        {profile?.education && (
+                          <Grid item xs={12} sm={4}>
+                            <TextField
+                              fullWidth
+                              label="Education"
+                              value={profile.education}
+                              disabled
+                              variant="filled"
+                            />
+                          </Grid>
+                        )}
+                        {profile?.occupation && (
+                          <Grid item xs={12} sm={4}>
+                            <TextField
+                              fullWidth
+                              label="Occupation"
+                              value={profile.occupation}
+                              disabled
+                              variant="filled"
+                            />
+                          </Grid>
+                        )}
+                        {profile?.jobTitle && (
+                          <Grid item xs={12} sm={4}>
+                            <TextField
+                              fullWidth
+                              label="Job Title"
+                              value={profile.jobTitle}
+                              disabled
+                              variant="filled"
+                            />
+                          </Grid>
+                        )}
+                      </>
+                    )}
+                    
+                    {(profile?.city || profile?.region || profile?.country) && (
+                      <>
+                        <Grid item xs={12}>
+                          <Typography variant="subtitle2" gutterBottom>
+                            Location Details
+                          </Typography>
+                        </Grid>
+                        {profile?.city && (
+                          <Grid item xs={12} sm={4}>
+                            <TextField
+                              fullWidth
+                              label="City"
+                              value={profile.city}
+                              disabled
+                              variant="filled"
+                            />
+                          </Grid>
+                        )}
+                        {profile?.region && (
+                          <Grid item xs={12} sm={4}>
+                            <TextField
+                              fullWidth
+                              label="Region/State"
+                              value={profile.region}
+                              disabled
+                              variant="filled"
+                            />
+                          </Grid>
+                        )}
+                        {profile?.country && (
+                          <Grid item xs={12} sm={4}>
+                            <TextField
+                              fullWidth
+                              label="Country"
+                              value={profile.country}
+                              disabled
+                              variant="filled"
+                            />
+                          </Grid>
+                        )}
+                      </>
+                    )}
+
+                    {/* Display privacy settings in view mode */}
+                    <Grid item xs={12}>
+                      <Typography variant="subtitle2" gutterBottom>
+                        Privacy Settings
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        fullWidth
+                        label="Gender Visibility"
+                        value={profile?.showGender !== false ? 'Visible' : 'Hidden'}
+                        disabled
+                        variant="filled"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        fullWidth
+                        label="Age Visibility"
+                        value={profile?.showAge !== false ? 'Visible' : 'Hidden'}
+                        disabled
+                        variant="filled"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        fullWidth
+                        label="Location Visibility"
+                        value={profile?.showLocation !== false ? 'Visible' : 'Hidden'}
+                        disabled
+                        variant="filled"
+                      />
+                    </Grid>
+                  </>
+                )}
+                
                 {editing && (
                   <>
                     <Grid item xs={12} sm={4}>
@@ -541,6 +708,94 @@ function Profile() {
                         name="occupation"
                         value={formData.occupation}
                         onChange={handleChange}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        fullWidth
+                        label="Job Title"
+                        name="jobTitle"
+                        value={formData.jobTitle}
+                        onChange={handleChange}
+                        placeholder="Software Engineer, Teacher, etc."
+                      />
+                    </Grid>
+                    
+                    {/* Enhanced Location Fields */}
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        fullWidth
+                        label="City"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        placeholder="New York"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        fullWidth
+                        label="Region/State"
+                        name="region"
+                        value={formData.region}
+                        onChange={handleChange}
+                        placeholder="New York"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        fullWidth
+                        label="Country"
+                        name="country"
+                        value={formData.country}
+                        onChange={handleChange}
+                        placeholder="United States"
+                      />
+                    </Grid>
+
+                    {/* Privacy Controls */}
+                    <Grid item xs={12}>
+                      <Typography variant="h6" sx={{ mb: 2 }}>
+                        Privacy Settings
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Control what information is visible on your profile
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={formData.showGender}
+                            onChange={handleSwitchChange}
+                            name="showGender"
+                          />
+                        }
+                        label="Show Gender"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={formData.showAge}
+                            onChange={handleSwitchChange}
+                            name="showAge"
+                          />
+                        }
+                        label="Show Age"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={formData.showLocation}
+                            onChange={handleSwitchChange}
+                            name="showLocation"
+                          />
+                        }
+                        label="Show Location"
                       />
                     </Grid>
                   </>

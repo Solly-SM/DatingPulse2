@@ -163,19 +163,31 @@ public class UserProfileService {
         if (profileDTO.getLongitude() != null) {
             existing.setLongitude(profileDTO.getLongitude());
         }
-        // These fields don't exist in schema - commenting out
-        // if (profileDTO.getEducation() != null) {
-        //     existing.setEducation(profileDTO.getEducation());
-        // }
-        // if (profileDTO.getJobTitle() != null) {
-        //     existing.setJobTitle(profileDTO.getJobTitle());
-        // }
-        // if (profileDTO.getRelationship() != null) {
-        //     existing.setRelationship(profileDTO.getRelationship());
-        // }
-        // if (profileDTO.getPrivacy() != null) {
-        //     existing.setPrivacy(PrivacyLevel.valueOf(profileDTO.getPrivacy()));
-        // }
+        
+        // Update additional profile fields
+        if (profileDTO.getEducation() != null) {
+            existing.setEducation(profileDTO.getEducation());
+        }
+        if (profileDTO.getJobTitle() != null) {
+            existing.setJobTitle(profileDTO.getJobTitle());
+        }
+        if (profileDTO.getRelationship() != null) {
+            existing.setRelationship(profileDTO.getRelationship());
+        }
+        if (profileDTO.getPrivacy() != null) {
+            existing.setPrivacy(PrivacyLevel.valueOf(profileDTO.getPrivacy()));
+        }
+        
+        // Update field visibility controls
+        if (profileDTO.getShowGender() != null) {
+            existing.setShowGender(profileDTO.getShowGender());
+        }
+        if (profileDTO.getShowAge() != null) {
+            existing.setShowAge(profileDTO.getShowAge());
+        }
+        if (profileDTO.getShowLocation() != null) {
+            existing.setShowLocation(profileDTO.getShowLocation());
+        }
 
         // Update interests if provided
         if (profileDTO.getInterestIDs() != null) {

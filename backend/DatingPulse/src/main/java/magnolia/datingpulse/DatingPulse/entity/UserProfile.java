@@ -93,6 +93,15 @@ public class UserProfile {
     @Column(name = "show_distance")
     private Boolean showDistance = true;
 
+    @Column(name = "show_gender")
+    private Boolean showGender = true;
+
+    @Column(name = "show_age")
+    private Boolean showAge = true;
+
+    @Column(name = "show_location")
+    private Boolean showLocation = true;
+
     @Column(name = "is_profile_complete")
     private Boolean isProfileComplete = false;
 
