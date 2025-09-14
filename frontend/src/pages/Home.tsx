@@ -3,13 +3,10 @@ import {
   Typography,
   Button,
   Box,
-  Chip,
   Alert,
   Stack,
   Fab,
-  LinearProgress,
   Paper,
-  IconButton,
   Grid,
   useTheme,
   useMediaQuery,
@@ -17,17 +14,13 @@ import {
 import {
   Favorite,
   Close,
-  LocationOn,
   Undo,
   Star,
-  Settings,
-  FilterList,
 } from '@mui/icons-material';
 import { datingService } from '../services/datingService';
 import { DiscoverUser } from '../types/Dating';
 import PhotoViewer from '../components/PhotoViewer';
 import ProfileView from '../components/ProfileView';
-import PulseLogo from '../components/PulseLogo';
 import PulseLoader from '../components/PulseLoader';
 import SimpleLoadingScreen from '../components/SimpleLoadingScreen';
 
@@ -62,7 +55,6 @@ function Home() {
   };
 
   const currentUser = users[currentIndex];
-  const progress = users.length > 0 ? ((currentIndex) / users.length) * 100 : 0;
 
   const handleLike = async () => {
     if (currentIndex >= users.length || animating) return;
@@ -220,42 +212,11 @@ function Home() {
   // Mobile layout - fall back to single column like before
   if (isMobile) {
     return (
-      <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column', maxWidth: 400, mx: 'auto' }}>
-        {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <PulseLogo sx={{ fontSize: 32, color: 'primary.main' }} />
-            <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-              Home
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Chip 
-              icon={<LocationOn />} 
-              label={`${users.length - currentIndex} nearby`}
-              variant="outlined"
-              size="small"
-            />
-            <IconButton size="small">
-              <FilterList />
-            </IconButton>
-            <IconButton size="small">
-              <Settings />
-            </IconButton>
-          </Box>
-        </Box>
-
-        {/* Progress bar */}
-        <LinearProgress 
-          variant="determinate" 
-          value={progress} 
-          sx={{ mb: 3, height: 4, borderRadius: 2 }}
-        />
-        
+      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', maxWidth: 400, mx: 'auto' }}>
         {/* Card Stack with Action Buttons */}
         <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, minHeight: 0 }}>
           {/* Photo container */}
-          <Box sx={{ position: 'relative', flexGrow: 1, mb: 3, minHeight: 0 }}>
+          <Box sx={{ position: 'relative', flexGrow: 1, mb: 2, minHeight: 0 }}>
             {/* Next card (background) */}
             {currentIndex + 1 < users.length && (
               <Box
@@ -375,40 +336,7 @@ function Home() {
 
   // Desktop layout - pictures in middle, profile details on right (no pictures)
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
-      {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <PulseLogo sx={{ fontSize: 32, color: 'primary.main' }} />
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-            Home
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Chip 
-            icon={<LocationOn />} 
-            label={`${users.length - currentIndex} nearby`}
-            variant="outlined"
-            size="small"
-          />
-          <IconButton size="small">
-            <FilterList />
-          </IconButton>
-          <IconButton size="small">
-            <Settings />
-          </IconButton>
-        </Box>
-      </Box>
-
-      {/* Progress bar */}
-      <Box sx={{ mb: 1 }}>
-        <LinearProgress 
-          variant="determinate" 
-          value={progress} 
-          sx={{ height: 4, borderRadius: 2 }}
-        />
-      </Box>
-      
+    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Two-column layout - Photos in middle, Profile on right */}
       <Grid container spacing={2} sx={{ flexGrow: 1, overflow: 'hidden' }}>
         {/* Middle column - Photos with Action Buttons directly below */}
