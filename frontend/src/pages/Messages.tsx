@@ -75,7 +75,7 @@ function Messages() {
   if (isMobile) {
     if (selectedConversation) {
       return (
-        <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', width: '100%' }}>
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', width: '100%' }}>
           <ConversationView
             conversation={selectedConversation}
             onBack={handleBackToInbox}
@@ -84,25 +84,27 @@ function Messages() {
       );
     }
 
-    // Full-width inbox for mobile
+    // Full-width and full-height inbox for mobile
     return (
-      <Box sx={{ height: '100%', width: '100%', p: 2 }}>
+      <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Messages 💬
         </Typography>
         
         {conversations.length === 0 ? (
-          <Box textAlign="center" mt={4}>
-            <Chat sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              No conversations yet
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Start chatting with your matches to see conversations here!
-            </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
+            <Box textAlign="center">
+              <Chat sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
+              <Typography variant="h5" gutterBottom>
+                No conversations yet
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Start chatting with your matches to see conversations here!
+              </Typography>
+            </Box>
           </Box>
         ) : (
-          <Box sx={{ height: 'calc(100% - 100px)', width: '100%' }}>
+          <Box sx={{ flexGrow: 1, width: '100%', minHeight: 0 }}>
             <InboxComponent
               onConversationSelect={handleConversationSelect}
               selectedConversationId={undefined}
@@ -115,25 +117,27 @@ function Messages() {
 
   // Desktop layout
   if (!selectedConversation) {
-    // Full-width inbox when no conversation is selected
+    // Full-width and full-height inbox when no conversation is selected
     return (
-      <Box sx={{ height: '100%', width: '100%', p: 2 }}>
+      <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Messages 💬
         </Typography>
         
         {conversations.length === 0 ? (
-          <Box textAlign="center" mt={4}>
-            <Chat sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              No conversations yet
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Start chatting with your matches to see conversations here!
-            </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
+            <Box textAlign="center">
+              <Chat sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
+              <Typography variant="h5" gutterBottom>
+                No conversations yet
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Start chatting with your matches to see conversations here!
+              </Typography>
+            </Box>
           </Box>
         ) : (
-          <Box sx={{ height: 'calc(100% - 100px)', width: '100%' }}>
+          <Box sx={{ flexGrow: 1, width: '100%', minHeight: 0 }}>
             <InboxComponent
               onConversationSelect={handleConversationSelect}
               selectedConversationId={undefined}

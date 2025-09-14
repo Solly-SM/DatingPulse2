@@ -139,23 +139,25 @@ function Notifications() {
   }
 
   return (
-    <Box sx={{ height: '100%', width: '100%', p: 2 }}>
+    <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
       <Typography variant="h4" component="h1" gutterBottom>
         Notifications 🔔
       </Typography>
 
       {notifications.length === 0 ? (
-        <Box textAlign="center" mt={4}>
-          <NotificationsIcon sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
-          <Typography variant="h5" gutterBottom>
-            No notifications yet
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            We'll notify you when something exciting happens!
-          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
+          <Box textAlign="center">
+            <NotificationsIcon sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
+            <Typography variant="h5" gutterBottom>
+              No notifications yet
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              We'll notify you when something exciting happens!
+            </Typography>
+          </Box>
         </Box>
       ) : (
-        <Paper sx={{ height: 'calc(100% - 100px)', width: '100%', overflow: 'auto' }}>
+        <Paper sx={{ flexGrow: 1, width: '100%', overflow: 'auto', minHeight: 0 }}>
           <List sx={{ width: '100%' }}>
             {notifications.map((notification) => (
               <ListItem
