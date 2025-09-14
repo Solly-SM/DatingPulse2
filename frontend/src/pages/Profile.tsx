@@ -12,6 +12,7 @@ import {
   CardMedia,
   CircularProgress,
   Chip,
+  Dialog,
 } from '@mui/material';
 import { 
   PhotoCamera, 
@@ -23,18 +24,16 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/userService';
 import { UserProfile, Photo } from '../types/User';
-import PersonalDetailsEditModal from '../components/profile-edit/PersonalDetailsEditModal';
-import InterestsEditModal from '../components/profile-edit/InterestsEditModal';
-import PhysicalAttributesEditModal from '../components/profile-edit/PhysicalAttributesEditModal';
-import LifestyleEditModal from '../components/profile-edit/LifestyleEditModal';
-import ProfessionalEditModal from '../components/profile-edit/ProfessionalEditModal';
 import {
-  SexualOrientationModal,
-  LookingForModal,
-  DistancePreferenceModal,
-  PersonalityModal,
-  AudioIntroModal,
-} from '../components/profile-edit/modals';
+  PersonalDetailsStep,
+  AboutMeStep,
+  InterestsStep,
+  PhysicalAttributesStep,
+  PreferencesStep,
+  LifestyleStep,
+  MediaStep,
+} from '../components/registration/profile-steps';
+import ProfessionalStep from '../components/registration/profile-steps/ProfessionalStep';
 
 function Profile() {
   const { user } = useAuth();
@@ -44,17 +43,15 @@ function Profile() {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
 
-  // Modal states
+  // Modal states for signup step components
   const [personalDetailsModalOpen, setPersonalDetailsModalOpen] = useState(false);
+  const [aboutMeModalOpen, setAboutMeModalOpen] = useState(false);
   const [interestsModalOpen, setInterestsModalOpen] = useState(false);
   const [physicalAttributesModalOpen, setPhysicalAttributesModalOpen] = useState(false);
+  const [preferencesModalOpen, setPreferencesModalOpen] = useState(false);
   const [lifestyleModalOpen, setLifestyleModalOpen] = useState(false);
   const [professionalModalOpen, setProfessionalModalOpen] = useState(false);
-  const [sexualOrientationModalOpen, setSexualOrientationModalOpen] = useState(false);
-  const [lookingForModalOpen, setLookingForModalOpen] = useState(false);
-  const [distancePreferenceModalOpen, setDistancePreferenceModalOpen] = useState(false);
-  const [personalityModalOpen, setPersonalityModalOpen] = useState(false);
-  const [audioIntroModalOpen, setAudioIntroModalOpen] = useState(false);
+  const [mediaModalOpen, setMediaModalOpen] = useState(false);
 
   const loadProfile = useCallback(async () => {
     if (!user) return;
@@ -76,324 +73,310 @@ function Profile() {
     loadProfile();
   }, [loadProfile]);
 
-  // Save functions for modals
+  // Save functions using the step component data formats
   const savePersonalDetails = async (data: { firstName: string; lastName: string; dateOfBirth: string; gender: string; location: string; }) => {
     if (!user || !profile) return;
     
-    const updateData = {
-      userID: user.userID,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      dateOfBirth: data.dateOfBirth,
-      bio: profile.bio || '',
-      location: data.location,
-      city: profile.city,
-      region: profile.region,
-      country: profile.country,
-      interests: profile.interests || [],
-      gender: data.gender as 'male' | 'female' | 'other',
-      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-      height: profile.height,
-      education: profile.education,
-      occupation: profile.occupation,
-      jobTitle: profile.jobTitle,
-      showGender: profile.showGender,
-      showAge: profile.showAge,
-      showLocation: profile.showLocation,
-    };
-    
-    const updatedProfile = await userService.updateProfile(user.userID, updateData);
-    setProfile(updatedProfile);
-    setSuccess('Personal details updated successfully!');
-    setTimeout(() => setSuccess(''), 3000);
+    try {
+      const updateData = {
+        userID: user.userID,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        dateOfBirth: data.dateOfBirth,
+        bio: profile.bio || '',
+        location: data.location,
+        city: profile.city,
+        region: profile.region,
+        country: profile.country,
+        interests: profile.interests || [],
+        gender: data.gender as 'male' | 'female' | 'other',
+        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+        height: profile.height,
+        education: profile.education,
+        occupation: profile.occupation,
+        jobTitle: profile.jobTitle,
+        showGender: profile.showGender,
+        showAge: profile.showAge,
+        showLocation: profile.showLocation,
+      };
+      
+      const updatedProfile = await userService.updateProfile(user.userID, updateData);
+      setProfile(updatedProfile);
+      setSuccess('Personal details updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+      setPersonalDetailsModalOpen(false);
+    } catch (err) {
+      setError('Failed to update personal details');
+      console.error('Update error:', err);
+    }
   };
 
-  const saveInterests = async (interests: string[]) => {
+  const saveAboutMe = async (data: { bio: string }) => {
     if (!user || !profile) return;
     
-    const updateData = {
-      userID: user.userID,
-      firstName: profile.firstName || '',
-      lastName: profile.lastName || '',
-      dateOfBirth: profile.dateOfBirth || '1995-01-01',
-      bio: profile.bio || '',
-      location: profile.location || '',
-      city: profile.city,
-      region: profile.region,
-      country: profile.country,
-      interests: interests,
-      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
-      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-      height: profile.height,
-      education: profile.education,
-      occupation: profile.occupation,
-      jobTitle: profile.jobTitle,
-      showGender: profile.showGender,
-      showAge: profile.showAge,
-      showLocation: profile.showLocation,
-    };
+    try {
+      const updateData = {
+        userID: user.userID,
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        dateOfBirth: profile.dateOfBirth || '1995-01-01',
+        bio: data.bio,
+        location: profile.location || '',
+        city: profile.city,
+        region: profile.region,
+        country: profile.country,
+        interests: profile.interests || [],
+        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+        height: profile.height,
+        education: profile.education,
+        occupation: profile.occupation,
+        jobTitle: profile.jobTitle,
+        showGender: profile.showGender,
+        showAge: profile.showAge,
+        showLocation: profile.showLocation,
+      };
+      
+      const updatedProfile = await userService.updateProfile(user.userID, updateData);
+      setProfile(updatedProfile);
+      setSuccess('Bio updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+      setAboutMeModalOpen(false);
+    } catch (err) {
+      setError('Failed to update bio');
+      console.error('Update error:', err);
+    }
+  };
+
+  const saveInterests = async (data: { interests: string[] }) => {
+    if (!user || !profile) return;
     
-    const updatedProfile = await userService.updateProfile(user.userID, updateData);
-    setProfile(updatedProfile);
-    setSuccess('Interests updated successfully!');
-    setTimeout(() => setSuccess(''), 3000);
+    try {
+      const updateData = {
+        userID: user.userID,
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        dateOfBirth: profile.dateOfBirth || '1995-01-01',
+        bio: profile.bio || '',
+        location: profile.location || '',
+        city: profile.city,
+        region: profile.region,
+        country: profile.country,
+        interests: data.interests,
+        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+        height: profile.height,
+        education: profile.education,
+        occupation: profile.occupation,
+        jobTitle: profile.jobTitle,
+        showGender: profile.showGender,
+        showAge: profile.showAge,
+        showLocation: profile.showLocation,
+      };
+      
+      const updatedProfile = await userService.updateProfile(user.userID, updateData);
+      setProfile(updatedProfile);
+      setSuccess('Interests updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+      setInterestsModalOpen(false);
+    } catch (err) {
+      setError('Failed to update interests');
+      console.error('Update error:', err);
+    }
   };
 
   const savePhysicalAttributes = async (data: { height?: number; weight?: number; bodyType?: string; ethnicity?: string; }) => {
     if (!user || !profile) return;
     
-    const updateData = {
-      userID: user.userID,
-      firstName: profile.firstName || '',
-      lastName: profile.lastName || '',
-      dateOfBirth: profile.dateOfBirth || '1995-01-01',
-      bio: profile.bio || '',
-      location: profile.location || '',
-      city: profile.city,
-      region: profile.region,
-      country: profile.country,
-      interests: profile.interests || [],
-      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
-      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-      height: data.height,
-      education: profile.education,
-      occupation: profile.occupation,
-      jobTitle: profile.jobTitle,
-      showGender: profile.showGender,
-      showAge: profile.showAge,
-      showLocation: profile.showLocation,
-      weight: data.weight,
-      bodyType: data.bodyType,
-      ethnicity: data.ethnicity,
-    };
+    try {
+      const updateData = {
+        userID: user.userID,
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        dateOfBirth: profile.dateOfBirth || '1995-01-01',
+        bio: profile.bio || '',
+        location: profile.location || '',
+        city: profile.city,
+        region: profile.region,
+        country: profile.country,
+        interests: profile.interests || [],
+        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+        height: data.height,
+        education: profile.education,
+        occupation: profile.occupation,
+        jobTitle: profile.jobTitle,
+        showGender: profile.showGender,
+        showAge: profile.showAge,
+        showLocation: profile.showLocation,
+        weight: data.weight,
+        bodyType: data.bodyType,
+        ethnicity: data.ethnicity,
+      };
+      
+      const updatedProfile = await userService.updateProfile(user.userID, updateData);
+      setProfile(updatedProfile);
+      setSuccess('Physical attributes updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+      setPhysicalAttributesModalOpen(false);
+    } catch (err) {
+      setError('Failed to update physical attributes');
+      console.error('Update error:', err);
+    }
+  };
+
+  const savePreferences = async (data: { interestedIn: string; relationshipGoal?: string; sexualOrientation?: string; }) => {
+    if (!user || !profile) return;
     
-    const updatedProfile = await userService.updateProfile(user.userID, updateData);
-    setProfile(updatedProfile);
-    setSuccess('Physical attributes updated successfully!');
-    setTimeout(() => setSuccess(''), 3000);
+    try {
+      const updateData = {
+        userID: user.userID,
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        dateOfBirth: profile.dateOfBirth || '1995-01-01',
+        bio: profile.bio || '',
+        location: profile.location || '',
+        city: profile.city,
+        region: profile.region,
+        country: profile.country,
+        interests: profile.interests || [],
+        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+        interestedIn: data.interestedIn as 'male' | 'female' | 'both',
+        height: profile.height,
+        education: profile.education,
+        occupation: profile.occupation,
+        jobTitle: profile.jobTitle,
+        showGender: profile.showGender,
+        showAge: profile.showAge,
+        showLocation: profile.showLocation,
+        sexualOrientation: data.sexualOrientation,
+        lookingFor: data.relationshipGoal,
+      };
+      
+      const updatedProfile = await userService.updateProfile(user.userID, updateData);
+      setProfile(updatedProfile);
+      setSuccess('Preferences updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+      setPreferencesModalOpen(false);
+    } catch (err) {
+      setError('Failed to update preferences');
+      console.error('Update error:', err);
+    }
   };
 
   const saveLifestyle = async (data: { pets?: string; drinking?: string; smoking?: string; workout?: string; dietaryPreference?: string; socialMedia?: string; sleepingHabits?: string; languages?: string[]; }) => {
     if (!user || !profile) return;
     
-    const updateData = {
-      userID: user.userID,
-      firstName: profile.firstName || '',
-      lastName: profile.lastName || '',
-      dateOfBirth: profile.dateOfBirth || '1995-01-01',
-      bio: profile.bio || '',
-      location: profile.location || '',
-      city: profile.city,
-      region: profile.region,
-      country: profile.country,
-      interests: profile.interests || [],
-      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
-      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-      height: profile.height,
-      education: profile.education,
-      occupation: profile.occupation,
-      jobTitle: profile.jobTitle,
-      showGender: profile.showGender,
-      showAge: profile.showAge,
-      showLocation: profile.showLocation,
-      pets: data.pets,
-      drinking: data.drinking,
-      smoking: data.smoking,
-      workout: data.workout,
-      dietaryPreference: data.dietaryPreference,
-      socialMedia: data.socialMedia,
-      sleepingHabits: data.sleepingHabits,
-      languages: data.languages,
-    };
-    
-    const updatedProfile = await userService.updateProfile(user.userID, updateData);
-    setProfile(updatedProfile);
-    setSuccess('Lifestyle preferences updated successfully!');
-    setTimeout(() => setSuccess(''), 3000);
+    try {
+      const updateData = {
+        userID: user.userID,
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        dateOfBirth: profile.dateOfBirth || '1995-01-01',
+        bio: profile.bio || '',
+        location: profile.location || '',
+        city: profile.city,
+        region: profile.region,
+        country: profile.country,
+        interests: profile.interests || [],
+        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+        height: profile.height,
+        education: profile.education,
+        occupation: profile.occupation,
+        jobTitle: profile.jobTitle,
+        showGender: profile.showGender,
+        showAge: profile.showAge,
+        showLocation: profile.showLocation,
+        pets: data.pets,
+        drinking: data.drinking,
+        smoking: data.smoking,
+        workout: data.workout,
+        dietaryPreference: data.dietaryPreference,
+        socialMedia: data.socialMedia,
+        sleepingHabits: data.sleepingHabits,
+        languages: data.languages,
+      };
+      
+      const updatedProfile = await userService.updateProfile(user.userID, updateData);
+      setProfile(updatedProfile);
+      setSuccess('Lifestyle preferences updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+      setLifestyleModalOpen(false);
+    } catch (err) {
+      setError('Failed to update lifestyle');
+      console.error('Update error:', err);
+    }
   };
 
   const saveProfessional = async (data: { education?: string; occupation?: string; jobTitle?: string; }) => {
     if (!user || !profile) return;
     
-    const updateData = {
-      userID: user.userID,
-      firstName: profile.firstName || '',
-      lastName: profile.lastName || '',
-      dateOfBirth: profile.dateOfBirth || '1995-01-01',
-      bio: profile.bio || '',
-      location: profile.location || '',
-      city: profile.city,
-      region: profile.region,
-      country: profile.country,
-      interests: profile.interests || [],
-      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
-      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-      height: profile.height,
-      education: data.education,
-      occupation: data.occupation,
-      jobTitle: data.jobTitle,
-      showGender: profile.showGender,
-      showAge: profile.showAge,
-      showLocation: profile.showLocation,
-    };
-    
-    const updatedProfile = await userService.updateProfile(user.userID, updateData);
-    setProfile(updatedProfile);
-    setSuccess('Professional information updated successfully!');
-    setTimeout(() => setSuccess(''), 3000);
-  };
-
-  const saveSexualOrientation = async (data: { sexualOrientation?: string; showOrientation?: boolean; }) => {
-    if (!user || !profile) return;
-    
-    const updateData = {
-      userID: user.userID,
-      firstName: profile.firstName || '',
-      lastName: profile.lastName || '',
-      dateOfBirth: profile.dateOfBirth || '1995-01-01',
-      bio: profile.bio || '',
-      location: profile.location || '',
-      city: profile.city,
-      region: profile.region,
-      country: profile.country,
-      interests: profile.interests || [],
-      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
-      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-      height: profile.height,
-      education: profile.education,
-      occupation: profile.occupation,
-      jobTitle: profile.jobTitle,
-      showGender: profile.showGender,
-      showAge: profile.showAge,
-      showLocation: profile.showLocation,
-      sexualOrientation: data.sexualOrientation,
-      showOrientation: data.showOrientation,
-    };
-    
-    const updatedProfile = await userService.updateProfile(user.userID, updateData);
-    setProfile(updatedProfile);
-    setSuccess('Sexual orientation updated successfully!');
-    setTimeout(() => setSuccess(''), 3000);
-  };
-
-  const saveLookingFor = async (data: { lookingFor?: string; }) => {
-    if (!user || !profile) return;
-    
-    const updateData = {
-      userID: user.userID,
-      firstName: profile.firstName || '',
-      lastName: profile.lastName || '',
-      dateOfBirth: profile.dateOfBirth || '1995-01-01',
-      bio: profile.bio || '',
-      location: profile.location || '',
-      city: profile.city,
-      region: profile.region,
-      country: profile.country,
-      interests: profile.interests || [],
-      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
-      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-      height: profile.height,
-      education: profile.education,
-      occupation: profile.occupation,
-      jobTitle: profile.jobTitle,
-      showGender: profile.showGender,
-      showAge: profile.showAge,
-      showLocation: profile.showLocation,
-      lookingFor: data.lookingFor,
-    };
-    
-    const updatedProfile = await userService.updateProfile(user.userID, updateData);
-    setProfile(updatedProfile);
-    setSuccess('Looking for preference updated successfully!');
-    setTimeout(() => setSuccess(''), 3000);
-  };
-
-  const saveDistancePreference = async (data: { maxDistance?: number; }) => {
-    if (!user || !profile) return;
-    
-    const updateData = {
-      userID: user.userID,
-      firstName: profile.firstName || '',
-      lastName: profile.lastName || '',
-      dateOfBirth: profile.dateOfBirth || '1995-01-01',
-      bio: profile.bio || '',
-      location: profile.location || '',
-      city: profile.city,
-      region: profile.region,
-      country: profile.country,
-      interests: profile.interests || [],
-      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
-      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-      height: profile.height,
-      education: profile.education,
-      occupation: profile.occupation,
-      jobTitle: profile.jobTitle,
-      showGender: profile.showGender,
-      showAge: profile.showAge,
-      showLocation: profile.showLocation,
-      maxDistance: data.maxDistance,
-    };
-    
-    const updatedProfile = await userService.updateProfile(user.userID, updateData);
-    setProfile(updatedProfile);
-    setSuccess('Distance preference updated successfully!');
-    setTimeout(() => setSuccess(''), 3000);
-  };
-
-  const savePersonality = async (data: { communicationStyle?: string; loveLanguage?: string; zodiacSign?: string; }) => {
-    if (!user || !profile) return;
-    
-    const updateData = {
-      userID: user.userID,
-      firstName: profile.firstName || '',
-      lastName: profile.lastName || '',
-      dateOfBirth: profile.dateOfBirth || '1995-01-01',
-      bio: profile.bio || '',
-      location: profile.location || '',
-      city: profile.city,
-      region: profile.region,
-      country: profile.country,
-      interests: profile.interests || [],
-      gender: profile.gender || 'other' as 'male' | 'female' | 'other',
-      interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-      height: profile.height,
-      education: profile.education,
-      occupation: profile.occupation,
-      jobTitle: profile.jobTitle,
-      showGender: profile.showGender,
-      showAge: profile.showAge,
-      showLocation: profile.showLocation,
-      communicationStyle: data.communicationStyle,
-      loveLanguage: data.loveLanguage,
-      zodiacSign: data.zodiacSign,
-    };
-    
-    const updatedProfile = await userService.updateProfile(user.userID, updateData);
-    setProfile(updatedProfile);
-    setSuccess('Personality traits updated successfully!');
-    setTimeout(() => setSuccess(''), 3000);
-  };
-
-  const saveAudioIntro = async (data: { audioIntro?: File | null; removeAudio?: boolean; }) => {
-    if (!user || !profile) return;
-    
     try {
-      if (data.removeAudio) {
-        // Remove audio intro
-        // TODO: Implement audio deletion in userService
-        setSuccess('Audio introduction removed successfully!');
-      } else if (data.audioIntro) {
-        // Upload new audio intro
-        // TODO: Implement audio upload in userService
-        setSuccess('Audio introduction updated successfully!');
-      }
+      const updateData = {
+        userID: user.userID,
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        dateOfBirth: profile.dateOfBirth || '1995-01-01',
+        bio: profile.bio || '',
+        location: profile.location || '',
+        city: profile.city,
+        region: profile.region,
+        country: profile.country,
+        interests: profile.interests || [],
+        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+        height: profile.height,
+        education: data.education,
+        occupation: data.occupation,
+        jobTitle: data.jobTitle,
+        showGender: profile.showGender,
+        showAge: profile.showAge,
+        showLocation: profile.showLocation,
+      };
+      
+      const updatedProfile = await userService.updateProfile(user.userID, updateData);
+      setProfile(updatedProfile);
+      setSuccess('Professional information updated successfully!');
       setTimeout(() => setSuccess(''), 3000);
+      setProfessionalModalOpen(false);
     } catch (err) {
-      setError('Failed to update audio introduction');
-      console.error('Audio intro error:', err);
+      setError('Failed to update professional info');
+      console.error('Update error:', err);
     }
   };
 
+  const saveMedia = async (data: { photos: File[]; profilePhotoIndex?: number; audioIntro?: File }) => {
+    if (!user) return;
+    
+    try {
+      setUploading(true);
+      // Handle photo uploads if there are new photos
+      if (data.photos && data.photos.length > 0) {
+        for (const photo of data.photos) {
+          await userService.uploadPhoto(user.userID, photo);
+        }
+      }
+      
+      // Handle audio intro if provided
+      if (data.audioIntro) {
+        // TODO: Implement audio upload in userService
+        console.log('Audio intro upload not yet implemented');
+      }
+      
+      // Reload profile to get updated photos
+      await loadProfile();
+      
+      setSuccess('Media updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+      setMediaModalOpen(false);
+    } catch (err) {
+      setError('Failed to update media');
+      console.error('Update error:', err);
+    } finally {
+      setUploading(false);
+    }
+  };
 
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -502,7 +485,7 @@ function Profile() {
       )}
 
       <Grid container spacing={3}>
-        {/* Photo Gallery Section */}
+        {/* Photos Section */}
         <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -610,13 +593,11 @@ function Profile() {
           </Paper>
         </Grid>
 
-        {/* Profile Information with Modal Editing */}
-        <Grid item xs={12}>
+        {/* Personal Details */}
+        <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h6">
-                👤 Profile Information
-              </Typography>
+              <Typography variant="h6">👤 Personal Details</Typography>
               <Button
                 variant="outlined"
                 startIcon={<Edit />}
@@ -626,108 +607,48 @@ function Profile() {
                 Edit
               </Button>
             </Box>
-            
-            <Grid container spacing={3}>
-              {/* Basic Information - Read Only Display */}
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    First Name
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.firstName || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Last Name
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.lastName || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              
-              {/* Age and Date of Birth - Read only */}
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Age
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.age || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Date of Birth
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.dateOfBirth || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-
-              {/* Location and Gender */}
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Location
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.location || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Gender
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.gender || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Interested In
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.interestedIn || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-
-              {/* Bio - Could be separate modal or included in personal details */}
-              <Grid item xs={12}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Bio
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.bio || 'Tell others about yourself...'}
-                  </Typography>
-                </Box>
-              </Grid>
-            </Grid>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Name:</strong> {profile?.firstName} {profile?.lastName}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Age:</strong> {profile?.age || 'Not specified'}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Gender:</strong> {profile?.gender || 'Not specified'}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Location:</strong> {profile?.location || 'Not specified'}
+              </Typography>
+            </Box>
           </Paper>
         </Grid>
 
-        {/* Interests Section */}
+        {/* About Me */}
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 3 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">📝 About Me</Typography>
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={() => setAboutMeModalOpen(true)}
+                size="small"
+              >
+                Edit
+              </Button>
+            </Box>
+            <Typography variant="body2" color="text.secondary">
+              {profile?.bio || 'Tell others about yourself...'}
+            </Typography>
+          </Paper>
+        </Grid>
+
+        {/* Interests */}
         <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h6">
-                🎯 Interests
-              </Typography>
+              <Typography variant="h6">🎯 Interests</Typography>
               <Button
                 variant="outlined"
                 startIcon={<Edit />}
@@ -737,7 +658,6 @@ function Profile() {
                 Edit
               </Button>
             </Box>
-            
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
               {profile?.interests && profile.interests.length > 0 ? (
                 profile.interests.map((interest, index) => (
@@ -753,12 +673,10 @@ function Profile() {
         </Grid>
 
         {/* Physical Attributes */}
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h6">
-                💪 Physical Attributes
-              </Typography>
+              <Typography variant="h6">💪 Physical Attributes</Typography>
               <Button
                 variant="outlined"
                 startIcon={<Edit />}
@@ -768,59 +686,28 @@ function Profile() {
                 Edit
               </Button>
             </Box>
-            
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={3}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    📏 Height
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.height ? `${profile.height} cm` : 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    ⚖️ Weight
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.weight ? `${profile.weight} kg` : 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    🏃‍♂️ Body Type
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.bodyType || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    🌍 Ethnicity
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.ethnicity || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-            </Grid>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Height:</strong> {profile?.height ? `${profile.height} cm` : 'Not specified'}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Weight:</strong> {profile?.weight ? `${profile.weight} kg` : 'Not specified'}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Body Type:</strong> {profile?.bodyType || 'Not specified'}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Ethnicity:</strong> {profile?.ethnicity || 'Not specified'}
+              </Typography>
+            </Box>
           </Paper>
         </Grid>
 
-        {/* Professional Information */}
-        <Grid item xs={12}>
+        {/* Professional Info */}
+        <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h6">
-                💼 Professional Information
-              </Typography>
+              <Typography variant="h6">💼 Professional</Typography>
               <Button
                 variant="outlined"
                 startIcon={<Edit />}
@@ -830,49 +717,53 @@ function Profile() {
                 Edit
               </Button>
             </Box>
-            
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    🎓 Education
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.education || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    💼 Occupation
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.occupation || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    🏷️ Job Title
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.jobTitle || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-            </Grid>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Education:</strong> {profile?.education || 'Not specified'}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Occupation:</strong> {profile?.occupation || 'Not specified'}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Job Title:</strong> {profile?.jobTitle || 'Not specified'}
+              </Typography>
+            </Box>
           </Paper>
         </Grid>
 
-        {/* Lifestyle & Preferences */}
-        <Grid item xs={12}>
+        {/* Preferences */}
+        <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h6">
-                🌟 Lifestyle & Preferences
+              <Typography variant="h6">💫 Preferences</Typography>
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                onClick={() => setPreferencesModalOpen(true)}
+                size="small"
+              >
+                Edit
+              </Button>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Interested In:</strong> {profile?.interestedIn || 'Not specified'}
               </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Sexual Orientation:</strong> {profile?.sexualOrientation || 'Not specified'}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Looking For:</strong> {profile?.lookingFor || 'Not specified'}
+              </Typography>
+            </Box>
+          </Paper>
+        </Grid>
+
+        {/* Lifestyle */}
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 3 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">🌟 Lifestyle</Typography>
               <Button
                 variant="outlined"
                 startIcon={<Edit />}
@@ -882,278 +773,47 @@ function Profile() {
                 Edit
               </Button>
             </Box>
-            
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    🐾 Pets
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.pets || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    🍷 Drinking
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.drinking || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    🚬 Smoking
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.smoking || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    💪 Workout
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.workout || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    🥗 Diet
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.dietaryPreference || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    📱 Social Media
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.socialMedia || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    😴 Sleep Schedule
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.sleepingHabits || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    🗣️ Languages
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                    {profile?.languages && profile.languages.length > 0 ? (
-                      profile.languages.map((language, index) => (
-                        <Chip key={index} label={language} size="small" variant="outlined" />
-                      ))
-                    ) : (
-                      <Typography variant="body1">Not specified</Typography>
-                    )}
-                  </Box>
-                </Box>
-              </Grid>
-            </Grid>
-          </Paper>
-        </Grid>
-
-        {/* Sexual Orientation Section */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h6">
-                🏳️‍🌈 Sexual Orientation
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Pets:</strong> {profile?.pets || 'Not specified'}
               </Typography>
-              <Button
-                variant="outlined"
-                startIcon={<Edit />}
-                onClick={() => setSexualOrientationModalOpen(true)}
-                size="small"
-              >
-                Edit
-              </Button>
-            </Box>
-            
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    🌈 Orientation
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.sexualOrientation || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    👁️ Show on Profile
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.showOrientation ? 'Yes' : 'No'}
-                  </Typography>
-                </Box>
-              </Grid>
-            </Grid>
-          </Paper>
-        </Grid>
-
-        {/* Looking For Section */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h6">
-                💫 Looking For
+              <Typography variant="body2" color="text.secondary">
+                <strong>Drinking:</strong> {profile?.drinking || 'Not specified'}
               </Typography>
-              <Button
-                variant="outlined"
-                startIcon={<Edit />}
-                onClick={() => setLookingForModalOpen(true)}
-                size="small"
-              >
-                Edit
-              </Button>
-            </Box>
-            
-            <Box>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                💕 Relationship Goal
+              <Typography variant="body2" color="text.secondary">
+                <strong>Smoking:</strong> {profile?.smoking || 'Not specified'}
               </Typography>
-              <Typography variant="body1">
-                {profile?.lookingFor ? profile.lookingFor.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not specified'}
+              <Typography variant="body2" color="text.secondary">
+                <strong>Workout:</strong> {profile?.workout || 'Not specified'}
               </Typography>
             </Box>
           </Paper>
         </Grid>
 
-        {/* Distance Preference Section */}
+        {/* Media */}
         <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h6">
-                📍 Distance Preference
-              </Typography>
+              <Typography variant="h6">🎤 Media & Audio</Typography>
               <Button
                 variant="outlined"
                 startIcon={<Edit />}
-                onClick={() => setDistancePreferenceModalOpen(true)}
+                onClick={() => setMediaModalOpen(true)}
                 size="small"
               >
                 Edit
               </Button>
             </Box>
-            
-            <Box>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                🚗 Maximum Distance
-              </Typography>
-              <Typography variant="body1">
-                {profile?.maxDistance ? 
-                  (profile.maxDistance >= 100 ? 'Anywhere' : `${profile.maxDistance} km`) : 
-                  'Not specified'
-                }
-              </Typography>
-            </Box>
-          </Paper>
-        </Grid>
-
-        {/* Personality Section */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h6">
-                ✨ Personality & Traits
-              </Typography>
-              <Button
-                variant="outlined"
-                startIcon={<Edit />}
-                onClick={() => setPersonalityModalOpen(true)}
-                size="small"
-              >
-                Edit
-              </Button>
-            </Box>
-            
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    💬 Communication Style
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.communicationStyle || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    💖 Love Language
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.loveLanguage || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    ⭐ Zodiac Sign
-                  </Typography>
-                  <Typography variant="body1">
-                    {profile?.zodiacSign || 'Not specified'}
-                  </Typography>
-                </Box>
-              </Grid>
-            </Grid>
-          </Paper>
-        </Grid>
-
-        {/* Audio Introduction Section */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h6">
-                🎤 Audio Introduction
-              </Typography>
-              <Button
-                variant="outlined"
-                startIcon={<Edit />}
-                onClick={() => setAudioIntroModalOpen(true)}
-                size="small"
-              >
-                Edit
-              </Button>
-            </Box>
-            
             <Box>
               {profile?.audioIntroUrl ? (
                 <Box>
                   <Typography variant="body2" color="text.secondary" gutterBottom>
                     🔊 Your Voice Introduction
                   </Typography>
-                  <audio controls src={profile.audioIntroUrl} style={{ width: '100%', marginTop: '8px' }} />
+                  <audio controls src={profile.audioIntroUrl} style={{ width: '100%' }} />
                 </Box>
               ) : (
-                <Typography variant="body1" color="text.secondary">
+                <Typography variant="body2" color="text.secondary">
                   No audio introduction recorded yet. Add one to let potential matches hear your voice!
                 </Typography>
               )}
@@ -1162,118 +822,153 @@ function Profile() {
         </Grid>
       </Grid>
 
-      {/* Edit Modals */}
-      <PersonalDetailsEditModal
+      {/* Modal dialogs using signup step components */}
+      <Dialog
         open={personalDetailsModalOpen}
         onClose={() => setPersonalDetailsModalOpen(false)}
-        currentData={{
-          firstName: profile?.firstName || '',
-          lastName: profile?.lastName || '',
-          dateOfBirth: profile?.dateOfBirth || '',
-          gender: profile?.gender || '',
-          location: profile?.location || '',
-        }}
-        onSave={savePersonalDetails}
-      />
+        maxWidth="md"
+        fullWidth
+      >
+        <PersonalDetailsStep
+          data={{
+            firstName: profile?.firstName || '',
+            lastName: profile?.lastName || '',
+            dateOfBirth: profile?.dateOfBirth || '',
+            gender: profile?.gender || '',
+            location: profile?.location || '',
+          }}
+          onComplete={savePersonalDetails}
+          onBack={() => setPersonalDetailsModalOpen(false)}
+          loading={loading}
+        />
+      </Dialog>
 
-      <InterestsEditModal
+      <Dialog
+        open={aboutMeModalOpen}
+        onClose={() => setAboutMeModalOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <AboutMeStep
+          data={{
+            bio: profile?.bio || '',
+          }}
+          onComplete={saveAboutMe}
+          onBack={() => setAboutMeModalOpen(false)}
+          loading={loading}
+        />
+      </Dialog>
+
+      <Dialog
         open={interestsModalOpen}
         onClose={() => setInterestsModalOpen(false)}
-        currentInterests={profile?.interests || []}
-        onSave={saveInterests}
-      />
+        maxWidth="md"
+        fullWidth
+      >
+        <InterestsStep
+          data={{
+            interests: profile?.interests || [],
+          }}
+          onComplete={saveInterests}
+          onBack={() => setInterestsModalOpen(false)}
+          loading={loading}
+        />
+      </Dialog>
 
-      <PhysicalAttributesEditModal
+      <Dialog
         open={physicalAttributesModalOpen}
         onClose={() => setPhysicalAttributesModalOpen(false)}
-        currentData={{
-          height: profile?.height,
-          weight: profile?.weight,
-          bodyType: profile?.bodyType,
-          ethnicity: profile?.ethnicity,
-        }}
-        onSave={savePhysicalAttributes}
-      />
+        maxWidth="md"
+        fullWidth
+      >
+        <PhysicalAttributesStep
+          data={{
+            height: profile?.height,
+            weight: profile?.weight,
+            bodyType: profile?.bodyType,
+            ethnicity: profile?.ethnicity,
+          }}
+          onComplete={savePhysicalAttributes}
+          onBack={() => setPhysicalAttributesModalOpen(false)}
+          loading={loading}
+        />
+      </Dialog>
 
-      <ProfessionalEditModal
-        open={professionalModalOpen}
-        onClose={() => setProfessionalModalOpen(false)}
-        currentData={{
-          education: profile?.education,
-          occupation: profile?.occupation,
-          jobTitle: profile?.jobTitle,
-        }}
-        onSave={saveProfessional}
-      />
+      <Dialog
+        open={preferencesModalOpen}
+        onClose={() => setPreferencesModalOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <PreferencesStep
+          data={{
+            interestedIn: profile?.interestedIn || '',
+            relationshipGoal: profile?.lookingFor,
+            sexualOrientation: profile?.sexualOrientation,
+          }}
+          onComplete={savePreferences}
+          onBack={() => setPreferencesModalOpen(false)}
+          loading={loading}
+        />
+      </Dialog>
 
-      <LifestyleEditModal
+      <Dialog
         open={lifestyleModalOpen}
         onClose={() => setLifestyleModalOpen(false)}
-        currentData={{
-          pets: profile?.pets,
-          drinking: profile?.drinking,
-          smoking: profile?.smoking,
-          workout: profile?.workout,
-          dietaryPreference: profile?.dietaryPreference,
-          socialMedia: profile?.socialMedia,
-          sleepingHabits: profile?.sleepingHabits,
-          languages: profile?.languages,
-        }}
-        onSave={saveLifestyle}
-      />
+        maxWidth="md"
+        fullWidth
+      >
+        <LifestyleStep
+          data={{
+            pets: profile?.pets,
+            drinking: profile?.drinking,
+            smoking: profile?.smoking,
+            workout: profile?.workout,
+            dietaryPreference: profile?.dietaryPreference,
+            socialMedia: profile?.socialMedia,
+            sleepingHabits: profile?.sleepingHabits,
+            languages: profile?.languages,
+          }}
+          onComplete={saveLifestyle}
+          onBack={() => setLifestyleModalOpen(false)}
+          loading={loading}
+        />
+      </Dialog>
 
-      <SexualOrientationModal
-        open={sexualOrientationModalOpen}
-        onClose={() => setSexualOrientationModalOpen(false)}
-        currentData={{
-          sexualOrientation: profile?.sexualOrientation,
-          showOrientation: profile?.showOrientation,
-        }}
-        onSave={saveSexualOrientation}
-        loading={loading}
-      />
+      <Dialog
+        open={professionalModalOpen}
+        onClose={() => setProfessionalModalOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <ProfessionalStep
+          data={{
+            education: profile?.education,
+            occupation: profile?.occupation,
+            jobTitle: profile?.jobTitle,
+          }}
+          onComplete={saveProfessional}
+          onBack={() => setProfessionalModalOpen(false)}
+          loading={loading}
+        />
+      </Dialog>
 
-      <LookingForModal
-        open={lookingForModalOpen}
-        onClose={() => setLookingForModalOpen(false)}
-        currentData={{
-          lookingFor: profile?.lookingFor,
-        }}
-        onSave={saveLookingFor}
-        loading={loading}
-      />
-
-      <DistancePreferenceModal
-        open={distancePreferenceModalOpen}
-        onClose={() => setDistancePreferenceModalOpen(false)}
-        currentData={{
-          maxDistance: profile?.maxDistance,
-        }}
-        onSave={saveDistancePreference}
-        loading={loading}
-      />
-
-      <PersonalityModal
-        open={personalityModalOpen}
-        onClose={() => setPersonalityModalOpen(false)}
-        currentData={{
-          communicationStyle: profile?.communicationStyle,
-          loveLanguage: profile?.loveLanguage,
-          zodiacSign: profile?.zodiacSign,
-        }}
-        onSave={savePersonality}
-        loading={loading}
-      />
-
-      <AudioIntroModal
-        open={audioIntroModalOpen}
-        onClose={() => setAudioIntroModalOpen(false)}
-        currentData={{
-          audioIntroUrl: profile?.audioIntroUrl,
-        }}
-        onSave={saveAudioIntro}
-        loading={loading}
-      />
+      <Dialog
+        open={mediaModalOpen}
+        onClose={() => setMediaModalOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <MediaStep
+          data={{
+            photos: [],
+            audioIntro: undefined,
+          }}
+          onComplete={saveMedia}
+          onBack={() => setMediaModalOpen(false)}
+          loading={uploading}
+        />
+      </Dialog>
     </Container>
   );
 }
