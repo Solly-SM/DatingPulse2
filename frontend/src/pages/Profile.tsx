@@ -430,6 +430,46 @@ function Profile() {
           </Paper>
         </Grid>
 
+        {/* Account Information */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Account Information
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  fullWidth
+                  label="Username"
+                  value={user?.username || ''}
+                  disabled
+                  variant="filled"
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  value={user?.email || ''}
+                  disabled
+                  variant="filled"
+                />
+              </Grid>
+              {user?.phone && (
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    label="Phone"
+                    value={user.phone}
+                    disabled
+                    variant="filled"
+                  />
+                </Grid>
+              )}
+            </Grid>
+          </Paper>
+        </Grid>
+
         {/* Profile Information */}
         <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
@@ -474,6 +514,16 @@ function Profile() {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
+                    label="Date of Birth"
+                    name="dateOfBirth"
+                    value={profile?.dateOfBirth || ''}
+                    disabled
+                    variant="filled"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
                     label="Location"
                     name="location"
                     value={editing ? formData.location : profile?.location || ''}
@@ -482,6 +532,42 @@ function Profile() {
                     variant={editing ? "outlined" : "filled"}
                   />
                 </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Gender"
+                    name="gender"
+                    value={profile?.gender ? profile.gender.charAt(0).toUpperCase() + profile.gender.slice(1) : ''}
+                    disabled
+                    variant="filled"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Interested In"
+                    name="interestedIn"
+                    value={profile?.interestedIn ? 
+                      profile.interestedIn === 'male' ? 'Men' :
+                      profile.interestedIn === 'female' ? 'Women' :
+                      profile.interestedIn === 'both' ? 'Both' : ''
+                      : ''}
+                    disabled
+                    variant="filled"
+                  />
+                </Grid>
+                {profile?.height && (
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Height"
+                      name="height"
+                      value={`${profile.height} cm`}
+                      disabled
+                      variant="filled"
+                    />
+                  </Grid>
+                )}
                 
                 {editing && (
                   <>
