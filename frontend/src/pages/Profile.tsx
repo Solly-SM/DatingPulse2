@@ -28,11 +28,13 @@ import InterestsEditModal from '../components/profile-edit/InterestsEditModal';
 import PhysicalAttributesEditModal from '../components/profile-edit/PhysicalAttributesEditModal';
 import LifestyleEditModal from '../components/profile-edit/LifestyleEditModal';
 import ProfessionalEditModal from '../components/profile-edit/ProfessionalEditModal';
-import SexualOrientationEditModal from '../components/profile-edit/SexualOrientationEditModal';
-import LookingForEditModal from '../components/profile-edit/LookingForEditModal';
-import DistancePreferenceEditModal from '../components/profile-edit/DistancePreferenceEditModal';
-import PersonalityEditModal from '../components/profile-edit/PersonalityEditModal';
-import AudioIntroEditModal from '../components/profile-edit/AudioIntroEditModal';
+import {
+  SexualOrientationModal,
+  LookingForModal,
+  DistancePreferenceModal,
+  PersonalityModal,
+  AudioIntroModal,
+} from '../components/profile-edit/modals';
 
 function Profile() {
   const { user } = useAuth();
@@ -1220,7 +1222,7 @@ function Profile() {
         onSave={saveLifestyle}
       />
 
-      <SexualOrientationEditModal
+      <SexualOrientationModal
         open={sexualOrientationModalOpen}
         onClose={() => setSexualOrientationModalOpen(false)}
         currentData={{
@@ -1228,27 +1230,30 @@ function Profile() {
           showOrientation: profile?.showOrientation,
         }}
         onSave={saveSexualOrientation}
+        loading={loading}
       />
 
-      <LookingForEditModal
+      <LookingForModal
         open={lookingForModalOpen}
         onClose={() => setLookingForModalOpen(false)}
         currentData={{
           lookingFor: profile?.lookingFor,
         }}
         onSave={saveLookingFor}
+        loading={loading}
       />
 
-      <DistancePreferenceEditModal
+      <DistancePreferenceModal
         open={distancePreferenceModalOpen}
         onClose={() => setDistancePreferenceModalOpen(false)}
         currentData={{
           maxDistance: profile?.maxDistance,
         }}
         onSave={saveDistancePreference}
+        loading={loading}
       />
 
-      <PersonalityEditModal
+      <PersonalityModal
         open={personalityModalOpen}
         onClose={() => setPersonalityModalOpen(false)}
         currentData={{
@@ -1257,15 +1262,17 @@ function Profile() {
           zodiacSign: profile?.zodiacSign,
         }}
         onSave={savePersonality}
+        loading={loading}
       />
 
-      <AudioIntroEditModal
+      <AudioIntroModal
         open={audioIntroModalOpen}
         onClose={() => setAudioIntroModalOpen(false)}
         currentData={{
           audioIntroUrl: profile?.audioIntroUrl,
         }}
         onSave={saveAudioIntro}
+        loading={loading}
       />
     </Container>
   );
