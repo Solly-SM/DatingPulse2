@@ -33,10 +33,38 @@ export interface UserProfile {
   education?: string;
   occupation?: string;
   jobTitle?: string;
+  
+  // Physical Attributes
+  weight?: number;
+  bodyType?: string;
+  ethnicity?: string;
+  
+  // Lifestyle Data  
+  pets?: string;
+  drinking?: string;
+  smoking?: string;
+  workout?: string;
+  dietaryPreference?: string;
+  socialMedia?: string;
+  sleepingHabits?: string;
+  languages?: string[];
+  
+  // Preferences
+  relationshipGoal?: string;
+  sexualOrientation?: string;
+  lookingFor?: string;
+  maxDistance?: number;
+  
+  // Personality
+  communicationStyle?: string;
+  loveLanguage?: string;
+  zodiacSign?: string;
+  
   // Field visibility controls
   showGender?: boolean;
   showAge?: boolean;
   showLocation?: boolean;
+  showOrientation?: boolean;
 }
 
 export interface Photo {
@@ -98,8 +126,36 @@ export interface ProfileSetupRequest {
   education?: string;
   occupation?: string;
   jobTitle?: string;
+  
+  // Physical Attributes
+  weight?: number;
+  bodyType?: string;
+  ethnicity?: string;
+  
+  // Lifestyle Data  
+  pets?: string;
+  drinking?: string;
+  smoking?: string;
+  workout?: string;
+  dietaryPreference?: string;
+  socialMedia?: string;
+  sleepingHabits?: string;
+  languages?: string[];
+  
+  // Preferences
+  relationshipGoal?: string;
+  sexualOrientation?: string;
+  lookingFor?: string;
+  maxDistance?: number;
+  
+  // Personality
+  communicationStyle?: string;
+  loveLanguage?: string;
+  zodiacSign?: string;
+  
   // Field visibility controls
   showGender?: boolean;
   showAge?: boolean;
   showLocation?: boolean;
+  showOrientation?: boolean;
 }

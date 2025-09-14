@@ -17,6 +17,7 @@ import ModernProfileStepsDemo from './pages/ModernProfileStepsDemo';
 import Home from './pages/Home';
 import Explore from './pages/Explore';
 import Profile from './pages/Profile';
+import ProfileDemo from './pages/ProfileDemo';
 import Discover from './pages/Discover';
 import Matches from './pages/Matches';
 import Messages from './pages/Messages';
@@ -318,6 +319,7 @@ function App() {
               <Route path="/demo-discover" element={<DiscoverDemo />} />
               <Route path="/demo-explore" element={<Explore />} />
               <Route path="/demo-home" element={<Home />} />
+              <Route path="/demo-profile" element={<ProfileDemo />} />
               <Route path="/demo-components" element={<ComponentsDemo />} />
               <Route path="/home" element={
                 <ProtectedRoute>
