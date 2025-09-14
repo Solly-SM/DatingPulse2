@@ -21,6 +21,9 @@ export interface UserProfile {
   age?: number;
   bio?: string;
   location?: string;
+  city?: string;
+  region?: string;
+  country?: string;
   interests?: string[];
   photos?: Photo[];
   profileCompleted?: boolean;
@@ -29,6 +32,11 @@ export interface UserProfile {
   height?: number;
   education?: string;
   occupation?: string;
+  jobTitle?: string;
+  // Field visibility controls
+  showGender?: boolean;
+  showAge?: boolean;
+  showLocation?: boolean;
 }
 
 export interface Photo {
@@ -80,10 +88,18 @@ export interface ProfileSetupRequest {
   dateOfBirth: string;
   bio: string;
   location: string;
+  city?: string;
+  region?: string;
+  country?: string;
   interests: string[];
   gender: 'male' | 'female' | 'other';
   interestedIn: 'male' | 'female' | 'both';
   height?: number;
   education?: string;
   occupation?: string;
+  jobTitle?: string;
+  // Field visibility controls
+  showGender?: boolean;
+  showAge?: boolean;
+  showLocation?: boolean;
 }

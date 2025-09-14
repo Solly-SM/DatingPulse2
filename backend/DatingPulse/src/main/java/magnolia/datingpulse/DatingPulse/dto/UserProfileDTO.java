@@ -62,6 +62,11 @@ public class UserProfileDTO {
     private String relationship;
     private String privacy;
     
+    // Field visibility controls
+    private Boolean showGender;
+    private Boolean showAge;
+    private Boolean showLocation;
+    
     // Compatibility score for matching purposes (not persisted)
     private Double compatibilityScore;
 }
