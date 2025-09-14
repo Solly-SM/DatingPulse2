@@ -20,9 +20,11 @@ import Profile from './pages/Profile';
 import Discover from './pages/Discover';
 import Matches from './pages/Matches';
 import Messages from './pages/Messages';
+import Notifications from './pages/Notifications';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import DemoSidebar from './pages/DemoSidebar';
+import DemoNotifications from './pages/DemoNotifications';
 import DiscoverDemo from './pages/DiscoverDemo';
 import ComponentsDemo from './pages/ComponentsDemo';
 import './App.css';
@@ -312,6 +314,7 @@ function App() {
               <Route path="/demo" element={<ModernProfileStepsDemo />} />
               <Route path="/demo-old" element={<ProfileStepsDemo />} />
               <Route path="/demo-sidebar" element={<DemoSidebar />} />
+              <Route path="/demo-notifications" element={<DemoNotifications />} />
               <Route path="/demo-discover" element={<DiscoverDemo />} />
               <Route path="/demo-explore" element={<Explore />} />
               <Route path="/demo-home" element={<Home />} />
@@ -355,6 +358,13 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <Messages />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/notifications" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Notifications />
                   </Layout>
                 </ProtectedRoute>
               } />

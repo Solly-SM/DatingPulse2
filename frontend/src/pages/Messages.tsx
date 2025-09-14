@@ -86,7 +86,7 @@ function Messages() {
 
     // Full-width inbox for mobile
     return (
-      <Box sx={{ height: 'calc(100vh - 100px)', p: 2 }}>
+      <Box sx={{ height: '100%', p: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Messages 💬
         </Typography>
@@ -117,7 +117,7 @@ function Messages() {
   if (!selectedConversation) {
     // Full-width inbox when no conversation is selected
     return (
-      <Box sx={{ height: 'calc(100vh - 100px)', p: 2 }}>
+      <Box sx={{ height: '100%', p: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Messages 💬
         </Typography>
@@ -146,7 +146,7 @@ function Messages() {
 
   // Split layout when conversation is selected (conversation + profile)
   return (
-    <Box sx={{ height: 'calc(100vh - 100px)', display: 'flex', gap: 2, p: 2 }}>
+    <Box sx={{ height: '100%', display: 'flex', gap: 2, p: 2 }}>
       {/* Middle Section - Conversation (60%) */}
       <Box sx={{ flex: 0.6 }}>
         <ConversationView

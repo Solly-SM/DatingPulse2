@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Drawer,
   List,
@@ -21,9 +21,12 @@ import {
   Settings,
   ExitToApp,
   Home,
+  Notifications,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { notificationService } from '../services/notificationService';
+import NotificationBadge from './NotificationBadge';
 import PulseLogo from './PulseLogo';
 
 const SIDEBAR_WIDTH = 280;
@@ -43,6 +46,46 @@ const Sidebar: React.FC<SidebarProps> = ({
   const location = useLocation();
   const { user, logout } = useAuth();
   const theme = useTheme();
+  
+  const [notificationCounts, setNotificationCounts] = useState({
+    totalUnread: 0,
+    matches: 0,
+    messages: 0,
+    likes: 0,
+  });
+
+  useEffect(() => {
+    if (user?.userID) {
+      loadNotificationCounts();
+      // Refresh counts every 30 seconds
+      const interval = setInterval(loadNotificationCounts, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user?.userID]);
+
+  const loadNotificationCounts = async () => {
+    if (user?.userID) {
+      try {
+        const counts = await notificationService.getUnreadCounts(user.userID);
+        setNotificationCounts(counts);
+      } catch (error) {
+        console.error('Failed to load notification counts:', error);
+      }
+    }
+  };
+
+  const getNotificationCount = (itemText: string) => {
+    switch (itemText) {
+      case 'Matches':
+        return notificationCounts.matches;
+      case 'Messages':
+        return notificationCounts.messages;
+      case 'Notifications':
+        return notificationCounts.totalUnread;
+      default:
+        return 0;
+    }
+  };
 
   const menuItems = [
     {
@@ -64,6 +107,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       text: 'Messages',
       icon: <Chat />,
       path: '/messages',
+    },
+    {
+      text: 'Notifications',
+      icon: <Notifications />,
+      path: '/notifications',
     },
     {
       text: 'Settings',
@@ -180,6 +228,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       <List sx={{ flex: 1, pt: 2 }}>
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
+          const notificationCount = getNotificationCount(item.text);
+          
           return (
             <ListItem key={item.text} disablePadding>
               <ListItemButton
@@ -196,7 +246,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                 }}
               >
                 <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
-                  {item.icon}
+                  <NotificationBadge count={notificationCount}>
+                    {item.icon}
+                  </NotificationBadge>
                 </ListItemIcon>
                 <ListItemText 
                   primary={item.text}
