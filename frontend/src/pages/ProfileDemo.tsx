@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Typography,
@@ -19,329 +19,164 @@ import {
   Star, 
   StarBorder,
 } from '@mui/icons-material';
-import { useAuth } from '../contexts/AuthContext';
-import { userService } from '../services/userService';
 import { UserProfile, Photo } from '../types/User';
 import InlineEditField from '../components/InlineEditField';
 import LocationField from '../components/LocationField';
 
-function Profile() {
-  const { user } = useAuth();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
+// Mock profile data showcasing all the enhanced fields
+const mockProfile: UserProfile = {
+  userID: 1,
+  firstName: 'Emma',
+  lastName: 'Johnson',
+  dateOfBirth: '1995-03-15',
+  age: 28,
+  bio: 'Adventure seeker, coffee enthusiast, and dog lover. Looking for someone to explore new places and create amazing memories together! 🌟',
+  location: 'San Francisco, CA',
+  city: 'San Francisco',
+  region: 'California',
+  country: 'United States',
+  interests: ['🎨 Photography', '🏃‍♀️ Running', '☕ Coffee', '🎵 Music', '✈️ Travel', '🐕 Dogs'],
+  photos: [
+    {
+      photoID: 1,
+      userID: 1,
+      url: 'https://images.unsplash.com/photo-1494790108755-2616b612b739?w=400',
+      caption: 'Beach day!',
+      uploadedAt: '2024-01-15T10:30:00Z',
+      isPrimary: true
+    }
+  ],
+  profileCompleted: true,
+  gender: 'female',
+  interestedIn: 'male',
+  height: 165,
+  education: 'Bachelor\'s in Computer Science',
+  occupation: 'Software Engineer',
+  jobTitle: 'Senior Frontend Developer',
+  
+  // Physical Attributes
+  weight: 60,
+  bodyType: 'Athletic',
+  ethnicity: 'Caucasian',
+  
+  // Lifestyle Data  
+  pets: '🐕 Have dogs',
+  drinking: '🥂 Socially',
+  smoking: '🚫 Never',
+  workout: '🏃‍♂️ Often',
+  dietaryPreference: '🥗 Vegetarian',
+  socialMedia: '📲 Active',
+  sleepingHabits: '🌅 Early bird',
+  languages: ['English', 'Spanish', 'French'],
+  
+  // Preferences
+  relationshipGoal: 'Looking for love',
+  sexualOrientation: 'Straight',
+  lookingFor: 'Someone who shares my love for adventure and has a great sense of humor',
+  maxDistance: 50,
+  
+  // Personality
+  communicationStyle: 'Direct but thoughtful',
+  loveLanguage: 'Quality Time',
+  zodiacSign: 'Pisces',
+  
+  // Field visibility controls
+  showGender: true,
+  showAge: true,
+  showLocation: true,
+  showOrientation: false,
+};
+
+function ProfileDemo() {
+  const [profile, setProfile] = useState<UserProfile>(mockProfile);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
 
-  const loadProfile = useCallback(async () => {
-    if (!user) return;
-    
-    setLoading(true);
-    setError('');
+  const updateProfileField = async (field: string, value: any) => {
     try {
-      const profileData = await userService.getProfile(user.userID);
-      setProfile(profileData);
-    } catch (err) {
-      setError('Failed to load profile');
-      console.error('Failed to load profile:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    loadProfile();
-  }, [loadProfile]);
-
-  // Individual field update functions
-  const updateProfileField = async (fieldName: string, value: any) => {
-    if (!user || !profile) return;
-
-    try {
-      // Create a proper ProfileSetupRequest object
-      const updateData = {
-        userID: user.userID,
-        firstName: profile.firstName || '',
-        lastName: profile.lastName || '',
-        dateOfBirth: profile.dateOfBirth || '1995-01-01',
-        bio: profile.bio || '',
-        location: profile.location || '',
-        city: profile.city,
-        region: profile.region,
-        country: profile.country,
-        interests: profile.interests || [],
-        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
-        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-        height: profile.height,
-        education: profile.education,
-        occupation: profile.occupation,
-        jobTitle: profile.jobTitle,
-        showGender: profile.showGender,
-        showAge: profile.showAge,
-        showLocation: profile.showLocation,
-        [fieldName]: value,
-      };
-      
-      const updatedProfile = await userService.updateProfile(user.userID, updateData);
-      
-      setProfile(updatedProfile);
-      setSuccess(`${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} updated successfully!`);
+      setProfile(prev => ({ ...prev, [field]: value }));
+      setSuccess(`${field} updated successfully!`);
       setTimeout(() => setSuccess(''), 3000);
-    } catch (err: any) {
-      throw new Error(err.response?.data?.message || `Failed to update ${fieldName}`);
+    } catch (err) {
+      setError(`Failed to update ${field}`);
+      setTimeout(() => setError(''), 3000);
     }
   };
 
   const updateLocationField = async (location: string, coordinates?: { latitude: number; longitude: number }) => {
-    if (!user || !profile) return;
-
     try {
-      // Create a proper ProfileSetupRequest object
-      const updateData = {
-        userID: user.userID,
-        firstName: profile.firstName || '',
-        lastName: profile.lastName || '',
-        dateOfBirth: profile.dateOfBirth || '1995-01-01',
-        bio: profile.bio || '',
+      setProfile(prev => ({ 
+        ...prev, 
         location: location,
-        city: profile.city,
-        region: profile.region,
-        country: profile.country,
-        interests: profile.interests || [],
-        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
-        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
-        height: profile.height,
-        education: profile.education,
-        occupation: profile.occupation,
-        jobTitle: profile.jobTitle,
-        showGender: profile.showGender,
-        showAge: profile.showAge,
-        showLocation: profile.showLocation,
-      };
-      
-      // If coordinates are provided, you could store them separately
-      // For now, we'll just update the location string
-      
-      const updatedProfile = await userService.updateProfile(user.userID, updateData);
-      
-      setProfile(updatedProfile);
+        ...(coordinates?.latitude && { latitude: coordinates.latitude }),
+        ...(coordinates?.longitude && { longitude: coordinates.longitude })
+      }));
       setSuccess('Location updated successfully!');
       setTimeout(() => setSuccess(''), 3000);
-    } catch (err: any) {
-      throw new Error(err.response?.data?.message || 'Failed to update location');
-    }
-  };
-
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!user || !e.target.files || e.target.files.length === 0) return;
-
-    const file = e.target.files[0];
-    if (!file.type.startsWith('image/')) {
-      setError('Please select a valid image file');
-      return;
-    }
-
-    setUploading(true);
-    setError('');
-    try {
-      const { url, photoID } = await userService.uploadPhoto(user.userID, file);
-      
-      // Add the new photo to the profile
-      if (profile) {
-        const newPhoto: Photo = {
-          photoID,
-          userID: user.userID,
-          url,
-          isPrimary: !profile.photos || profile.photos.length === 0,
-          uploadedAt: new Date().toISOString(),
-        };
-        
-        setProfile(prev => ({
-          ...prev!,
-          photos: [...(prev?.photos || []), newPhoto],
-        }));
-        
-        setSuccess('Photo uploaded successfully!');
-        setTimeout(() => setSuccess(''), 3000);
-      }
     } catch (err) {
-      setError('Failed to upload photo');
-      console.error('Photo upload error:', err);
-    } finally {
-      setUploading(false);
+      setError('Failed to update location');
+      setTimeout(() => setError(''), 3000);
     }
   };
-
-  const handleDeletePhoto = async (photoID: number) => {
-    if (!user) return;
-
-    try {
-      await userService.deletePhoto(user.userID, photoID);
-      setProfile(prev => ({
-        ...prev!,
-        photos: prev?.photos?.filter(p => p.photoID !== photoID) || [],
-      }));
-      setSuccess('Photo deleted successfully!');
-      setTimeout(() => setSuccess(''), 3000);
-    } catch (err) {
-      setError('Failed to delete photo');
-      console.error('Photo deletion error:', err);
-    }
-  };
-
-  const handleSetPrimaryPhoto = async (photoID: number) => {
-    if (!user) return;
-
-    try {
-      await userService.setPrimaryPhoto(user.userID, photoID);
-      setProfile(prev => ({
-        ...prev!,
-        photos: prev?.photos?.map(p => ({
-          ...p,
-          isPrimary: p.photoID === photoID,
-        })) || [],
-      }));
-      setSuccess('Primary photo updated!');
-      setTimeout(() => setSuccess(''), 3000);
-    } catch (err) {
-      setError('Failed to update primary photo');
-      console.error('Primary photo error:', err);
-    }
-  };
-
-  if (loading) {
-    return (
-      <Container maxWidth="md">
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
-  }
 
   return (
-    <Container maxWidth="lg">
-      <Typography variant="h4" component="h1" gutterBottom>
-        My Profile
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Typography variant="h4" gutterBottom sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center' }}>
+        ✨ Enhanced Profile Demo
+      </Typography>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 4, textAlign: 'center' }}>
+        Showcasing the comprehensive profile fields with organized sections and emoji visual indicators
       </Typography>
 
       {success && (
-        <Alert severity="success" sx={{ mb: 2 }}>
+        <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess('')}>
           {success}
         </Alert>
       )}
-
+      
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>
           {error}
         </Alert>
       )}
 
       <Grid container spacing={3}>
-        {/* Photo Gallery Section */}
+        {/* Photos Section */}
         <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <PhotoCamera />
-              Photos
+            <Typography variant="h6" gutterBottom>
+              📸 Photos
             </Typography>
             
             <Grid container spacing={2}>
               {profile?.photos?.map((photo) => (
                 <Grid item xs={6} sm={4} md={3} key={photo.photoID}>
-                  <Card sx={{ position: 'relative' }}>
+                  <Card sx={{ position: 'relative', height: 200 }}>
                     <CardMedia
                       component="img"
                       height="200"
                       image={photo.url}
-                      alt="Profile photo"
+                      alt={photo.caption || 'Profile photo'}
                       sx={{ objectFit: 'cover' }}
                     />
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: 8,
-                        right: 8,
-                        display: 'flex',
-                        gap: 1,
-                      }}
-                    >
-                      <IconButton
-                        size="small"
-                        onClick={() => handleSetPrimaryPhoto(photo.photoID)}
-                        sx={{
-                          backgroundColor: 'rgba(255,255,255,0.8)',
-                          '&:hover': { backgroundColor: 'rgba(255,255,255,0.9)' },
-                        }}
-                      >
-                        {photo.isPrimary ? <Star color="primary" /> : <StarBorder />}
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => handleDeletePhoto(photo.photoID)}
-                        sx={{
-                          backgroundColor: 'rgba(255,255,255,0.8)',
-                          '&:hover': { backgroundColor: 'rgba(255,255,255,0.9)' },
-                        }}
-                      >
-                        <Delete color="error" />
-                      </IconButton>
-                    </Box>
                     {photo.isPrimary && (
-                      <Chip
-                        label="Primary"
-                        size="small"
-                        color="primary"
+                      <IconButton
                         sx={{
                           position: 'absolute',
-                          bottom: 8,
-                          left: 8,
+                          top: 8,
+                          right: 8,
+                          bgcolor: 'primary.main',
+                          color: 'white',
+                          '&:hover': { bgcolor: 'primary.dark' },
                         }}
-                      />
+                        size="small"
+                      >
+                        <Star fontSize="small" />
+                      </IconButton>
                     )}
                   </Card>
                 </Grid>
               ))}
-              
-              {/* Add Photo Button */}
-              <Grid item xs={6} sm={4} md={3}>
-                <input
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  id="photo-upload"
-                  type="file"
-                  onChange={handlePhotoUpload}
-                  disabled={uploading}
-                />
-                <label htmlFor="photo-upload">
-                  <Card
-                    sx={{
-                      height: 200,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: uploading ? 'default' : 'pointer',
-                      border: '2px dashed',
-                      borderColor: 'grey.400',
-                      '&:hover': uploading ? {} : { borderColor: 'primary.main' },
-                      opacity: uploading ? 0.7 : 1,
-                    }}
-                  >
-                    <Box textAlign="center">
-                      {uploading ? (
-                        <CircularProgress />
-                      ) : (
-                        <>
-                          <PhotoCamera sx={{ fontSize: 40, color: 'grey.400', mb: 1 }} />
-                          <Typography variant="body2" color="text.secondary">
-                            Add Photo
-                          </Typography>
-                        </>
-                      )}
-                    </Box>
-                  </Card>
-                </label>
-              </Grid>
             </Grid>
           </Paper>
         </Grid>
@@ -458,7 +293,7 @@ function Profile() {
                   💪 Physical Attributes
                 </Typography>
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <InlineEditField
                   label="📏 Height (cm)"
                   value={profile?.height?.toString() || ''}
@@ -466,7 +301,7 @@ function Profile() {
                   placeholder="Enter your height"
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <InlineEditField
                   label="⚖️ Weight (kg)"
                   value={profile?.weight?.toString() || ''}
@@ -474,7 +309,7 @@ function Profile() {
                   placeholder="Enter your weight"
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <InlineEditField
                   label="🏃‍♂️ Body Type"
                   value={profile?.bodyType || ''}
@@ -492,7 +327,7 @@ function Profile() {
                   onSave={(value) => updateProfileField('bodyType', value)}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <InlineEditField
                   label="🌍 Ethnicity"
                   value={profile?.ethnicity || ''}
@@ -872,4 +707,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default ProfileDemo;
