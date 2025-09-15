@@ -4,8 +4,6 @@ import {
   TextField,
   Button,
   Typography,
-  Card,
-  CardContent,
 } from '@mui/material';
 
 interface NameAboutStepProps {
@@ -16,9 +14,10 @@ interface NameAboutStepProps {
   onComplete: (data: { firstName: string; bio: string }) => void;
   onBack: () => void;
   loading?: boolean;
+  noContainer?: boolean;
 }
 
-function NameAboutStep({ data, onComplete, onBack, loading }: NameAboutStepProps) {
+function NameAboutStep({ data, onComplete, onBack, loading, noContainer }: NameAboutStepProps) {
   const [formData, setFormData] = useState({
     firstName: data.firstName || '',
     bio: data.bio || '',
@@ -37,172 +36,173 @@ function NameAboutStep({ data, onComplete, onBack, loading }: NameAboutStepProps
     onComplete(formData);
   };
 
-  return (
-    <Card 
-      elevation={0} 
-      sx={{ 
-        border: '1px solid', 
-        borderColor: 'divider',
-        borderRadius: 4,
-        background: 'linear-gradient(135deg, #ffffff 0%, #fafbfc 100%)',
-      }}
-    >
-      <CardContent sx={{ p: 5 }}>
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <Typography 
-            variant="h4" 
-            gutterBottom 
-            sx={{ 
-              fontWeight: 700, 
-              color: 'primary.main',
-              background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              mb: 2,
+  const content = (
+    <>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{
+            fontWeight: 700,
+            color: 'primary.main',
+            background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            mb: 2,
+          }}
+        >
+          What's your name?
+        </Typography>
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          sx={{
+            fontSize: '1.1rem',
+            fontWeight: 400,
+            lineHeight: 1.6,
+          }}
+        >
+          This will be displayed on your profile
+        </Typography>
+      </Box>
+
+      <Box component="form" onSubmit={handleSubmit}>
+        <TextField
+          fullWidth
+          label="First Name"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+          required
+          sx={{
+            mb: 4,
+            '& .MuiOutlinedInput-root': {
+              fontSize: '1.1rem',
+              py: 0.5,
+              '& fieldset': {
+                borderWidth: 2,
+              },
+            },
+            '& .MuiInputLabel-root': {
+              fontSize: '1rem',
+              fontWeight: 500,
+            },
+          }}
+          variant="outlined"
+          placeholder="Enter your first name"
+        />
+
+        <Box sx={{ mb: 2 }}>
+          <Typography
+            variant="h5"
+            gutterBottom
+            sx={{
+              mt: 2,
+              mb: 3,
+              fontWeight: 600,
+              color: 'text.primary',
             }}
           >
-            What's your name?
+            Tell us about yourself
           </Typography>
-          <Typography 
-            variant="body1" 
-            color="text.secondary" 
-            sx={{ 
-              fontSize: '1.1rem',
-              fontWeight: 400,
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              mb: 2,
+              fontSize: '0.95rem',
               lineHeight: 1.6,
             }}
           >
-            This will be displayed on your profile
+            Share what makes you unique and what you're passionate about
           </Typography>
         </Box>
 
-        <Box component="form" onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            label="First Name"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            required
-            sx={{ 
-              mb: 4,
-              '& .MuiOutlinedInput-root': {
-                fontSize: '1.1rem',
-                py: 0.5,
-                '& fieldset': {
-                  borderWidth: 2,
-                },
+        <TextField
+          fullWidth
+          label="About Me"
+          name="bio"
+          value={formData.bio}
+          onChange={handleChange}
+          multiline
+          rows={4}
+          placeholder="I love adventure and meeting new people! When I'm not exploring new places, you can find me trying out new restaurants or enjoying a good book. I'm looking for someone who shares my passion for life and is ready for genuine connections..."
+          sx={{
+            mb: 4,
+            '& .MuiOutlinedInput-root': {
+              fontSize: '1rem',
+              lineHeight: 1.6,
+              '& fieldset': {
+                borderWidth: 2,
               },
-              '& .MuiInputLabel-root': {
-                fontSize: '1rem',
-                fontWeight: 500,
-              },
-            }}
-            variant="outlined"
-            placeholder="Enter your first name"
-          />
-
-          <Box sx={{ mb: 2 }}>
-            <Typography 
-              variant="h5" 
-              gutterBottom 
-              sx={{ 
-                mt: 2, 
-                mb: 3,
-                fontWeight: 600,
-                color: 'text.primary',
-              }}
-            >
-              Tell us about yourself
-            </Typography>
-            <Typography 
-              variant="body2" 
-              color="text.secondary" 
-              sx={{ 
-                mb: 2,
-                fontSize: '0.95rem',
+              '& textarea': {
                 lineHeight: 1.6,
-              }}
-            >
-              Share what makes you unique and what you're passionate about
-            </Typography>
-          </Box>
-          
-          <TextField
-            fullWidth
-            label="About Me"
-            name="bio"
-            value={formData.bio}
-            onChange={handleChange}
-            multiline
-            rows={4}
-            placeholder="I love adventure and meeting new people! When I'm not exploring new places, you can find me trying out new restaurants or enjoying a good book. I'm looking for someone who shares my passion for life and is ready for genuine connections..."
-            sx={{ 
-              mb: 4,
-              '& .MuiOutlinedInput-root': {
-                fontSize: '1rem',
-                lineHeight: 1.6,
-                '& fieldset': {
-                  borderWidth: 2,
-                },
-                '& textarea': {
-                  lineHeight: 1.6,
-                },
               },
-              '& .MuiInputLabel-root': {
-                fontSize: '1rem',
-                fontWeight: 500,
-              },
-            }}
-            variant="outlined"
-          />
+            },
+            '& .MuiInputLabel-root': {
+              fontSize: '1rem',
+              fontWeight: 500,
+            },
+          }}
+          variant="outlined"
+        />
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-            <Button
-              variant="outlined"
-              onClick={onBack}
-              disabled={loading}
-              sx={{
-                borderRadius: 3,
-                px: 4,
-                py: 1.5,
-                fontSize: '1rem',
-                fontWeight: 600,
-              }}
-            >
-              Back
-            </Button>
-            
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={loading || !formData.firstName.trim()}
-              sx={{
-                borderRadius: 3,
-                px: 4,
-                py: 1.5,
-                fontSize: '1rem',
-                fontWeight: 600,
-                background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #c2185b 0%, #e91e63 100%)',
-                  transform: 'translateY(-1px)',
-                  boxShadow: '0px 6px 20px rgba(233, 30, 99, 0.4)',
-                },
-                '&:disabled': {
-                  background: '#e0e0e0',
-                  color: '#9e9e9e',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-            >
-              {loading ? 'Saving...' : 'Continue'}
-            </Button>
-          </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+          <Button
+            variant="outlined"
+            onClick={onBack}
+            disabled={loading}
+            sx={{
+              borderRadius: 3,
+              px: 4,
+              py: 1.5,
+              fontSize: '1rem',
+              fontWeight: 600,
+            }}
+          >
+            Back
+          </Button>
+
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading || !formData.firstName.trim()}
+            sx={{
+              borderRadius: 3,
+              px: 4,
+              py: 1.5,
+              fontSize: '1rem',
+              fontWeight: 600,
+              background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #c2185b 0%, #e91e63 100%)',
+                transform: 'translateY(-1px)',
+                boxShadow: '0px 6px 20px rgba(233, 30, 99, 0.4)',
+              },
+              '&:disabled': {
+                background: '#e0e0e0',
+                color: '#9e9e9e',
+              },
+              transition: 'all 0.2s ease-in-out',
+            }}
+          >
+            {loading ? 'Saving...' : 'Continue'}
+          </Button>
         </Box>
-      </CardContent>
-    </Card>
+      </Box>
+    </>
+  );
+
+  if (noContainer) {
+    return content;
+  }
+
+  // Removed Card, CardContent wrappers
+  return (
+    <Box>
+      {content}
+    </Box>
   );
 }
 

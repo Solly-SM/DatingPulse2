@@ -3,8 +3,6 @@ import {
   Box,
   Button,
   Typography,
-  Card,
-  CardContent,
   TextField,
 } from '@mui/material';
 
@@ -16,9 +14,10 @@ interface BirthDateStepProps {
   onBack: () => void;
   onSkip?: () => void;
   loading?: boolean;
+  noContainer?: boolean;
 }
 
-function BirthDateStep({ data, onComplete, onBack, onSkip, loading }: BirthDateStepProps) {
+function BirthDateStep({ data, onComplete, onBack, onSkip, loading, noContainer }: BirthDateStepProps) {
   const [dateOfBirth, setDateOfBirth] = useState(data.dateOfBirth || '');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -46,67 +45,76 @@ function BirthDateStep({ data, onComplete, onBack, onSkip, loading }: BirthDateS
   const age = calculateAge(dateOfBirth);
   const isValidAge = age === null || age >= 18;
 
-  return (
-    <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
-      <CardContent sx={{ p: 4 }}>
-        <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          When's your birthday?
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-          Your age will be displayed on your profile. You must be at least 18 years old.
-        </Typography>
+  const content = (
+    <>
+      <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+        When's your birthday?
+      </Typography>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+        Your age will be displayed on your profile. You must be at least 18 years old.
+      </Typography>
 
-        <Box component="form" onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            label="Date of Birth"
-            type="date"
-            value={dateOfBirth}
-            onChange={(e) => setDateOfBirth(e.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
+      <Box component="form" onSubmit={handleSubmit}>
+        <TextField
+          fullWidth
+          label="Date of Birth"
+          type="date"
+          value={dateOfBirth}
+          onChange={(e) => setDateOfBirth(e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          sx={{ mb: 3 }}
+          variant="outlined"
+        />
+
+        {age && (
+          <Typography
+            variant="body2"
+            color={isValidAge ? "text.secondary" : "error.main"}
             sx={{ mb: 3 }}
+          >
+            You are {age} years old
+            {!isValidAge && " - You must be at least 18 years old"}
+          </Typography>
+        )}
+
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+          <Button
             variant="outlined"
-          />
+            onClick={onBack}
+            disabled={loading}
+          >
+            Back
+          </Button>
 
-          {age && (
-            <Typography 
-              variant="body2" 
-              color={isValidAge ? "text.secondary" : "error.main"} 
-              sx={{ mb: 3 }}
-            >
-              You are {age} years old
-              {!isValidAge && " - You must be at least 18 years old"}
-            </Typography>
-          )}
-
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-            <Button
-              variant="outlined"
-              onClick={onBack}
-              disabled={loading}
-            >
-              Back
-            </Button>
-            
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={loading || !dateOfBirth || !isValidAge}
-              sx={{
-                background: 'linear-gradient(45deg, #e91e63, #ff4081)',
-                '&:hover': {
-                  background: 'linear-gradient(45deg, #c2185b, #e91e63)',
-                },
-              }}
-            >
-              {loading ? 'Saving...' : 'Continue'}
-            </Button>
-          </Box>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading || !dateOfBirth || !isValidAge}
+            sx={{
+              background: 'linear-gradient(45deg, #e91e63, #ff4081)',
+              '&:hover': {
+                background: 'linear-gradient(45deg, #c2185b, #e91e63)',
+              },
+            }}
+          >
+            {loading ? 'Saving...' : 'Continue'}
+          </Button>
         </Box>
-      </CardContent>
-    </Card>
+      </Box>
+    </>
+  );
+
+  if (noContainer) {
+    return content;
+  }
+
+  // Removed Card, CardContent wrappers
+  return (
+    <Box>
+      {content}
+    </Box>
   );
 }
 

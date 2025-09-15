@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Container,
-  Typography,
-  Button,
-  Box,
-  Alert,
-  Dialog,
-} from '@mui/material';
+import { Typography, Alert, Paper, Divider } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/userService';
 import { UserProfile } from '../types/User';
@@ -14,17 +7,13 @@ import {
   NameAboutStep,
   BirthDateStep,
   GenderDisplayStep,
-  SexualOrientationStep,
-  InterestedInStep,
-  LookingForStep,
-  DistancePreferenceStep,
   InterestsStep,
   PhysicalAttributesStep,
   LifestyleStep,
-  PersonalityStep,
   MediaStep,
   AudioIntroStep,
 } from '../components/registration/profile-steps';
+import { SIDEBAR_WIDTH } from '../components/Sidebar';
 
 function Profile() {
   const { user } = useAuth();
@@ -33,19 +22,9 @@ function Profile() {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
 
-  // Modal states for signup step components (8 streamlined buttons)
-  const [nameAboutModalOpen, setNameAboutModalOpen] = useState(false);
-  const [birthDateModalOpen, setBirthDateModalOpen] = useState(false);
-  const [genderDisplayModalOpen, setGenderDisplayModalOpen] = useState(false);
-  const [interestsModalOpen, setInterestsModalOpen] = useState(false);
-  const [physicalAttributesModalOpen, setPhysicalAttributesModalOpen] = useState(false);
-  const [lifestyleModalOpen, setLifestyleModalOpen] = useState(false);
-  const [mediaModalOpen, setMediaModalOpen] = useState(false);
-  const [audioIntroModalOpen, setAudioIntroModalOpen] = useState(false);
-
   const loadProfile = useCallback(async () => {
     if (!user) return;
-    
+
     setLoading(true);
     setError('');
     try {
@@ -63,10 +42,8 @@ function Profile() {
     loadProfile();
   }, [loadProfile]);
 
-  // Save functions using the step component data formats
   const saveNameAbout = async (data: { firstName: string; bio: string }) => {
     if (!user || !profile) return;
-    
     try {
       const updateData = {
         userID: user.userID,
@@ -89,12 +66,10 @@ function Profile() {
         showAge: profile.showAge,
         showLocation: profile.showLocation,
       };
-      
       const updatedProfile = await userService.updateProfile(user.userID, updateData);
       setProfile(updatedProfile);
       setSuccess('Name and bio updated successfully!');
       setTimeout(() => setSuccess(''), 3000);
-      setNameAboutModalOpen(false);
     } catch (err) {
       setError('Failed to update name and bio');
       console.error('Update error:', err);
@@ -103,7 +78,6 @@ function Profile() {
 
   const saveBirthDate = async (data: { dateOfBirth: string }) => {
     if (!user || !profile) return;
-    
     try {
       const updateData = {
         userID: user.userID,
@@ -126,12 +100,10 @@ function Profile() {
         showAge: profile.showAge,
         showLocation: profile.showLocation,
       };
-      
       const updatedProfile = await userService.updateProfile(user.userID, updateData);
       setProfile(updatedProfile);
       setSuccess('Birth date updated successfully!');
       setTimeout(() => setSuccess(''), 3000);
-      setBirthDateModalOpen(false);
     } catch (err) {
       setError('Failed to update birth date');
       console.error('Update error:', err);
@@ -140,7 +112,6 @@ function Profile() {
 
   const saveGenderDisplay = async (data: { gender: string; showGender: boolean }) => {
     if (!user || !profile) return;
-    
     try {
       const updateData = {
         userID: user.userID,
@@ -163,23 +134,18 @@ function Profile() {
         showAge: profile.showAge,
         showLocation: profile.showLocation,
       };
-      
       const updatedProfile = await userService.updateProfile(user.userID, updateData);
       setProfile(updatedProfile);
       setSuccess('Gender and display preferences updated successfully!');
       setTimeout(() => setSuccess(''), 3000);
-      setGenderDisplayModalOpen(false);
     } catch (err) {
       setError('Failed to update gender and display preferences');
       console.error('Update error:', err);
     }
   };
 
-
-
   const saveInterests = async (data: { interests: string[] }) => {
     if (!user || !profile) return;
-    
     try {
       const updateData = {
         userID: user.userID,
@@ -202,12 +168,10 @@ function Profile() {
         showAge: profile.showAge,
         showLocation: profile.showLocation,
       };
-      
       const updatedProfile = await userService.updateProfile(user.userID, updateData);
       setProfile(updatedProfile);
       setSuccess('Interests updated successfully!');
       setTimeout(() => setSuccess(''), 3000);
-      setInterestsModalOpen(false);
     } catch (err) {
       setError('Failed to update interests');
       console.error('Update error:', err);
@@ -216,7 +180,6 @@ function Profile() {
 
   const savePhysicalAttributes = async (data: { height?: number; weight?: number; bodyType?: string; ethnicity?: string; }) => {
     if (!user || !profile) return;
-    
     try {
       const updateData = {
         userID: user.userID,
@@ -242,49 +205,18 @@ function Profile() {
         bodyType: data.bodyType,
         ethnicity: data.ethnicity,
       };
-      
       const updatedProfile = await userService.updateProfile(user.userID, updateData);
       setProfile(updatedProfile);
       setSuccess('Physical attributes updated successfully!');
       setTimeout(() => setSuccess(''), 3000);
-      setPhysicalAttributesModalOpen(false);
     } catch (err) {
       setError('Failed to update physical attributes');
       console.error('Update error:', err);
     }
   };
 
-
-
-  const saveAudioIntro = async (data: { audioIntro?: File }) => {
-    if (!user) return;
-    
-    try {
-      setLoading(true);
-      
-      // Handle audio intro if provided
-      if (data.audioIntro) {
-        // TODO: Implement audio upload in userService
-        console.log('Audio intro upload not yet implemented');
-      }
-      
-      // Reload profile to get updated audio
-      await loadProfile();
-      
-      setSuccess('Audio introduction updated successfully!');
-      setTimeout(() => setSuccess(''), 3000);
-      setAudioIntroModalOpen(false);
-    } catch (err) {
-      setError('Failed to update audio introduction');
-      console.error('Update error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const saveLifestyle = async (data: { pets?: string; drinking?: string; smoking?: string; workout?: string; dietaryPreference?: string; socialMedia?: string; sleepingHabits?: string; languages?: string[]; }) => {
     if (!user || !profile) return;
-    
     try {
       const updateData = {
         userID: user.userID,
@@ -315,44 +247,32 @@ function Profile() {
         sleepingHabits: data.sleepingHabits,
         languages: data.languages,
       };
-      
       const updatedProfile = await userService.updateProfile(user.userID, updateData);
       setProfile(updatedProfile);
       setSuccess('Lifestyle preferences updated successfully!');
       setTimeout(() => setSuccess(''), 3000);
-      setLifestyleModalOpen(false);
     } catch (err) {
       setError('Failed to update lifestyle');
       console.error('Update error:', err);
     }
   };
 
-
-
   const saveMedia = async (data: { photos: File[]; profilePhotoIndex?: number; audioIntro?: File }) => {
     if (!user) return;
-    
     try {
       setLoading(true);
-      // Handle photo uploads if there are new photos
       if (data.photos && data.photos.length > 0) {
         for (const photo of data.photos) {
           await userService.uploadPhoto(user.userID, photo);
         }
       }
-      
-      // Handle audio intro if provided
       if (data.audioIntro) {
         // TODO: Implement audio upload in userService
         console.log('Audio intro upload not yet implemented');
       }
-      
-      // Reload profile to get updated photos
       await loadProfile();
-      
       setSuccess('Media updated successfully!');
       setTimeout(() => setSuccess(''), 3000);
-      setMediaModalOpen(false);
     } catch (err) {
       setError('Failed to update media');
       console.error('Update error:', err);
@@ -361,10 +281,27 @@ function Profile() {
     }
   };
 
-
+  const saveAudioIntro = async (data: { audioIntro?: File }) => {
+    if (!user) return;
+    try {
+      setLoading(true);
+      if (data.audioIntro) {
+        // TODO: Implement audio upload in userService
+        console.log('Audio intro upload not yet implemented');
+      }
+      await loadProfile();
+      setSuccess('Audio introduction updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to update audio introduction');
+      console.error('Update error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <Container maxWidth="md">
+    <>
       <Typography variant="h4" component="h1" gutterBottom align="center">
         Edit Profile
       </Typography>
@@ -374,93 +311,27 @@ function Profile() {
           {success}
         </Alert>
       )}
-
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
         </Alert>
       )}
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxWidth: 400, mx: 'auto' }}>
-        <Button
-          variant="outlined"
-          fullWidth
-          onClick={() => setNameAboutModalOpen(true)}
-          sx={{ py: 2 }}
-        >
-          Edit Name & About
-        </Button>
-        
-        <Button
-          variant="outlined"
-          fullWidth
-          onClick={() => setBirthDateModalOpen(true)}
-          sx={{ py: 2 }}
-        >
-          Edit Birth Date
-        </Button>
-        
-        <Button
-          variant="outlined"
-          fullWidth
-          onClick={() => setGenderDisplayModalOpen(true)}
-          sx={{ py: 2 }}
-        >
-          Edit Gender & Preferences
-        </Button>
-        
-        <Button
-          variant="outlined"
-          fullWidth
-          onClick={() => setInterestsModalOpen(true)}
-          sx={{ py: 2 }}
-        >
-          Edit Interests
-        </Button>
-        
-        <Button
-          variant="outlined"
-          fullWidth
-          onClick={() => setPhysicalAttributesModalOpen(true)}
-          sx={{ py: 2 }}
-        >
-          Edit Physical Attributes
-        </Button>
-        
-        <Button
-          variant="outlined"
-          fullWidth
-          onClick={() => setLifestyleModalOpen(true)}
-          sx={{ py: 2 }}
-        >
-          Edit Lifestyle & Personality
-        </Button>
-        
-        <Button
-          variant="outlined"
-          fullWidth
-          onClick={() => setMediaModalOpen(true)}
-          sx={{ py: 2 }}
-        >
-          Edit Photos & Media
-        </Button>
-        
-        <Button
-          variant="outlined"
-          fullWidth
-          onClick={() => setAudioIntroModalOpen(true)}
-          sx={{ py: 2 }}
-        >
-          Edit Audio Introduction
-        </Button>
-      </Box>
-
-      {/* Modal dialogs using new simplified signup step components - 8 streamlined buttons */}
-      <Dialog
-        open={nameAboutModalOpen}
-        onClose={() => setNameAboutModalOpen(false)}
-        maxWidth="md"
-        fullWidth
+      <Paper
+        elevation={3}
+        sx={{
+          background: (theme) => theme.palette.mode === 'dark' ? '#222831' : '#f6fafd',
+          p: { xs: 2, sm: 4 },
+          borderRadius: 3,
+          width: '100%',
+          minHeight: '80vh',
+          mx: 'auto',
+          mt: 4,
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: 'none',
+        }}
       >
         <NameAboutStep
           data={{
@@ -468,67 +339,39 @@ function Profile() {
             bio: profile?.bio || '',
           }}
           onComplete={saveNameAbout}
-          onBack={() => setNameAboutModalOpen(false)}
           loading={loading}
-        />
-      </Dialog>
+          noContainer={true}
 
-      <Dialog
-        open={birthDateModalOpen}
-        onClose={() => setBirthDateModalOpen(false)}
-        maxWidth="md"
-        fullWidth
-      >
+        />
+        <Divider sx={{ my: 2 }} />
         <BirthDateStep
           data={{
             dateOfBirth: profile?.dateOfBirth || '',
           }}
           onComplete={saveBirthDate}
-          onBack={() => setBirthDateModalOpen(false)}
           loading={loading}
+          noContainer={true}
         />
-      </Dialog>
-
-      <Dialog
-        open={genderDisplayModalOpen}
-        onClose={() => setGenderDisplayModalOpen(false)}
-        maxWidth="md"
-        fullWidth
-      >
+        <Divider sx={{ my: 2 }} />
         <GenderDisplayStep
           data={{
             gender: profile?.gender || '',
             showGender: profile?.showGender || false,
           }}
           onComplete={saveGenderDisplay}
-          onBack={() => setGenderDisplayModalOpen(false)}
-          onSkip={() => setGenderDisplayModalOpen(false)}
           loading={loading}
+          noContainer={true}
         />
-      </Dialog>
-
-      <Dialog
-        open={interestsModalOpen}
-        onClose={() => setInterestsModalOpen(false)}
-        maxWidth="md"
-        fullWidth
-      >
+        <Divider sx={{ my: 2 }} />
         <InterestsStep
           data={{
             interests: profile?.interests || [],
           }}
           onComplete={saveInterests}
-          onBack={() => setInterestsModalOpen(false)}
           loading={loading}
+          noContainer={true}
         />
-      </Dialog>
-
-      <Dialog
-        open={physicalAttributesModalOpen}
-        onClose={() => setPhysicalAttributesModalOpen(false)}
-        maxWidth="md"
-        fullWidth
-      >
+        <Divider sx={{ my: 2 }} />
         <PhysicalAttributesStep
           data={{
             height: profile?.height,
@@ -537,17 +380,10 @@ function Profile() {
             ethnicity: profile?.ethnicity,
           }}
           onComplete={savePhysicalAttributes}
-          onBack={() => setPhysicalAttributesModalOpen(false)}
           loading={loading}
+          noContainer={true}
         />
-      </Dialog>
-
-      <Dialog
-        open={lifestyleModalOpen}
-        onClose={() => setLifestyleModalOpen(false)}
-        maxWidth="md"
-        fullWidth
-      >
+        <Divider sx={{ my: 2 }} />
         <LifestyleStep
           data={{
             pets: profile?.pets,
@@ -560,45 +396,30 @@ function Profile() {
             languages: profile?.languages,
           }}
           onComplete={saveLifestyle}
-          onBack={() => setLifestyleModalOpen(false)}
           loading={loading}
+          noContainer={true}
         />
-      </Dialog>
-
-      <Dialog
-        open={mediaModalOpen}
-        onClose={() => setMediaModalOpen(false)}
-        maxWidth="md"
-        fullWidth
-      >
+        <Divider sx={{ my: 2 }} />
         <MediaStep
           data={{
             photos: [],
             audioIntro: undefined,
           }}
           onComplete={saveMedia}
-          onBack={() => setMediaModalOpen(false)}
           loading={loading}
+          noContainer={true}
         />
-      </Dialog>
-
-      <Dialog
-        open={audioIntroModalOpen}
-        onClose={() => setAudioIntroModalOpen(false)}
-        maxWidth="md"
-        fullWidth
-      >
+        <Divider sx={{ my: 2 }} />
         <AudioIntroStep
           data={{
-            audioIntro: undefined, // TODO: Load existing audio from profile
+            audioIntro: undefined,
           }}
           onComplete={saveAudioIntro}
-          onBack={() => setAudioIntroModalOpen(false)}
-          onSkip={() => setAudioIntroModalOpen(false)}
           loading={loading}
+          noContainer={true}
         />
-      </Dialog>
-    </Container>
+      </Paper>
+    </>
   );
 }
 
