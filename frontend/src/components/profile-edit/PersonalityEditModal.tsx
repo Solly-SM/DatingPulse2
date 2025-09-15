@@ -86,21 +86,42 @@ function PersonalityEditModal({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          ✨ Personality & Traits
-        </Typography>
-        <IconButton onClick={onClose} size="small">
+    <Dialog 
+      open={open} 
+      onClose={onClose} 
+      maxWidth="sm" 
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: 3,
+          minHeight: 400,
+          maxHeight: '90vh',
+          overflow: 'auto'
+        }
+      }}
+    >
+      <DialogTitle sx={{ textAlign: 'center', pb: 1, position: 'relative' }}>
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
           <Close />
         </IconButton>
-      </DialogTitle>
-
-      <DialogContent>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+          ✨ Personality & Traits
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
           Help us understand your personality and what makes you unique
         </Typography>
+      </DialogTitle>
 
+      <DialogContent sx={{ px: 4, pb: 4 }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <FormControl fullWidth>
@@ -160,10 +181,10 @@ function PersonalityEditModal({
         <Box sx={{ 
           mt: 3, 
           p: 2, 
-          backgroundColor: 'background.paper', 
+          backgroundColor: 'rgba(233, 30, 99, 0.04)', 
           borderRadius: 2, 
           border: '1px solid', 
-          borderColor: 'divider' 
+          borderColor: 'rgba(233, 30, 99, 0.12)' 
         }}>
           <Typography variant="body2" color="text.secondary">
             💡 <strong>Optional:</strong> These details help potential matches understand your personality better, 
@@ -173,7 +194,7 @@ function PersonalityEditModal({
       </DialogContent>
 
       <DialogActions sx={{ p: 3 }}>
-        <Button onClick={handleCancel} variant="outlined">
+        <Button onClick={handleCancel} color="inherit">
           Cancel
         </Button>
         <Button onClick={handleSave} variant="contained">
