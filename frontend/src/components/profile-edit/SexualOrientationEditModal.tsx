@@ -23,7 +23,7 @@ interface SexualOrientationEditModalProps {
     sexualOrientation?: string;
     showOrientation?: boolean;
   };
-  onSave: (data: { sexualOrientation?: string; showOrientation?: boolean }) => void;
+  onSave: (data: { sexualOrientation: string; showOrientation: boolean }) => Promise<void>;
 }
 
 function SexualOrientationEditModal({ 
@@ -48,9 +48,18 @@ function SexualOrientationEditModal({
     { value: 'other', label: 'Other', description: 'Another orientation not listed' },
   ];
 
-  const handleSave = () => {
-    onSave({ sexualOrientation, showOrientation });
-    onClose();
+  const [loading, setLoading] = useState(false);
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      await onSave({ sexualOrientation, showOrientation });
+      onClose();
+    } catch (error) {
+      console.error('Error saving sexual orientation:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -141,15 +150,15 @@ function SexualOrientationEditModal({
       </DialogContent>
 
       <DialogActions sx={{ p: 3 }}>
-        <Button onClick={handleCancel} variant="outlined">
+        <Button onClick={handleCancel} variant="outlined" disabled={loading}>
           Cancel
         </Button>
         <Button 
           onClick={handleSave} 
           variant="contained"
-          disabled={!sexualOrientation}
+          disabled={loading || !sexualOrientation}
         >
-          Save Changes
+          {loading ? 'Saving...' : 'Save Changes'}
         </Button>
       </DialogActions>
     </Dialog>

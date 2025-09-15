@@ -35,8 +35,11 @@ import PersonalityEditModal from '../components/profile-edit/PersonalityEditModa
 import LifestyleEditModal from '../components/profile-edit/LifestyleEditModal';
 import PhysicalAttributesEditModal from '../components/profile-edit/PhysicalAttributesEditModal';
 import AudioIntroEditModal from '../components/profile-edit/AudioIntroEditModal';
-import BasicInfoEditModal from '../components/profile-edit/BasicInfoEditModal';
 import PhotosEditModal from '../components/profile-edit/PhotosEditModal';
+import NameAboutEditModal from '../components/profile-edit/NameAboutEditModal';
+import BirthDateEditModal from '../components/profile-edit/BirthDateEditModal';
+import GenderEditModal from '../components/profile-edit/GenderEditModal';
+import SexualOrientationEditModal from '../components/profile-edit/SexualOrientationEditModal';
 
 function Profile() {
   const { user } = useAuth();
@@ -47,7 +50,10 @@ function Profile() {
 
   // Modal states
   const [openModals, setOpenModals] = useState({
-    basicInfo: false,
+    nameAbout: false,
+    birthDate: false,
+    gender: false,
+    sexualOrientation: false,
     interests: false,
     personality: false,
     lifestyle: false,
@@ -98,6 +104,144 @@ function Profile() {
   };
 
   // Update handlers for modals
+  const handleUpdateNameAbout = async (data: { firstName: string; bio: string }) => {
+    if (!user || !profile) return;
+    try {
+      const updateData = {
+        userID: user.userID,
+        firstName: data.firstName,
+        lastName: profile.lastName || '',
+        dateOfBirth: profile.dateOfBirth || '1995-01-01',
+        bio: data.bio,
+        location: profile.location || '',
+        city: profile.city,
+        region: profile.region,
+        country: profile.country,
+        interests: profile.interests || [],
+        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+        height: profile.height,
+        education: profile.education,
+        occupation: profile.occupation,
+        jobTitle: profile.jobTitle,
+        showGender: profile.showGender,
+        showAge: profile.showAge,
+        showLocation: profile.showLocation,
+      };
+      const updatedProfile = await userService.updateProfile(user.userID, updateData);
+      setProfile(updatedProfile);
+      setSuccess('Name and about information updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to update name and about information');
+      console.error('Update error:', err);
+    }
+  };
+
+  const handleUpdateBirthDate = async (data: { dateOfBirth: string }) => {
+    if (!user || !profile) return;
+    try {
+      const updateData = {
+        userID: user.userID,
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        dateOfBirth: data.dateOfBirth,
+        bio: profile.bio || '',
+        location: profile.location || '',
+        city: profile.city,
+        region: profile.region,
+        country: profile.country,
+        interests: profile.interests || [],
+        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+        height: profile.height,
+        education: profile.education,
+        occupation: profile.occupation,
+        jobTitle: profile.jobTitle,
+        showGender: profile.showGender,
+        showAge: profile.showAge,
+        showLocation: profile.showLocation,
+      };
+      const updatedProfile = await userService.updateProfile(user.userID, updateData);
+      setProfile(updatedProfile);
+      setSuccess('Birth date updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to update birth date');
+      console.error('Update error:', err);
+    }
+  };
+
+  const handleUpdateGender = async (data: { gender: string; showGender: boolean }) => {
+    if (!user || !profile) return;
+    try {
+      const updateData = {
+        userID: user.userID,
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        dateOfBirth: profile.dateOfBirth || '1995-01-01',
+        bio: profile.bio || '',
+        location: profile.location || '',
+        city: profile.city,
+        region: profile.region,
+        country: profile.country,
+        interests: profile.interests || [],
+        gender: data.gender as 'male' | 'female' | 'other',
+        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+        height: profile.height,
+        education: profile.education,
+        occupation: profile.occupation,
+        jobTitle: profile.jobTitle,
+        showGender: data.showGender,
+        showAge: profile.showAge,
+        showLocation: profile.showLocation,
+      };
+      const updatedProfile = await userService.updateProfile(user.userID, updateData);
+      setProfile(updatedProfile);
+      setSuccess('Gender updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to update gender');
+      console.error('Update error:', err);
+    }
+  };
+
+  const handleUpdateSexualOrientation = async (data: { sexualOrientation: string; showOrientation: boolean }) => {
+    if (!user || !profile) return;
+    try {
+      const updateData = {
+        userID: user.userID,
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        dateOfBirth: profile.dateOfBirth || '1995-01-01',
+        bio: profile.bio || '',
+        location: profile.location || '',
+        city: profile.city,
+        region: profile.region,
+        country: profile.country,
+        interests: profile.interests || [],
+        gender: profile.gender || 'other' as 'male' | 'female' | 'other',
+        interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
+        height: profile.height,
+        education: profile.education,
+        occupation: profile.occupation,
+        jobTitle: profile.jobTitle,
+        showGender: profile.showGender,
+        showAge: profile.showAge,
+        showLocation: profile.showLocation,
+        sexualOrientation: data.sexualOrientation,
+        showOrientation: data.showOrientation,
+      };
+      const updatedProfile = await userService.updateProfile(user.userID, updateData);
+      setProfile(updatedProfile);
+      setSuccess('Sexual orientation updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to update sexual orientation');
+      console.error('Update error:', err);
+    }
+  };
+
   const handleUpdateBasicInfo = async (data: { firstName: string; bio: string; dateOfBirth: string }) => {
     if (!user || !profile) return;
     try {
@@ -367,15 +511,23 @@ function Profile() {
                   {profile?.firstName || 'Your Name'}
                 </Typography>
                 <IconButton 
-                  onClick={() => openModal('basicInfo')}
+                  onClick={() => openModal('nameAbout')}
                   sx={{ color: 'primary.main' }}
                 >
                   <EditIcon />
                 </IconButton>
               </Box>
-              <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
-                {profile?.dateOfBirth ? `${calculateAge(profile.dateOfBirth)} years old` : 'Age not set'}
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Typography variant="h6" color="text.secondary" sx={{ mr: 2 }}>
+                  {profile?.dateOfBirth ? `${calculateAge(profile.dateOfBirth)} years old` : 'Age not set'}
+                </Typography>
+                <IconButton 
+                  onClick={() => openModal('birthDate')}
+                  sx={{ color: 'primary.main' }}
+                >
+                  <EditIcon />
+                </IconButton>
+              </Box>
               {profile?.city && (
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <LocationIcon sx={{ mr: 1, color: 'text.secondary' }} />
@@ -393,6 +545,48 @@ function Profile() {
       </Card>
 
       <Grid container spacing={3}>
+        {/* Gender Card */}
+        <Grid item xs={12} md={6}>
+          <Card sx={{ height: '100%', borderRadius: 3 }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <PersonIcon sx={{ mr: 1, color: 'primary.main' }} />
+                  <Typography variant="h6">Gender</Typography>
+                </Box>
+                <IconButton onClick={() => openModal('gender')} sx={{ color: 'primary.main' }}>
+                  <EditIcon />
+                </IconButton>
+              </Box>
+              <Typography variant="body2">
+                {profile?.gender || 'Not specified'}
+                {profile?.showGender === false && profile?.gender && ' (Private)'}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Sexual Orientation Card */}
+        <Grid item xs={12} md={6}>
+          <Card sx={{ height: '100%', borderRadius: 3 }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <FavoriteIcon sx={{ mr: 1, color: 'primary.main' }} />
+                  <Typography variant="h6">Sexual Orientation</Typography>
+                </Box>
+                <IconButton onClick={() => openModal('sexualOrientation')} sx={{ color: 'primary.main' }}>
+                  <EditIcon />
+                </IconButton>
+              </Box>
+              <Typography variant="body2">
+                {profile?.sexualOrientation || 'Not specified'}
+                {profile?.showOrientation === false && profile?.sexualOrientation && ' (Private)'}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
         {/* Interests Card */}
         <Grid item xs={12} md={6}>
           <Card sx={{ height: '100%', borderRadius: 3 }}>
@@ -564,15 +758,43 @@ function Profile() {
       </Grid>
 
       {/* Modals */}
-      <BasicInfoEditModal
-        open={openModals.basicInfo}
-        onClose={() => closeModal('basicInfo')}
+      <NameAboutEditModal
+        open={openModals.nameAbout}
+        onClose={() => closeModal('nameAbout')}
         currentData={{
           firstName: profile?.firstName || '',
-          bio: profile?.bio || '',
+          bio: profile?.bio || ''
+        }}
+        onSave={handleUpdateNameAbout}
+      />
+
+      <BirthDateEditModal
+        open={openModals.birthDate}
+        onClose={() => closeModal('birthDate')}
+        currentData={{
           dateOfBirth: profile?.dateOfBirth || ''
         }}
-        onSave={handleUpdateBasicInfo}
+        onSave={handleUpdateBirthDate}
+      />
+
+      <GenderEditModal
+        open={openModals.gender}
+        onClose={() => closeModal('gender')}
+        currentData={{
+          gender: profile?.gender || '',
+          showGender: profile?.showGender || false
+        }}
+        onSave={handleUpdateGender}
+      />
+
+      <SexualOrientationEditModal
+        open={openModals.sexualOrientation}
+        onClose={() => closeModal('sexualOrientation')}
+        currentData={{
+          sexualOrientation: profile?.sexualOrientation || '',
+          showOrientation: profile?.showOrientation || false
+        }}
+        onSave={handleUpdateSexualOrientation}
       />
 
       <InterestsEditModal
