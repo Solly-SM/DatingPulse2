@@ -10,7 +10,6 @@ import LoadingScreen from './components/LoadingScreen';
 import SimpleLoadingScreen from './components/SimpleLoadingScreen';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
-import MultiStepRegister from './components/MultiStepRegister';
 
 import Home from './pages/Home';
 import Explore from './pages/Explore';
@@ -309,7 +308,8 @@ function App() {
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<MultiStepRegister />} />
+              {/* Redirect old register route to landing page for popup signup */}
+              <Route path="/register" element={<Navigate to="/" replace />} />
               <Route path="/demo-sidebar" element={<DemoSidebar />} />
               <Route path="/demo-notifications" element={<DemoNotifications />} />
               <Route path="/demo-discover" element={<DiscoverDemo />} />

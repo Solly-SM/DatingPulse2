@@ -16,9 +16,13 @@ import {
   BirthDateStep,
   GenderDisplayStep,
   SexualOrientationStep,
+  LookingForStep,
+  InterestedInStep,
   InterestsStep,
   PhysicalAttributesStep,
+  PersonalityStep,
   LifestyleStep,
+  DistancePreferenceStep,
   MediaStep,
   ProfileData
 } from './registration/profile-steps';
@@ -35,9 +39,13 @@ const stepTitles = [
   'Your birth date',
   'Gender & display',
   'Sexual orientation',
+  'What are you looking for?',
+  'Who are you interested in?',
   'Your interests',
   'Physical details',
+  'Your personality',
   'Your lifestyle',
+  'Distance preference',
   'Add photos',
 ];
 
@@ -67,7 +75,9 @@ function RegistrationModal({ open, onClose, email }: RegistrationModalProps) {
     preferences: {
       interestedIn: [],
       showGender: false,
-      showOrientation: false
+      showOrientation: false,
+      lookingFor: '',
+      maxDistance: 50
     },
     lifestyle: {},
     personality: {},
@@ -219,7 +229,45 @@ function RegistrationModal({ open, onClose, email }: RegistrationModalProps) {
             {...commonProps}
           />
         );
-      case 4: // Interests
+      case 4: // Looking For
+        return (
+          <LookingForStep
+            data={{
+              lookingFor: profileData.preferences.lookingFor || ''
+            }}
+            onComplete={(data) => {
+              setProfileData(prev => ({
+                ...prev,
+                preferences: { 
+                  ...prev.preferences, 
+                  lookingFor: data.lookingFor
+                }
+              }));
+              handleStepComplete(data);
+            }}
+            {...commonProps}
+          />
+        );
+      case 5: // Interested In
+        return (
+          <InterestedInStep
+            data={{
+              interestedIn: profileData.preferences.interestedIn || []
+            }}
+            onComplete={(data) => {
+              setProfileData(prev => ({
+                ...prev,
+                preferences: { 
+                  ...prev.preferences, 
+                  interestedIn: data.interestedIn
+                }
+              }));
+              handleStepComplete(data);
+            }}
+            {...commonProps}
+          />
+        );
+      case 6: // Interests
         return (
           <InterestsStep
             data={profileData.interests}
@@ -227,7 +275,7 @@ function RegistrationModal({ open, onClose, email }: RegistrationModalProps) {
             {...commonProps}
           />
         );
-      case 5: // Physical Details
+      case 7: // Physical Details
         return (
           <PhysicalAttributesStep
             data={profileData.physicalAttributes}
@@ -235,7 +283,15 @@ function RegistrationModal({ open, onClose, email }: RegistrationModalProps) {
             {...commonProps}
           />
         );
-      case 6: // Lifestyle
+      case 8: // Personality
+        return (
+          <PersonalityStep
+            data={profileData.personality}
+            onComplete={(data) => handleStepComplete(data, 'personality')}
+            {...commonProps}
+          />
+        );
+      case 9: // Lifestyle
         return (
           <LifestyleStep
             data={profileData.lifestyle}
@@ -243,7 +299,26 @@ function RegistrationModal({ open, onClose, email }: RegistrationModalProps) {
             {...commonProps}
           />
         );
-      case 7: // Photos (final step)
+      case 10: // Distance Preference
+        return (
+          <DistancePreferenceStep
+            data={{
+              maxDistance: profileData.preferences.maxDistance || 50
+            }}
+            onComplete={(data) => {
+              setProfileData(prev => ({
+                ...prev,
+                preferences: { 
+                  ...prev.preferences, 
+                  maxDistance: data.maxDistance
+                }
+              }));
+              handleStepComplete(data);
+            }}
+            {...commonProps}
+          />
+        );
+      case 11: // Photos (final step)
         return (
           <MediaStep
             data={profileData.media}
