@@ -1,0 +1,33 @@
+# Development Environment Configuration Template
+# Copy this file to application-dev.properties and fill in your actual values
+
+# Development Database (typically local PostgreSQL or H2)
+spring.datasource.url=jdbc:postgresql://localhost:5432/datingpulse_dev
+spring.datasource.username=YOUR_DEV_DB_USERNAME
+spring.datasource.password=YOUR_DEV_DB_PASSWORD
+
+# Enable JPA SQL logging for development
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# Enable detailed logging for development
+logging.level.com.datingpulse=DEBUG
+logging.level.org.springframework.web=DEBUG
+logging.level.org.springframework.security=DEBUG
+
+# Development Firebase (use test project)
+app.firebase.config-path=firebase-service-account-dev.json
+
+# Development Email (use test SMTP or disable)
+app.mail.enabled=false
+# spring.mail.host=localhost
+# spring.mail.port=1025  # MailHog or similar for testing
+
+# Development JWT (use simple secret for local testing)
+app.jwt.secret=YOUR_DEV_JWT_SECRET
+app.jwt.expiration=86400000
+
+# Enable development features
+spring.profiles.active=dev
+app.development.cors.enabled=true
+app.development.swagger.enabled=true

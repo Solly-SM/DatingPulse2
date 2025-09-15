@@ -1,0 +1,48 @@
+# DatingPulse Application Configuration Template
+# Copy this file to application.properties and fill in your actual values
+
+spring.application.name=DatingPulse
+
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/datingpulse
+spring.datasource.username=YOUR_DB_USERNAME
+spring.datasource.password=YOUR_DB_PASSWORD
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA/Hibernate Configuration
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.format_sql=true
+
+# Flyway Configuration
+spring.flyway.enabled=true
+spring.flyway.locations=classpath:db/migration
+
+# Redis Configuration (if using cache)
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+spring.data.redis.password=YOUR_REDIS_PASSWORD
+
+# Firebase Configuration
+app.firebase.config-path=firebase-service-account.json
+
+# Email Configuration
+spring.mail.host=YOUR_SMTP_HOST
+spring.mail.port=587
+spring.mail.username=YOUR_EMAIL_USERNAME
+spring.mail.password=YOUR_EMAIL_PASSWORD
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+# JWT Configuration
+app.jwt.secret=YOUR_JWT_SECRET_KEY
+app.jwt.expiration=86400000
+
+# File Upload Configuration
+app.upload.path=/uploads
+app.upload.max-size=10MB
+
+# Logging
+logging.level.com.datingpulse=INFO
+logging.level.org.springframework.security=DEBUG
