@@ -1,0 +1,46 @@
+# DatingPulse2 Project .gitignore
+
+# Docker environment file
+.env
+
+# Credential and configuration files (project-wide)
+**/*.env
+**/*.env.local
+**/*.env.production
+**/*.env.development
+**/application.properties
+**/application-dev.properties
+**/application-prod.properties
+**/application-local.properties
+**/firebase-service-account.json
+**/firebase-service-account-dev.json
+**/firebase-service-account-prod.json
+
+# Keep test files
+!**/firebase-service-account-test.json
+!**/application-test.properties
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+
+# Logs
+logs/
+*.log
