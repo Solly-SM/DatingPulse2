@@ -42,9 +42,6 @@ function LookingForStep({ data, onComplete, onBack, loading }: LookingForStepPro
   return (
     <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
       <CardContent sx={{ p: 4 }}>
-        <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          What are you looking for?
-        </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
           Choose what best describes what you're hoping to find
         </Typography>
