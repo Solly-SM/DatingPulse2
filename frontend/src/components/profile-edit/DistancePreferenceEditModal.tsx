@@ -18,7 +18,7 @@ interface DistancePreferenceEditModalProps {
   currentData: {
     maxDistance?: number;
   };
-  onSave: (data: { maxDistance?: number }) => void;
+  onSave: (data: { maxDistance?: number }) => Promise<void>;
 }
 
 function DistancePreferenceEditModal({ 
@@ -28,6 +28,7 @@ function DistancePreferenceEditModal({
   onSave 
 }: DistancePreferenceEditModalProps) {
   const [maxDistance, setMaxDistance] = useState<number>(currentData.maxDistance || 50);
+  const [loading, setLoading] = useState(false);
 
   const handleDistanceChange = (event: Event, newValue: number | number[]) => {
     setMaxDistance(newValue as number);
@@ -40,9 +41,16 @@ function DistancePreferenceEditModal({
     return `${distance} km`;
   };
 
-  const handleSave = () => {
-    onSave({ maxDistance });
-    onClose();
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      await onSave({ maxDistance });
+      onClose();
+    } catch (error) {
+      console.error('Error saving distance preference:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -147,11 +155,11 @@ function DistancePreferenceEditModal({
       </DialogContent>
 
       <DialogActions sx={{ p: 3 }}>
-        <Button onClick={handleCancel} variant="outlined">
+        <Button onClick={handleCancel} variant="outlined" disabled={loading}>
           Cancel
         </Button>
-        <Button onClick={handleSave} variant="contained">
-          Save Changes
+        <Button onClick={handleSave} variant="contained" disabled={loading}>
+          {loading ? 'Saving...' : 'Save Changes'}
         </Button>
       </DialogActions>
     </Dialog>
