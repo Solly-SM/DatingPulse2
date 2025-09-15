@@ -41,7 +41,7 @@ const PhotosEditModal: React.FC<PhotosEditModalProps> = ({
     <EditModal
       open={open}
       onClose={onClose}
-      title="Edit Photos & Media"
+      title="📸 Photos & Media"
       onSave={handleSave}
       onCancel={handleCancel}
       loading={loading}

@@ -43,7 +43,7 @@ const InterestsEditModal: React.FC<InterestsEditModalProps> = ({
     <EditModal
       open={open}
       onClose={onClose}
-      title="Edit Interests"
+      title="💖 Your Interests"
       onSave={handleSave}
       onCancel={handleCancel}
       loading={loading}

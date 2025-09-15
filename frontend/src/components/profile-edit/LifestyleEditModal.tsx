@@ -61,7 +61,7 @@ const LifestyleEditModal: React.FC<LifestyleEditModalProps> = ({
     <EditModal
       open={open}
       onClose={onClose}
-      title="Edit Lifestyle & Preferences"
+      title="🏃‍♀️ Lifestyle & Preferences"
       onSave={handleSave}
       onCancel={handleCancel}
       loading={loading}

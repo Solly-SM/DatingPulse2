@@ -155,21 +155,42 @@ function AudioIntroEditModal({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          🎤 Audio Introduction
-        </Typography>
-        <IconButton onClick={onClose} size="small">
+    <Dialog 
+      open={open} 
+      onClose={onClose} 
+      maxWidth="sm" 
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: 3,
+          minHeight: 400,
+          maxHeight: '90vh',
+          overflow: 'auto'
+        }
+      }}
+    >
+      <DialogTitle sx={{ textAlign: 'center', pb: 1, position: 'relative' }}>
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
           <Close />
         </IconButton>
-      </DialogTitle>
-
-      <DialogContent>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+          🎤 Audio Introduction
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
           Record a short audio introduction (max 30 seconds) to let potential matches hear your voice
         </Typography>
+      </DialogTitle>
 
+      <DialogContent sx={{ px: 4, pb: 4 }}>
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}

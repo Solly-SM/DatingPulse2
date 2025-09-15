@@ -44,33 +44,36 @@ const EditModal: React.FC<EditModalProps> = ({
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="md"
+      maxWidth="sm"
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 2,
+          borderRadius: 3,
+          minHeight: 400,
           maxHeight: '90vh',
+          overflow: 'auto'
         },
       }}
     >
-      <DialogTitle>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">{title}</Typography>
-          <IconButton
-            onClick={onClose}
-            sx={{
-              color: 'grey.500',
-              '&:hover': {
-                backgroundColor: 'grey.100',
-              },
-            }}
-          >
-            <Close />
-          </IconButton>
-        </Box>
+      <DialogTitle sx={{ textAlign: 'center', pb: 1, position: 'relative' }}>
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close />
+        </IconButton>
+        <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+          {title}
+        </Typography>
       </DialogTitle>
       
-      <DialogContent dividers>
+      <DialogContent sx={{ px: 4, pb: 4 }}>
         {children}
       </DialogContent>
       

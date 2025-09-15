@@ -53,7 +53,7 @@ const PhysicalAttributesEditModal: React.FC<PhysicalAttributesEditModalProps> = 
     <EditModal
       open={open}
       onClose={onClose}
-      title="Edit Physical Attributes"
+      title="💪 Physical Attributes"
       onSave={handleSave}
       onCancel={handleCancel}
       loading={loading}
