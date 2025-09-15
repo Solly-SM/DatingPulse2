@@ -17,33 +17,29 @@ import {
   BirthDateStep,
   GenderDisplayStep,
   SexualOrientationStep,
-  InterestedInStep,
   LookingForStep,
-  DistancePreferenceStep,
+  InterestedInStep,
   InterestsStep,
   PhysicalAttributesStep,
-  LifestyleStep,
   PersonalityStep,
+  LifestyleStep,
   MediaStep,
-  AudioIntroStep,
   ProfileData
 } from './registration/profile-steps';
 import { useAuth } from '../contexts/AuthContext';
 
 const steps = [
-  'First Name', 
-  'Date of Birth',
-  'Gender',
+  'Name & About', 
+  'Birth Date',
+  'Gender Display',
   'Sexual Orientation',
-  'Interested In',
   'Looking For',
-  'Distance',
-  'Lifestyle',
-  'Personality',
+  'Interested In',
   'Interests',
-  'Physical Details',
-  'Photos',
-  'Audio Intro'
+  'Physical Attributes',
+  'Personality',
+  'Lifestyle',
+  'Media'
 ];
 
 
@@ -176,7 +172,7 @@ function MultiStepRegister() {
             loading={loading}
           />
         );
-      case 2: // Gender & Display
+      case 2: // Gender Display
         return (
           <GenderDisplayStep
             data={{
@@ -195,7 +191,7 @@ function MultiStepRegister() {
             loading={loading}
           />
         );
-      case 3: // Orientation
+      case 3: // Sexual Orientation
         return (
           <SexualOrientationStep
             data={{
@@ -218,27 +214,7 @@ function MultiStepRegister() {
             loading={loading}
           />
         );
-      case 4: // Interested In
-        return (
-          <InterestedInStep
-            data={{
-              interestedIn: profileData.preferences.interestedIn || []
-            }}
-            onComplete={(data) => {
-              setProfileData(prev => ({
-                ...prev,
-                preferences: { 
-                  ...prev.preferences, 
-                  interestedIn: data.interestedIn
-                }
-              }));
-              handleNextStep();
-            }}
-            onBack={handleBack}
-            loading={loading}
-          />
-        );
-      case 5: // Looking For
+      case 4: // Looking For
         return (
           <LookingForStep
             data={{
@@ -258,18 +234,18 @@ function MultiStepRegister() {
             loading={loading}
           />
         );
-      case 6: // Distance
+      case 5: // Interested In
         return (
-          <DistancePreferenceStep
+          <InterestedInStep
             data={{
-              maxDistance: profileData.preferences.maxDistance || 50
+              interestedIn: profileData.preferences.interestedIn || []
             }}
             onComplete={(data) => {
               setProfileData(prev => ({
                 ...prev,
                 preferences: { 
                   ...prev.preferences, 
-                  maxDistance: data.maxDistance
+                  interestedIn: data.interestedIn
                 }
               }));
               handleNextStep();
@@ -278,12 +254,22 @@ function MultiStepRegister() {
             loading={loading}
           />
         );
-      case 7: // Lifestyle
+      case 6: // Interests
         return (
-          <LifestyleStep
-            data={profileData.lifestyle}
-            onComplete={(data) => handleProfileStepComplete(data, 'lifestyle')}
+          <InterestsStep
+            data={profileData.interests}
+            onComplete={(data) => handleProfileStepComplete(data, 'interests')}
             onBack={handleBack}
+            loading={loading}
+          />
+        );
+      case 7: // Physical Attributes
+        return (
+          <PhysicalAttributesStep
+            data={profileData.physicalAttributes}
+            onComplete={(data) => handleProfileStepComplete(data, 'physicalAttributes')}
+            onBack={handleBack}
+            onSkip={handleSkipStep}
             loading={loading}
           />
         );
@@ -296,47 +282,27 @@ function MultiStepRegister() {
             loading={loading}
           />
         );
-      case 9: // Interests
+      case 9: // Lifestyle
         return (
-          <InterestsStep
-            data={profileData.interests}
-            onComplete={(data) => handleProfileStepComplete(data, 'interests')}
+          <LifestyleStep
+            data={profileData.lifestyle}
+            onComplete={(data) => handleProfileStepComplete(data, 'lifestyle')}
             onBack={handleBack}
             loading={loading}
           />
         );
-      case 10: // Physical Details
-        return (
-          <PhysicalAttributesStep
-            data={profileData.physicalAttributes}
-            onComplete={(data) => handleProfileStepComplete(data, 'physicalAttributes')}
-            onBack={handleBack}
-            onSkip={handleSkipStep}
-            loading={loading}
-          />
-        );
-      case 11: // Photos
+      case 10: // Media - final step
         return (
           <MediaStep
-            data={profileData.media}
-            onComplete={(data) => handleProfileStepComplete(data, 'media')}
-            onBack={handleBack}
-            loading={loading}
-          />
-        );
-      case 12: // Audio Intro - final step
-        return (
-          <AudioIntroStep
             data={profileData.media}
             onComplete={(data) => {
               setProfileData(prev => ({
                 ...prev,
-                media: { ...prev.media, audioIntro: data.audioIntro }
+                media: data
               }));
               handleFinalSubmit();
             }}
             onBack={handleBack}
-            onSkip={handleFinalSubmit}
             loading={loading}
           />
         );
@@ -376,7 +342,7 @@ function MultiStepRegister() {
               <Step key={label}>
                 <StepLabel>
                   <Typography variant="caption">
-                    {index < 3 ? label : ''}
+                    {label}
                   </Typography>
                 </StepLabel>
               </Step>
