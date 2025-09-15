@@ -46,7 +46,7 @@ const stepTitles = [
   'Your personality',
   'Your lifestyle',
   'Distance preference',
-  'Add photos',
+  'Photos & Audio Intro',
 ];
 
 function RegistrationModal({ open, onClose, email }: RegistrationModalProps) {

@@ -53,9 +53,6 @@ function InterestedInStep({ data, onComplete, onBack, loading }: InterestedInSte
   return (
     <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
       <CardContent sx={{ p: 4 }}>
-        <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          Who are you interested in seeing?
-        </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
           Select all that apply to help us find the right matches for you
         </Typography>
