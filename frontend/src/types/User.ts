@@ -68,6 +68,20 @@ export interface UserProfile {
   showAge?: boolean;
   showLocation?: boolean;
   showOrientation?: boolean;
+  
+  // Additional Optional Profile Fields
+  religion?: string;
+  politicalViews?: string;
+  familyPlans?: string;
+  fitnessLevel?: string;
+  travelFrequency?: string;
+  industry?: string;
+  musicPreferences?: string[];
+  foodPreferences?: string[];
+  entertainmentPreferences?: string[];
+  currentlyReading?: string;
+  lifeGoals?: string;
+  petPreferences?: string;
 }
 
 export interface Photo {
@@ -161,4 +175,18 @@ export interface ProfileSetupRequest {
   showAge?: boolean;
   showLocation?: boolean;
   showOrientation?: boolean;
+  
+  // Additional Optional Profile Fields
+  religion?: string;
+  politicalViews?: string;
+  familyPlans?: string;
+  fitnessLevel?: string;
+  travelFrequency?: string;
+  industry?: string;
+  musicPreferences?: string[];
+  foodPreferences?: string[];
+  entertainmentPreferences?: string[];
+  currentlyReading?: string;
+  lifeGoals?: string;
+  petPreferences?: string;
 }

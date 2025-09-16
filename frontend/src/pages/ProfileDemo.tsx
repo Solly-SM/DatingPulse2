@@ -85,6 +85,20 @@ const mockProfile: UserProfile = {
   showAge: true,
   showLocation: true,
   showOrientation: false,
+  
+  // Additional Optional Profile Fields
+  religion: 'Spiritual but not religious',
+  politicalViews: 'Progressive',
+  familyPlans: 'Want kids someday',
+  fitnessLevel: 'Very active',
+  travelFrequency: 'Love to travel',
+  industry: 'Technology',
+  musicPreferences: ['🎵 Indie Pop', '🎸 Rock', '🎤 Jazz'],
+  foodPreferences: ['🥗 Healthy eating', '🍜 Asian cuisine', '☕ Coffee lover'],
+  entertainmentPreferences: ['📚 Reading', '🎬 Documentaries', '🎮 Gaming'],
+  currentlyReading: 'The Seven Husbands of Evelyn Hugo',
+  lifeGoals: 'Build meaningful relationships, travel the world, and make a positive impact through technology',
+  petPreferences: 'Love dogs, have cats too',
 };
 
 function ProfileDemo() {
@@ -611,6 +625,178 @@ function ProfileDemo() {
                     { value: 'Pisces', label: '♓ Pisces' },
                   ]}
                   onSave={(value) => updateProfileField('zodiacSign', value)}
+                />
+              </Grid>
+
+              {/* Additional Profile Information */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                  ✨ Additional Information
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InlineEditField
+                  label="🙏 Religion/Spirituality"
+                  value={profile?.religion || ''}
+                  type="select"
+                  options={[
+                    { value: 'Christian', label: '✝️ Christian' },
+                    { value: 'Muslim', label: '☪️ Muslim' },
+                    { value: 'Jewish', label: '✡️ Jewish' },
+                    { value: 'Hindu', label: '🕉️ Hindu' },
+                    { value: 'Buddhist', label: '☸️ Buddhist' },
+                    { value: 'Spiritual but not religious', label: '✨ Spiritual but not religious' },
+                    { value: 'Agnostic', label: '🤔 Agnostic' },
+                    { value: 'Atheist', label: '🚫 Atheist' },
+                    { value: 'Other', label: '🌍 Other' },
+                    { value: 'Prefer not to say', label: '🤐 Prefer not to say' },
+                  ]}
+                  onSave={(value) => updateProfileField('religion', value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InlineEditField
+                  label="🗳️ Political Views"
+                  value={profile?.politicalViews || ''}
+                  type="select"
+                  options={[
+                    { value: 'Liberal', label: '🌊 Liberal' },
+                    { value: 'Progressive', label: '🏃‍♀️ Progressive' },
+                    { value: 'Moderate', label: '⚖️ Moderate' },
+                    { value: 'Conservative', label: '🏛️ Conservative' },
+                    { value: 'Libertarian', label: '🗽 Libertarian' },
+                    { value: 'Apolitical', label: '🤷‍♀️ Apolitical' },
+                    { value: 'Prefer not to say', label: '🤐 Prefer not to say' },
+                  ]}
+                  onSave={(value) => updateProfileField('politicalViews', value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InlineEditField
+                  label="👶 Family Plans"
+                  value={profile?.familyPlans || ''}
+                  type="select"
+                  options={[
+                    { value: 'Want kids someday', label: '👶 Want kids someday' },
+                    { value: 'Want kids soon', label: '🍼 Want kids soon' },
+                    { value: 'Have kids & want more', label: '👨‍👩‍👧‍👦 Have kids & want more' },
+                    { value: 'Have kids & done', label: '👪 Have kids & done' },
+                    { value: "Don't want kids", label: "🚫 Don't want kids" },
+                    { value: 'Open to kids', label: '🤔 Open to kids' },
+                    { value: 'Prefer not to say', label: '🤐 Prefer not to say' },
+                  ]}
+                  onSave={(value) => updateProfileField('familyPlans', value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InlineEditField
+                  label="🏃‍♀️ Fitness Level"
+                  value={profile?.fitnessLevel || ''}
+                  type="select"
+                  options={[
+                    { value: 'Very active', label: '🏃‍♀️ Very active' },
+                    { value: 'Active', label: '🚶‍♀️ Active' },
+                    { value: 'Moderately active', label: '🧘‍♀️ Moderately active' },
+                    { value: 'Lightly active', label: '🚶‍♂️ Lightly active' },
+                    { value: 'Not very active', label: '🛋️ Not very active' },
+                  ]}
+                  onSave={(value) => updateProfileField('fitnessLevel', value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InlineEditField
+                  label="✈️ Travel Frequency"
+                  value={profile?.travelFrequency || ''}
+                  type="select"
+                  options={[
+                    { value: 'Love to travel', label: '✈️ Love to travel' },
+                    { value: 'Travel often', label: '🧳 Travel often' },
+                    { value: 'Occasional traveler', label: '🗺️ Occasional traveler' },
+                    { value: 'Rarely travel', label: '🏠 Rarely travel' },
+                    { value: 'Prefer staycations', label: '🛋️ Prefer staycations' },
+                  ]}
+                  onSave={(value) => updateProfileField('travelFrequency', value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InlineEditField
+                  label="💼 Industry"
+                  value={profile?.industry || ''}
+                  type="select"
+                  options={[
+                    { value: 'Technology', label: '💻 Technology' },
+                    { value: 'Healthcare', label: '🏥 Healthcare' },
+                    { value: 'Education', label: '📚 Education' },
+                    { value: 'Finance', label: '💰 Finance' },
+                    { value: 'Creative Arts', label: '🎨 Creative Arts' },
+                    { value: 'Law', label: '⚖️ Law' },
+                    { value: 'Engineering', label: '🔧 Engineering' },
+                    { value: 'Sales & Marketing', label: '📈 Sales & Marketing' },
+                    { value: 'Non-profit', label: '🤝 Non-profit' },
+                    { value: 'Government', label: '🏛️ Government' },
+                    { value: 'Entrepreneurship', label: '🚀 Entrepreneurship' },
+                    { value: 'Other', label: '💼 Other' },
+                  ]}
+                  onSave={(value) => updateProfileField('industry', value)}
+                />
+              </Grid>
+              
+              {/* Preferences & Interests */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                  🎯 Preferences & Interests
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InlineEditField
+                  label="🎵 Music Preferences"
+                  value={profile?.musicPreferences || []}
+                  type="chips"
+                  onSave={(value) => updateProfileField('musicPreferences', value)}
+                  placeholder="Add music genres/artists..."
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InlineEditField
+                  label="🍽️ Food Preferences"
+                  value={profile?.foodPreferences || []}
+                  type="chips"
+                  onSave={(value) => updateProfileField('foodPreferences', value)}
+                  placeholder="Add food preferences..."
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InlineEditField
+                  label="🎬 Entertainment"
+                  value={profile?.entertainmentPreferences || []}
+                  type="chips"
+                  onSave={(value) => updateProfileField('entertainmentPreferences', value)}
+                  placeholder="Add entertainment preferences..."
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <InlineEditField
+                  label="📖 Currently Reading"
+                  value={profile?.currentlyReading || ''}
+                  onSave={(value) => updateProfileField('currentlyReading', value)}
+                  placeholder="What book are you reading now?"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <InlineEditField
+                  label="🐾 Pet Preferences"
+                  value={profile?.petPreferences || ''}
+                  onSave={(value) => updateProfileField('petPreferences', value)}
+                  placeholder="Your thoughts on pets..."
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <InlineEditField
+                  label="🎯 Life Goals"
+                  value={profile?.lifeGoals || ''}
+                  type="textarea"
+                  onSave={(value) => updateProfileField('lifeGoals', value)}
+                  placeholder="What are your aspirations and goals in life?"
                 />
               </Grid>
 
