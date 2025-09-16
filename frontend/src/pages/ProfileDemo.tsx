@@ -121,10 +121,10 @@ function ProfileDemo() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center' }}>
+      <Typography variant="h4" gutterBottom sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center' }}>
         ✨ Enhanced Profile Demo
       </Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4, textAlign: 'center' }}>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 4, textAlign: 'center', maxWidth: '600px', mx: 'auto' }}>
         Showcasing the comprehensive profile fields with organized sections and emoji visual indicators
       </Typography>
 
@@ -143,15 +143,20 @@ function ProfileDemo() {
       <Grid container spacing={3}>
         {/* Photos Section */}
         <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
+          <Paper sx={{ 
+            p: 3, 
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+            border: '1px solid rgba(0, 0, 0, 0.04)'
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: 'text.primary', mb: 3 }}>
               📸 Photos
             </Typography>
             
             <Grid container spacing={2}>
               {profile?.photos?.map((photo) => (
                 <Grid item xs={6} sm={4} md={3} key={photo.photoID}>
-                  <Card sx={{ position: 'relative', height: 200 }}>
+                  <Card sx={{ position: 'relative', height: 200, borderRadius: 2 }}>
                     <CardMedia
                       component="img"
                       height="200"
@@ -183,8 +188,14 @@ function ProfileDemo() {
 
         {/* Profile Information with Inline Editing */}
         <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
+          <Paper sx={{ 
+            p: 3, 
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+            border: '1px solid rgba(0, 0, 0, 0.04)',
+            backgroundColor: '#fafafa'
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: 'text.primary', mb: 3 }}>
               👤 Profile Information
             </Typography>
             
@@ -209,21 +220,31 @@ function ProfileDemo() {
               
               {/* Age and Date of Birth - Read only */}
               <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                <Box sx={{ 
+                  minHeight: '72px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start'
+                }}>
+                  <Typography variant="body2" color="text.secondary" gutterBottom sx={{ fontWeight: 500 }}>
                     Age
                   </Typography>
-                  <Typography variant="body1">
+                  <Typography variant="body1" sx={{ mt: 0.5 }}>
                     {profile?.age || 'Not specified'}
                   </Typography>
                 </Box>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                <Box sx={{ 
+                  minHeight: '72px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start'
+                }}>
+                  <Typography variant="body2" color="text.secondary" gutterBottom sx={{ fontWeight: 500 }}>
                     Date of Birth
                   </Typography>
-                  <Typography variant="body1">
+                  <Typography variant="body1" sx={{ mt: 0.5 }}>
                     {profile?.dateOfBirth || 'Not specified'}
                   </Typography>
                 </Box>
@@ -289,7 +310,17 @@ function ProfileDemo() {
 
               {/* Physical Attributes */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" gutterBottom sx={{ 
+                  mt: 4, 
+                  mb: 2, 
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  fontSize: '1.1rem',
+                  borderBottom: '2px solid',
+                  borderColor: 'primary.main',
+                  pb: 1,
+                  display: 'inline-block'
+                }}>
                   💪 Physical Attributes
                 </Typography>
               </Grid>
@@ -350,7 +381,17 @@ function ProfileDemo() {
 
               {/* Professional Information */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" gutterBottom sx={{ 
+                  mt: 4, 
+                  mb: 2, 
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  fontSize: '1.1rem',
+                  borderBottom: '2px solid',
+                  borderColor: 'primary.main',
+                  pb: 1,
+                  display: 'inline-block'
+                }}>
                   💼 Professional Information
                 </Typography>
               </Grid>
@@ -381,7 +422,17 @@ function ProfileDemo() {
 
               {/* Lifestyle & Preferences */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" gutterBottom sx={{ 
+                  mt: 4, 
+                  mb: 2, 
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  fontSize: '1.1rem',
+                  borderBottom: '2px solid',
+                  borderColor: 'primary.main',
+                  pb: 1,
+                  display: 'inline-block'
+                }}>
                   🌟 Lifestyle & Preferences
                 </Typography>
               </Grid>
@@ -507,7 +558,17 @@ function ProfileDemo() {
 
               {/* Dating Preferences */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" gutterBottom sx={{ 
+                  mt: 4, 
+                  mb: 2, 
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  fontSize: '1.1rem',
+                  borderBottom: '2px solid',
+                  borderColor: 'primary.main',
+                  pb: 1,
+                  display: 'inline-block'
+                }}>
                   💕 Dating Preferences
                 </Typography>
               </Grid>
@@ -564,7 +625,17 @@ function ProfileDemo() {
 
               {/* Personality */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" gutterBottom sx={{ 
+                  mt: 4, 
+                  mb: 2, 
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  fontSize: '1.1rem',
+                  borderBottom: '2px solid',
+                  borderColor: 'primary.main',
+                  pb: 1,
+                  display: 'inline-block'
+                }}>
                   🧠 Personality
                 </Typography>
               </Grid>
@@ -616,7 +687,17 @@ function ProfileDemo() {
 
               {/* Location Details */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" gutterBottom sx={{ 
+                  mt: 4, 
+                  mb: 2, 
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  fontSize: '1.1rem',
+                  borderBottom: '2px solid',
+                  borderColor: 'primary.main',
+                  pb: 1,
+                  display: 'inline-block'
+                }}>
                   🗺️ Location Details
                 </Typography>
               </Grid>
@@ -647,7 +728,17 @@ function ProfileDemo() {
 
               {/* Privacy Settings */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" gutterBottom sx={{ 
+                  mt: 4, 
+                  mb: 2, 
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  fontSize: '1.1rem',
+                  borderBottom: '2px solid',
+                  borderColor: 'primary.main',
+                  pb: 1,
+                  display: 'inline-block'
+                }}>
                   🔒 Privacy Settings
                 </Typography>
               </Grid>
