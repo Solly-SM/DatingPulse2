@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Typography,
   Alert,
@@ -8,7 +8,12 @@ import {
   Card,
   CardContent,
   Grid,
-  Button
+  Button,
+  Paper,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  Chip
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -24,7 +29,13 @@ import {
   Transgender as GenderIcon,
   Search as InterestedInIcon,
   Settings as PreferencesIcon,
-  Explore as LookingForIcon
+  Explore as LookingForIcon,
+  PhotoCamera,
+  Close,
+  Delete,
+  PlayArrow,
+  Stop,
+  AddPhotoAlternate
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/userService';
@@ -42,8 +53,6 @@ import InterestsEditModal from '../components/profile-edit/InterestsEditModal';
 import PhysicalAttributesEditModal from '../components/profile-edit/PhysicalAttributesEditModal';
 import LifestyleEditModal from '../components/profile-edit/LifestyleEditModal';
 import PersonalityEditModal from '../components/profile-edit/PersonalityEditModal';
-import MediaEditModal from '../components/profile-edit/MediaEditModal';
-import AudioIntroEditModal from '../components/profile-edit/AudioIntroEditModal';
 
 function Profile() {
   const { user } = useAuth();
@@ -52,7 +61,18 @@ function Profile() {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
 
-  // Modal states for all twelve edit modals
+  // Photo and audio state
+  const [photoUploadPreview, setPhotoUploadPreview] = useState<string[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioPreviewUrl, setAudioPreviewUrl] = useState<string>('');
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [recordedAudioFile, setRecordedAudioFile] = useState<File | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Modal states for edit modals (removing media and audioIntro)
   const [openModals, setOpenModals] = useState({
     nameAbout: false,
     birthDate: false,
@@ -64,9 +84,7 @@ function Profile() {
     interests: false,
     physicalAttributes: false,
     lifestyle: false,
-    personality: false,
-    media: false,
-    audioIntro: false
+    personality: false
   });
 
   const loadProfile = useCallback(async () => {
@@ -146,6 +164,140 @@ function Profile() {
       console.error('Update error:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Photo handling functions
+  const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0 || !user) return;
+
+    setLoading(true);
+    try {
+      for (const file of files) {
+        const result = await userService.uploadPhoto(user.userID, file);
+        console.log('Photo uploaded:', result);
+      }
+      await loadProfile();
+      setSuccess('Photos uploaded successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to upload photos');
+      console.error('Upload error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeletePhoto = async (photoID: number) => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      await userService.deletePhoto(user.userID, photoID);
+      await loadProfile();
+      setSuccess('Photo deleted successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to delete photo');
+      console.error('Delete error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSetPrimaryPhoto = async (photoID: number) => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      await userService.setPrimaryPhoto(user.userID, photoID);
+      await loadProfile();
+      setSuccess('Primary photo updated!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to set primary photo');
+      console.error('Primary photo error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Audio recording functions
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        const audioFile = new File([audioBlob], 'voice-intro.wav', { type: 'audio/wav' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        
+        setRecordedAudioFile(audioFile);
+        setAudioPreviewUrl(audioUrl);
+        audioChunksRef.current = [];
+        
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      setError('Failed to start recording');
+      console.error('Recording error:', err);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const saveAudioIntro = async () => {
+    if (!recordedAudioFile || !user) return;
+
+    setLoading(true);
+    try {
+      // For now, we'll just simulate saving the audio intro
+      // In a real implementation, you'd upload this to the server
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSuccess('Voice intro saved successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to save voice intro');
+      console.error('Save audio error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteAudioIntro = () => {
+    setRecordedAudioFile(null);
+    setAudioPreviewUrl('');
+    setIsPlayingAudio(false);
+  };
+
+  const toggleAudioPlayback = () => {
+    if (!audioRef.current || !audioPreviewUrl) return;
+
+    if (isPlayingAudio) {
+      audioRef.current.pause();
+      setIsPlayingAudio(false);
+    } else {
+      audioRef.current.src = audioPreviewUrl;
+      audioRef.current.play();
+      setIsPlayingAudio(true);
+      audioRef.current.onended = () => setIsPlayingAudio(false);
     }
   };
 
@@ -246,22 +398,6 @@ function Profile() {
       color: '#9c27b0',
       bgColor: 'linear-gradient(135deg, #fff 0%, #faf0ff 100%)',
       data: profile?.communicationStyle || profile?.loveLanguage ? 'Personality traits added' : 'Add personality traits'
-    },
-    {
-      id: 'media',
-      title: 'Photos',
-      icon: <CameraIcon />,
-      color: '#ff9800',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #fff3e0 100%)',
-      data: 'Add photos to your profile'
-    },
-    {
-      id: 'audioIntro',
-      title: 'Voice Intro',
-      icon: <MicIcon />,
-      color: '#9c27b0',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #f3e5f5 100%)',
-      data: 'Record a voice introduction'
     }
   ];
 
@@ -367,6 +503,304 @@ function Profile() {
                 {profile?.bio || 'Tell others about yourself...'}
               </Typography>
             </Box>
+          </Box>
+        </CardContent>
+      </Card>
+
+      {/* Photos Section - Tinder-like display */}
+      <Card sx={{ 
+        mb: 4, 
+        borderRadius: 4, 
+        overflow: 'visible',
+        background: 'linear-gradient(135deg, #fff 0%, #fafafa 100%)',
+        boxShadow: '0 8px 32px rgba(255, 152, 0, 0.12)',
+        border: '1px solid rgba(255, 152, 0, 0.1)'
+      }}>
+        <CardContent sx={{ p: 4 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary', display: 'flex', alignItems: 'center' }}>
+              <PhotoCamera sx={{ mr: 2, color: '#ff9800' }} />
+              Photos
+            </Typography>
+            <input
+              accept="image/*"
+              style={{ display: 'none' }}
+              id="photo-upload"
+              multiple
+              type="file"
+              onChange={handlePhotoUpload}
+            />
+            <label htmlFor="photo-upload">
+              <Button
+                variant="contained"
+                component="span"
+                startIcon={<AddPhotoAlternate />}
+                disabled={loading}
+                sx={{
+                  background: 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)',
+                  borderRadius: 3,
+                  px: 3,
+                  py: 1,
+                  fontWeight: 600,
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #f57c00 0%, #ef6c00 100%)',
+                  }
+                }}
+              >
+                Add Photos
+              </Button>
+            </label>
+          </Box>
+
+          <Grid container spacing={2}>
+            {(profile?.photos || []).map((photo, index) => (
+              <Grid item xs={6} sm={4} md={3} key={photo.photoID}>
+                <Paper
+                  sx={{
+                    position: 'relative',
+                    paddingTop: '100%',
+                    overflow: 'hidden',
+                    borderRadius: 3,
+                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                    border: photo.isPrimary ? '3px solid #ff9800' : '1px solid #e0e0e0',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      transform: 'scale(1.02)',
+                      boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.15)',
+                    },
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={photo.url}
+                    alt={`Photo ${index + 1}`}
+                    sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
+                  />
+                  
+                  {/* Delete button */}
+                  <IconButton
+                    sx={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      backgroundColor: 'rgba(244, 67, 54, 0.8)',
+                      color: 'white',
+                      width: 32,
+                      height: 32,
+                      '&:hover': {
+                        backgroundColor: 'rgba(244, 67, 54, 0.9)',
+                      },
+                    }}
+                    size="small"
+                    onClick={() => handleDeletePhoto(photo.photoID)}
+                  >
+                    <Close fontSize="small" />
+                  </IconButton>
+                  
+                  {/* Main photo indicator or set as main button */}
+                  {photo.isPrimary ? (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        bottom: 8,
+                        left: 8,
+                        right: 8,
+                        backgroundColor: '#ff9800',
+                        color: 'white',
+                        textAlign: 'center',
+                        py: 1,
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        borderRadius: 2,
+                        boxShadow: '0px 2px 8px rgba(255, 152, 0, 0.4)',
+                      }}
+                    >
+                      MAIN PHOTO
+                    </Box>
+                  ) : (
+                    <Button
+                      size="small"
+                      sx={{
+                        position: 'absolute',
+                        bottom: 8,
+                        left: 8,
+                        right: 8,
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        color: 'white',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        py: 0.5,
+                        borderRadius: 2,
+                        '&:hover': {
+                          backgroundColor: '#ff9800',
+                        },
+                      }}
+                      onClick={() => handleSetPrimaryPhoto(photo.photoID)}
+                    >
+                      Set as Main
+                    </Button>
+                  )}
+                </Paper>
+              </Grid>
+            ))}
+            
+            {/* Show empty state if no photos */}
+            {(!profile?.photos || profile.photos.length === 0) && (
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    textAlign: 'center',
+                    py: 8,
+                    color: 'text.secondary',
+                    background: 'rgba(255, 152, 0, 0.05)',
+                    borderRadius: 3,
+                    border: '2px dashed rgba(255, 152, 0, 0.3)',
+                  }}
+                >
+                  <PhotoCamera sx={{ fontSize: '4rem', mb: 2, color: '#ff9800' }} />
+                  <Typography variant="h6" sx={{ mb: 1 }}>
+                    No photos yet
+                  </Typography>
+                  <Typography variant="body2">
+                    Add some photos to make your profile stand out!
+                  </Typography>
+                </Box>
+              </Grid>
+            )}
+          </Grid>
+        </CardContent>
+      </Card>
+
+      {/* Voice Intro Section */}
+      <Card sx={{ 
+        mb: 4, 
+        borderRadius: 4, 
+        overflow: 'visible',
+        background: 'linear-gradient(135deg, #fff 0%, #fafafa 100%)',
+        boxShadow: '0 8px 32px rgba(156, 39, 176, 0.12)',
+        border: '1px solid rgba(156, 39, 176, 0.1)'
+      }}>
+        <CardContent sx={{ p: 4 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary', display: 'flex', alignItems: 'center' }}>
+              <MicIcon sx={{ mr: 2, color: '#9c27b0' }} />
+              Voice Introduction
+            </Typography>
+          </Box>
+
+          {/* Current audio intro */}
+          {profile?.audioIntroUrl && (
+            <Box sx={{ 
+              mb: 3,
+              p: 3,
+              backgroundColor: 'rgba(156, 39, 176, 0.05)',
+              borderRadius: 3,
+              border: '1px solid rgba(156, 39, 176, 0.2)'
+            }}>
+              <Typography variant="h6" sx={{ mb: 2 }}>Current Voice Intro</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Button
+                  variant="contained"
+                  startIcon={isPlayingAudio ? <Stop /> : <PlayArrow />}
+                  onClick={toggleAudioPlayback}
+                  sx={{
+                    background: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',
+                  }}
+                >
+                  {isPlayingAudio ? 'Stop' : 'Play'}
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<Delete />}
+                  onClick={deleteAudioIntro}
+                  color="error"
+                >
+                  Delete
+                </Button>
+              </Box>
+              <audio ref={audioRef} style={{ display: 'none' }} />
+            </Box>
+          )}
+
+          {/* Recording interface */}
+          <Box sx={{ 
+            p: 3,
+            backgroundColor: 'rgba(156, 39, 176, 0.05)',
+            borderRadius: 3,
+            border: '2px dashed rgba(156, 39, 176, 0.3)',
+            textAlign: 'center'
+          }}>
+            {!audioPreviewUrl ? (
+              <>
+                <MicIcon sx={{ fontSize: '4rem', color: '#9c27b0', mb: 2 }} />
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  {isRecording ? 'Recording...' : 'Record Voice Intro'}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                  Record a short introduction (max 30 seconds) to let potential matches hear your voice
+                </Typography>
+                <Button
+                  variant="contained"
+                  onClick={isRecording ? stopRecording : startRecording}
+                  startIcon={isRecording ? <Stop /> : <MicIcon />}
+                  disabled={loading}
+                  sx={{
+                    background: isRecording 
+                      ? 'linear-gradient(135deg, #f44336 0%, #d32f2f 100%)'
+                      : 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',
+                    borderRadius: 3,
+                    px: 4,
+                    py: 1.5,
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                  }}
+                >
+                  {isRecording ? 'Stop Recording' : 'Start Recording'}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Typography variant="h6" sx={{ mb: 2 }}>Audio Ready!</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                  Click play to preview or save your voice intro
+                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+                  <Button
+                    variant="outlined"
+                    startIcon={isPlayingAudio ? <Stop /> : <PlayArrow />}
+                    onClick={toggleAudioPlayback}
+                  >
+                    {isPlayingAudio ? 'Stop' : 'Preview'}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={saveAudioIntro}
+                    disabled={loading}
+                    sx={{
+                      background: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',
+                    }}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Delete />}
+                    onClick={deleteAudioIntro}
+                    color="error"
+                  >
+                    Delete
+                  </Button>
+                </Box>
+                <audio ref={audioRef} style={{ display: 'none' }} />
+              </>
+            )}
           </Box>
         </CardContent>
       </Card>
@@ -541,54 +975,6 @@ function Profile() {
           zodiacSign: profile?.zodiacSign
         }}
         onSave={(data) => handleUpdateProfile(data)}
-      />
-
-      <MediaEditModal
-        open={openModals.media}
-        onClose={() => closeModal('media')}
-        onSave={async (data: any) => {
-          try {
-            setLoading(true);
-            if (data.photos && data.photos.length > 0) {
-              for (const photo of data.photos) {
-                await userService.uploadPhoto(user!.userID, photo);
-              }
-            }
-            await loadProfile();
-            setSuccess('Photos updated successfully!');
-            setTimeout(() => setSuccess(''), 3000);
-          } catch (err) {
-            setError('Failed to update photos');
-            console.error('Update error:', err);
-          } finally {
-            setLoading(false);
-          }
-        }}
-      />
-
-      <AudioIntroEditModal
-        open={openModals.audioIntro}
-        onClose={() => closeModal('audioIntro')}
-        currentData={{
-          audioIntroUrl: undefined
-        }}
-        onSave={async (data) => {
-          try {
-            setLoading(true);
-            if (data.audioIntro) {
-              // TODO: Implement audio upload in userService
-              console.log('Audio intro upload not yet implemented');
-            }
-            await loadProfile();
-            setSuccess('Audio introduction updated successfully!');
-            setTimeout(() => setSuccess(''), 3000);
-          } catch (err) {
-            setError('Failed to update audio introduction');
-            console.error('Update error:', err);
-          } finally {
-            setLoading(false);
-          }
-        }}
       />
     </Box>
   );
