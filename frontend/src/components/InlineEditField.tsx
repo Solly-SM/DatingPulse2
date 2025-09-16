@@ -94,7 +94,7 @@ export default function InlineEditField({
         </Box>
       );
     }
-    return value || placeholder;
+    return value || <span style={{ fontStyle: 'italic', color: '#9e9e9e' }}>{placeholder || 'Click to add...'}</span>;
   };
 
   const renderEditField = () => {
@@ -133,11 +133,16 @@ export default function InlineEditField({
 
   if (disabled) {
     return (
-      <Box>
-        <Typography variant="body2" color="text.secondary" gutterBottom>
+      <Box sx={{ 
+        minHeight: '72px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start'
+      }}>
+        <Typography variant="body2" color="text.secondary" gutterBottom sx={{ fontWeight: 500 }}>
           {label}
         </Typography>
-        <Typography variant="body1">
+        <Typography variant="body1" sx={{ mt: 0.5 }}>
           {displayValue()}
         </Typography>
       </Box>
@@ -146,11 +151,16 @@ export default function InlineEditField({
 
   if (isEditing) {
     return (
-      <Box>
-        <Typography variant="body2" color="text.secondary" gutterBottom>
+      <Box sx={{ 
+        minHeight: '72px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start'
+      }}>
+        <Typography variant="body2" color="text.secondary" gutterBottom sx={{ fontWeight: 500 }}>
           {label}
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start', mt: 0.5 }}>
           <Box sx={{ flexGrow: 1 }}>
             {renderEditField()}
           </Box>
@@ -159,6 +169,7 @@ export default function InlineEditField({
             onClick={handleSave}
             disabled={saving}
             color="primary"
+            sx={{ mt: 0.25 }}
           >
             <Save />
           </IconButton>
@@ -166,6 +177,7 @@ export default function InlineEditField({
             size="small"
             onClick={handleCancel}
             disabled={saving}
+            sx={{ mt: 0.25 }}
           >
             <Cancel />
           </IconButton>
@@ -175,15 +187,30 @@ export default function InlineEditField({
   }
 
   return (
-    <Box>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
+    <Box sx={{ 
+      minHeight: '72px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-start'
+    }}>
+      <Typography variant="body2" color="text.secondary" gutterBottom sx={{ fontWeight: 500 }}>
         {label}
       </Typography>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Typography variant="body1" sx={{ flexGrow: 1 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+        <Typography variant="body1" sx={{ flexGrow: 1, color: value ? 'text.primary' : 'text.secondary' }}>
           {displayValue()}
         </Typography>
-        <IconButton size="small" onClick={handleStartEdit}>
+        <IconButton 
+          size="small" 
+          onClick={handleStartEdit}
+          sx={{ 
+            color: 'action.active',
+            '&:hover': {
+              color: 'primary.main',
+              backgroundColor: 'rgba(233, 30, 99, 0.04)'
+            }
+          }}
+        >
           <Edit />
         </IconButton>
       </Box>
