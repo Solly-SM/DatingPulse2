@@ -143,8 +143,13 @@ function ProfileDemo() {
       <Grid container spacing={3}>
         {/* Photos Section */}
         <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
+          <Paper sx={{ 
+            p: 4, 
+            borderRadius: 3,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            border: '1px solid rgba(0,0,0,0.04)'
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 'bold', color: 'primary.main' }}>
               📸 Photos
             </Typography>
             
@@ -183,7 +188,12 @@ function ProfileDemo() {
 
         {/* Profile Information with Inline Editing */}
         <Grid item xs={12}>
-          <Paper sx={{ p: 3, borderRadius: 2 }}>
+          <Paper sx={{ 
+            p: 4, 
+            borderRadius: 3,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            border: '1px solid rgba(0,0,0,0.04)'
+          }}>
             <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 'bold', color: 'primary.main' }}>
               👤 Profile Information
             </Typography>
