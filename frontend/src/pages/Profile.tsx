@@ -315,99 +315,110 @@ function Profile() {
       id: 'nameAbout',
       title: 'Name & About',
       icon: <PersonIcon />,
-      color: '#e91e63',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #fef7f0 100%)',
+      color: '#667eea',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(102, 126, 234, 0.05) 100%)',
       data: profile?.firstName || profile?.bio ? `${profile?.firstName || 'Name not set'}${profile?.bio ? ' • Bio added' : ' • No bio'}` : 'Add your name and tell us about yourself'
     },
     {
       id: 'birthDate',
       title: 'Age',
       icon: <CakeIcon />,
-      color: '#2196f3',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #f0f8ff 100%)',
+      color: '#10b981',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(16, 185, 129, 0.05) 100%)',
       data: profile?.dateOfBirth ? `${calculateAge(profile.dateOfBirth)} years old` : 'Add your birth date'
     },
     {
       id: 'genderDisplay',
       title: 'Gender Identity',
       icon: <GenderIcon />,
-      color: '#ff9800',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #fff3e0 100%)',
+      color: '#f59e0b',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 158, 11, 0.05) 100%)',
       data: profile?.gender || 'Set your gender identity'
     },
     {
       id: 'sexualOrientation',
       title: 'Sexual Orientation',
       icon: <FavoriteIcon />,
-      color: '#e91e63',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #fef7f0 100%)',
+      color: '#ef4444',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(239, 68, 68, 0.05) 100%)',
       data: profile?.sexualOrientation || 'Add your sexual orientation'
     },
     {
       id: 'interestedIn',
       title: 'Interested In',
       icon: <InterestedInIcon />,
-      color: '#9c27b0',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #faf0ff 100%)',
+      color: '#8b5cf6',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(139, 92, 246, 0.05) 100%)',
       data: profile?.interestedIn || 'Who are you interested in?'
     },
     {
       id: 'lookingFor',
       title: 'Looking For',
       icon: <LookingForIcon />,
-      color: '#4caf50',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #f0fff4 100%)',
+      color: '#06b6d4',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(6, 182, 212, 0.05) 100%)',
       data: profile?.lookingFor || 'What type of relationship?'
     },
     {
       id: 'distancePreference',
       title: 'Distance',
       icon: <LocationIcon />,
-      color: '#ff5722',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #fff3e0 100%)',
+      color: '#f97316',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 115, 22, 0.05) 100%)',
       data: profile?.maxDistance ? `Within ${profile.maxDistance} km` : 'Set distance preference'
     },
     {
       id: 'interests',
       title: 'Interests',
       icon: <FavoriteIcon />,
-      color: '#e91e63',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #fef7f0 100%)',
+      color: '#ec4899',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(236, 72, 153, 0.05) 100%)',
       data: profile?.interests?.length ? `${profile.interests.length} interests selected` : 'Add your interests'
     },
     {
       id: 'physicalAttributes',
       title: 'Physical',
       icon: <FitnessCenterIcon />,
-      color: '#2196f3',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #f0f8ff 100%)',
+      color: '#3b82f6',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(59, 130, 246, 0.05) 100%)',
       data: profile?.height || profile?.bodyType ? 'Physical attributes added' : 'Add physical attributes'
     },
     {
       id: 'lifestyle',
       title: 'Lifestyle',
       icon: <LifestyleIcon />,
-      color: '#4caf50',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #f0fff4 100%)',
+      color: '#84cc16',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(132, 204, 22, 0.05) 100%)',
       data: profile?.pets || profile?.drinking || profile?.smoking ? 'Lifestyle info added' : 'Add lifestyle preferences'
     },
     {
       id: 'personality',
       title: 'Personality',
       icon: <PsychologyIcon />,
-      color: '#9c27b0',
-      bgColor: 'linear-gradient(135deg, #fff 0%, #faf0ff 100%)',
+      color: '#a855f7',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(168, 85, 247, 0.05) 100%)',
       data: profile?.communicationStyle || profile?.loveLanguage ? 'Personality traits added' : 'Add personality traits'
     }
   ];
 
   return (
     <Box sx={{ 
-      maxWidth: '1200px', 
+      maxWidth: '1400px', 
       mx: 'auto', 
-      p: 3,
-      background: 'linear-gradient(135deg, #f8f9fa 0%, #fff 100%)',
-      minHeight: '100vh'
+      p: { xs: 2, sm: 3, md: 4 },
+      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+      minHeight: '100vh',
+      position: 'relative',
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '200px',
+        background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%)',
+        zIndex: 0
+      }
     }}>
       <Typography 
         variant="h3" 
@@ -415,13 +426,17 @@ function Profile() {
         gutterBottom 
         align="center" 
         sx={{ 
-          mb: 4,
-          fontWeight: 'bold',
-          background: 'linear-gradient(45deg, #e91e63 30%, #ff4081 90%)',
+          mb: 5,
+          fontWeight: 700,
+          fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+          background: 'linear-gradient(45deg, #667eea 30%, #764ba2 90%)',
           backgroundClip: 'text',
           WebkitBackgroundClip: 'text',
           color: 'transparent',
-          textShadow: '0 2px 4px rgba(233, 30, 99, 0.1)'
+          textShadow: '0 4px 8px rgba(102, 126, 234, 0.2)',
+          position: 'relative',
+          zIndex: 1,
+          letterSpacing: '-0.5px'
         }}
       >
         ✨ My Profile
@@ -431,9 +446,14 @@ function Profile() {
         <Alert 
           severity="success" 
           sx={{ 
-            mb: 3,
-            borderRadius: 3,
-            boxShadow: '0 4px 12px rgba(76, 175, 80, 0.15)'
+            mb: 4,
+            borderRadius: '12px',
+            boxShadow: '0 8px 25px rgba(76, 175, 80, 0.15)',
+            border: '1px solid rgba(76, 175, 80, 0.2)',
+            position: 'relative',
+            zIndex: 1,
+            backdropFilter: 'blur(10px)',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)'
           }}
         >
           {success}
@@ -443,9 +463,14 @@ function Profile() {
         <Alert 
           severity="error" 
           sx={{ 
-            mb: 3,
-            borderRadius: 3,
-            boxShadow: '0 4px 12px rgba(244, 67, 54, 0.15)'
+            mb: 4,
+            borderRadius: '12px',
+            boxShadow: '0 8px 25px rgba(244, 67, 54, 0.15)',
+            border: '1px solid rgba(244, 67, 54, 0.2)',
+            position: 'relative',
+            zIndex: 1,
+            backdropFilter: 'blur(10px)',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)'
           }}
         >
           {error}
@@ -454,51 +479,90 @@ function Profile() {
 
       {/* Profile Header Card */}
       <Card sx={{ 
-        mb: 4, 
-        borderRadius: 4, 
+        mb: 5, 
+        borderRadius: '20px', 
         overflow: 'visible',
-        background: 'linear-gradient(135deg, #fff 0%, #fafafa 100%)',
-        boxShadow: '0 8px 32px rgba(233, 30, 99, 0.12)',
-        border: '1px solid rgba(233, 30, 99, 0.1)'
+        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%)',
+        boxShadow: '0 20px 40px rgba(102, 126, 234, 0.1), 0 8px 16px rgba(147, 51, 234, 0.05)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        backdropFilter: 'blur(20px)',
+        position: 'relative',
+        zIndex: 1,
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 25px 50px rgba(102, 126, 234, 0.15), 0 12px 24px rgba(147, 51, 234, 0.08)'
+        }
       }}>
-        <CardContent sx={{ p: 4 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+        <CardContent sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: { xs: 'column', md: 'row' },
+            alignItems: { xs: 'center', md: 'flex-start' }, 
+            mb: 3,
+            gap: { xs: 3, md: 4 }
+          }}>
             <Avatar
               sx={{
-                width: 120,
-                height: 120,
-                mr: 4,
-                fontSize: '2.5rem',
-                background: 'linear-gradient(45deg, #e91e63 30%, #ff4081 90%)',
-                boxShadow: '0 8px 24px rgba(233, 30, 99, 0.3)',
-                border: '4px solid white'
+                width: { xs: 100, sm: 120, md: 140 },
+                height: { xs: 100, sm: 120, md: 140 },
+                fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                boxShadow: '0 12px 30px rgba(102, 126, 234, 0.3)',
+                border: '4px solid rgba(255, 255, 255, 0.8)',
+                position: 'relative',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: '-6px',
+                  left: '-6px',
+                  right: '-6px',
+                  bottom: '-6px',
+                  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                  borderRadius: '50%',
+                  zIndex: -1,
+                  opacity: 0.3
+                }
               }}
             >
               {profile?.firstName?.charAt(0) || 'U'}
             </Avatar>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="h3" component="h2" sx={{ mb: 2, fontWeight: 'bold', color: 'text.primary' }}>
+            <Box sx={{ flex: 1, textAlign: { xs: 'center', md: 'left' } }}>
+              <Typography variant="h3" component="h2" sx={{ 
+                mb: 2, 
+                fontWeight: 700, 
+                color: '#2d3748',
+                fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                letterSpacing: '-1px'
+              }}>
                 {profile?.firstName || 'Your Name'}
               </Typography>
-              <Typography variant="h5" color="text.secondary" sx={{ mb: 2, fontWeight: 500 }}>
+              <Typography variant="h5" sx={{ 
+                mb: 3, 
+                fontWeight: 500, 
+                color: '#667eea',
+                fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.5rem' }
+              }}>
                 {profile?.dateOfBirth ? `${calculateAge(profile.dateOfBirth)} years old` : 'Age not set'}
               </Typography>
               {profile?.city && (
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                  <LocationIcon sx={{ mr: 1, color: 'primary.main' }} />
-                  <Typography color="text.secondary" variant="h6">
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                  <LocationIcon sx={{ mr: 1, color: '#667eea', fontSize: '1.2rem' }} />
+                  <Typography color="#5a67d8" variant="h6" sx={{ fontWeight: 500 }}>
                     {profile.city}, {profile.region}
                   </Typography>
                 </Box>
               )}
               <Typography variant="body1" sx={{ 
                 fontStyle: profile?.bio ? 'normal' : 'italic',
-                color: profile?.bio ? 'text.primary' : 'text.secondary',
+                color: profile?.bio ? '#4a5568' : '#a0aec0',
                 lineHeight: 1.6,
-                padding: 2,
-                backgroundColor: 'rgba(233, 30, 99, 0.03)',
-                borderRadius: 2,
-                border: '1px solid rgba(233, 30, 99, 0.1)'
+                padding: 3,
+                backgroundColor: 'rgba(102, 126, 234, 0.05)',
+                borderRadius: '12px',
+                border: '1px solid rgba(102, 126, 234, 0.1)',
+                fontSize: '1.1rem',
+                fontWeight: 400
               }}>
                 {profile?.bio || 'Tell others about yourself...'}
               </Typography>
@@ -509,17 +573,31 @@ function Profile() {
 
       {/* Photos Section - Tinder-like display */}
       <Card sx={{ 
-        mb: 4, 
-        borderRadius: 4, 
+        mb: 5, 
+        borderRadius: '20px', 
         overflow: 'visible',
-        background: 'linear-gradient(135deg, #fff 0%, #fafafa 100%)',
-        boxShadow: '0 8px 32px rgba(255, 152, 0, 0.12)',
-        border: '1px solid rgba(255, 152, 0, 0.1)'
+        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%)',
+        boxShadow: '0 20px 40px rgba(255, 152, 0, 0.1), 0 8px 16px rgba(255, 152, 0, 0.05)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        backdropFilter: 'blur(20px)',
+        position: 'relative',
+        zIndex: 1,
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 25px 50px rgba(255, 152, 0, 0.15), 0 12px 24px rgba(255, 152, 0, 0.08)'
+        }
       }}>
-        <CardContent sx={{ p: 4 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary', display: 'flex', alignItems: 'center' }}>
-              <PhotoCamera sx={{ mr: 2, color: '#ff9800' }} />
+        <CardContent sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 4 }}>
+            <Typography variant="h5" sx={{ 
+              fontWeight: 700, 
+              color: '#2d3748', 
+              display: 'flex', 
+              alignItems: 'center',
+              fontSize: { xs: '1.3rem', sm: '1.5rem' }
+            }}>
+              <PhotoCamera sx={{ mr: 2, color: '#f59e0b', fontSize: '1.8rem' }} />
               Photos
             </Typography>
             <input
@@ -537,13 +615,18 @@ function Profile() {
                 startIcon={<AddPhotoAlternate />}
                 disabled={loading}
                 sx={{
-                  background: 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)',
-                  borderRadius: 3,
+                  background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                  borderRadius: '12px',
                   px: 3,
-                  py: 1,
+                  py: 1.5,
                   fontWeight: 600,
+                  fontSize: '0.95rem',
+                  boxShadow: '0 8px 20px rgba(245, 158, 11, 0.3)',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #f57c00 0%, #ef6c00 100%)',
+                    background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 25px rgba(245, 158, 11, 0.4)'
                   }
                 }}
               >
@@ -552,21 +635,21 @@ function Profile() {
             </label>
           </Box>
 
-          <Grid container spacing={2}>
+          <Grid container spacing={3}>
             {(profile?.photos || []).map((photo, index) => (
-              <Grid item xs={6} sm={4} md={3} key={photo.photoID}>
+              <Grid item xs={12} sm={6} md={4} lg={3} key={photo.photoID}>
                 <Paper
                   sx={{
                     position: 'relative',
                     paddingTop: '100%',
                     overflow: 'hidden',
-                    borderRadius: 3,
-                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                    border: photo.isPrimary ? '3px solid #ff9800' : '1px solid #e0e0e0',
-                    transition: 'all 0.2s ease-in-out',
+                    borderRadius: '16px',
+                    boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
+                    border: photo.isPrimary ? '3px solid #f59e0b' : '1px solid rgba(0, 0, 0, 0.06)',
+                    transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'scale(1.02)',
-                      boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.15)',
+                      boxShadow: '0 15px 35px rgba(0, 0, 0, 0.15)',
                     },
                   }}
                 >
@@ -588,14 +671,17 @@ function Profile() {
                   <IconButton
                     sx={{
                       position: 'absolute',
-                      top: 8,
-                      right: 8,
-                      backgroundColor: 'rgba(244, 67, 54, 0.8)',
+                      top: 12,
+                      right: 12,
+                      backgroundColor: 'rgba(244, 67, 54, 0.9)',
                       color: 'white',
-                      width: 32,
-                      height: 32,
+                      width: 36,
+                      height: 36,
+                      backdropFilter: 'blur(10px)',
+                      transition: 'all 0.2s ease',
                       '&:hover': {
-                        backgroundColor: 'rgba(244, 67, 54, 0.9)',
+                        backgroundColor: 'rgba(244, 67, 54, 1)',
+                        transform: 'scale(1.1)'
                       },
                     }}
                     size="small"
@@ -609,17 +695,19 @@ function Profile() {
                     <Box
                       sx={{
                         position: 'absolute',
-                        bottom: 8,
-                        left: 8,
-                        right: 8,
-                        backgroundColor: '#ff9800',
+                        bottom: 12,
+                        left: 12,
+                        right: 12,
+                        backgroundColor: '#f59e0b',
                         color: 'white',
                         textAlign: 'center',
-                        py: 1,
-                        fontSize: '0.75rem',
+                        py: 1.5,
+                        fontSize: '0.8rem',
                         fontWeight: 700,
-                        borderRadius: 2,
-                        boxShadow: '0px 2px 8px rgba(255, 152, 0, 0.4)',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)',
+                        backdropFilter: 'blur(10px)',
+                        letterSpacing: '0.5px'
                       }}
                     >
                       MAIN PHOTO
@@ -629,17 +717,20 @@ function Profile() {
                       size="small"
                       sx={{
                         position: 'absolute',
-                        bottom: 8,
-                        left: 8,
-                        right: 8,
+                        bottom: 12,
+                        left: 12,
+                        right: 12,
                         backgroundColor: 'rgba(0,0,0,0.8)',
                         color: 'white',
-                        fontSize: '0.75rem',
+                        fontSize: '0.8rem',
                         fontWeight: 600,
-                        py: 0.5,
-                        borderRadius: 2,
+                        py: 1,
+                        borderRadius: '8px',
+                        backdropFilter: 'blur(10px)',
+                        transition: 'all 0.2s ease',
                         '&:hover': {
-                          backgroundColor: '#ff9800',
+                          backgroundColor: '#f59e0b',
+                          transform: 'translateY(-2px)'
                         },
                       }}
                       onClick={() => handleSetPrimaryPhoto(photo.photoID)}
@@ -658,17 +749,22 @@ function Profile() {
                   sx={{
                     textAlign: 'center',
                     py: 8,
-                    color: 'text.secondary',
-                    background: 'rgba(255, 152, 0, 0.05)',
-                    borderRadius: 3,
-                    border: '2px dashed rgba(255, 152, 0, 0.3)',
+                    color: '#6b7280',
+                    background: 'rgba(245, 158, 11, 0.05)',
+                    borderRadius: '16px',
+                    border: '2px dashed rgba(245, 158, 11, 0.3)',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      background: 'rgba(245, 158, 11, 0.08)',
+                      borderColor: 'rgba(245, 158, 11, 0.4)'
+                    }
                   }}
                 >
-                  <PhotoCamera sx={{ fontSize: '4rem', mb: 2, color: '#ff9800' }} />
-                  <Typography variant="h6" sx={{ mb: 1 }}>
+                  <PhotoCamera sx={{ fontSize: '4rem', mb: 2, color: '#f59e0b' }} />
+                  <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
                     No photos yet
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" sx={{ color: '#9ca3af' }}>
                     Add some photos to make your profile stand out!
                   </Typography>
                 </Box>
@@ -680,17 +776,31 @@ function Profile() {
 
       {/* Voice Intro Section */}
       <Card sx={{ 
-        mb: 4, 
-        borderRadius: 4, 
+        mb: 5, 
+        borderRadius: '20px', 
         overflow: 'visible',
-        background: 'linear-gradient(135deg, #fff 0%, #fafafa 100%)',
-        boxShadow: '0 8px 32px rgba(156, 39, 176, 0.12)',
-        border: '1px solid rgba(156, 39, 176, 0.1)'
+        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%)',
+        boxShadow: '0 20px 40px rgba(156, 39, 176, 0.1), 0 8px 16px rgba(156, 39, 176, 0.05)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        backdropFilter: 'blur(20px)',
+        position: 'relative',
+        zIndex: 1,
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 25px 50px rgba(156, 39, 176, 0.15), 0 12px 24px rgba(156, 39, 176, 0.08)'
+        }
       }}>
-        <CardContent sx={{ p: 4 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary', display: 'flex', alignItems: 'center' }}>
-              <MicIcon sx={{ mr: 2, color: '#9c27b0' }} />
+        <CardContent sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 4 }}>
+            <Typography variant="h5" sx={{ 
+              fontWeight: 700, 
+              color: '#2d3748', 
+              display: 'flex', 
+              alignItems: 'center',
+              fontSize: { xs: '1.3rem', sm: '1.5rem' }
+            }}>
+              <MicIcon sx={{ mr: 2, color: '#8b5cf6', fontSize: '1.8rem' }} />
               Voice Introduction
             </Typography>
           </Box>
@@ -698,20 +808,35 @@ function Profile() {
           {/* Current audio intro */}
           {profile?.audioIntroUrl && (
             <Box sx={{ 
-              mb: 3,
-              p: 3,
-              backgroundColor: 'rgba(156, 39, 176, 0.05)',
-              borderRadius: 3,
-              border: '1px solid rgba(156, 39, 176, 0.2)'
+              mb: 4,
+              p: 4,
+              backgroundColor: 'rgba(139, 92, 246, 0.05)',
+              borderRadius: '16px',
+              border: '1px solid rgba(139, 92, 246, 0.2)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                backgroundColor: 'rgba(139, 92, 246, 0.08)',
+                borderColor: 'rgba(139, 92, 246, 0.3)'
+              }
             }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Current Voice Intro</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: '#2d3748' }}>Current Voice Intro</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
                 <Button
                   variant="contained"
                   startIcon={isPlayingAudio ? <Stop /> : <PlayArrow />}
                   onClick={toggleAudioPlayback}
                   sx={{
-                    background: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',
+                    background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                    borderRadius: '12px',
+                    px: 3,
+                    py: 1.5,
+                    fontWeight: 600,
+                    boxShadow: '0 8px 20px rgba(139, 92, 246, 0.3)',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 12px 25px rgba(139, 92, 246, 0.4)'
+                    }
                   }}
                 >
                   {isPlayingAudio ? 'Stop' : 'Play'}
@@ -720,7 +845,20 @@ function Profile() {
                   variant="outlined"
                   startIcon={<Delete />}
                   onClick={deleteAudioIntro}
-                  color="error"
+                  sx={{
+                    color: '#ef4444',
+                    borderColor: '#ef4444',
+                    borderRadius: '12px',
+                    px: 3,
+                    py: 1.5,
+                    fontWeight: 600,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      backgroundColor: '#ef4444',
+                      color: 'white',
+                      transform: 'translateY(-2px)'
+                    }
+                  }}
                 >
                   Delete
                 </Button>
@@ -731,19 +869,24 @@ function Profile() {
 
           {/* Recording interface */}
           <Box sx={{ 
-            p: 3,
-            backgroundColor: 'rgba(156, 39, 176, 0.05)',
-            borderRadius: 3,
-            border: '2px dashed rgba(156, 39, 176, 0.3)',
-            textAlign: 'center'
+            p: 4,
+            backgroundColor: 'rgba(139, 92, 246, 0.05)',
+            borderRadius: '16px',
+            border: '2px dashed rgba(139, 92, 246, 0.3)',
+            textAlign: 'center',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              backgroundColor: 'rgba(139, 92, 246, 0.08)',
+              borderColor: 'rgba(139, 92, 246, 0.4)'
+            }
           }}>
             {!audioPreviewUrl ? (
               <>
-                <MicIcon sx={{ fontSize: '4rem', color: '#9c27b0', mb: 2 }} />
-                <Typography variant="h6" sx={{ mb: 2 }}>
+                <MicIcon sx={{ fontSize: '4rem', color: '#8b5cf6', mb: 3 }} />
+                <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: '#2d3748' }}>
                   {isRecording ? 'Recording...' : 'Record Voice Intro'}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                <Typography variant="body2" color="#6b7280" sx={{ mb: 4, fontSize: '1rem' }}>
                   Record a short introduction (max 30 seconds) to let potential matches hear your voice
                 </Typography>
                 <Button
@@ -753,13 +896,23 @@ function Profile() {
                   disabled={loading}
                   sx={{
                     background: isRecording 
-                      ? 'linear-gradient(135deg, #f44336 0%, #d32f2f 100%)'
-                      : 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',
-                    borderRadius: 3,
+                      ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
+                      : 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                    borderRadius: '12px',
                     px: 4,
-                    py: 1.5,
+                    py: 2,
                     fontSize: '1rem',
                     fontWeight: 600,
+                    boxShadow: isRecording
+                      ? '0 8px 20px rgba(239, 68, 68, 0.3)'
+                      : '0 8px 20px rgba(139, 92, 246, 0.3)',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: isRecording
+                        ? '0 12px 25px rgba(239, 68, 68, 0.4)'
+                        : '0 12px 25px rgba(139, 92, 246, 0.4)'
+                    }
                   }}
                 >
                   {isRecording ? 'Stop Recording' : 'Start Recording'}
@@ -767,15 +920,29 @@ function Profile() {
               </>
             ) : (
               <>
-                <Typography variant="h6" sx={{ mb: 2 }}>Audio Ready!</Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: '#2d3748' }}>Audio Ready!</Typography>
+                <Typography variant="body2" color="#6b7280" sx={{ mb: 4, fontSize: '1rem' }}>
                   Click play to preview or save your voice intro
                 </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
                   <Button
                     variant="outlined"
                     startIcon={isPlayingAudio ? <Stop /> : <PlayArrow />}
                     onClick={toggleAudioPlayback}
+                    sx={{
+                      borderColor: '#8b5cf6',
+                      color: '#8b5cf6',
+                      borderRadius: '12px',
+                      px: 3,
+                      py: 1.5,
+                      fontWeight: 600,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        backgroundColor: '#8b5cf6',
+                        color: 'white',
+                        transform: 'translateY(-2px)'
+                      }
+                    }}
                   >
                     {isPlayingAudio ? 'Stop' : 'Preview'}
                   </Button>
@@ -784,7 +951,17 @@ function Profile() {
                     onClick={saveAudioIntro}
                     disabled={loading}
                     sx={{
-                      background: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',
+                      background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                      borderRadius: '12px',
+                      px: 3,
+                      py: 1.5,
+                      fontWeight: 600,
+                      boxShadow: '0 8px 20px rgba(139, 92, 246, 0.3)',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 12px 25px rgba(139, 92, 246, 0.4)'
+                      }
                     }}
                   >
                     Save
@@ -793,7 +970,20 @@ function Profile() {
                     variant="outlined"
                     startIcon={<Delete />}
                     onClick={deleteAudioIntro}
-                    color="error"
+                    sx={{
+                      color: '#ef4444',
+                      borderColor: '#ef4444',
+                      borderRadius: '12px',
+                      px: 3,
+                      py: 1.5,
+                      fontWeight: 600,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        backgroundColor: '#ef4444',
+                        color: 'white',
+                        transform: 'translateY(-2px)'
+                      }
+                    }}
                   >
                     Delete
                   </Button>
@@ -806,52 +996,88 @@ function Profile() {
       </Card>
 
       {/* Profile Sections Grid */}
-      <Grid container spacing={3}>
+      <Grid container spacing={4}>
         {profileSections.map((section) => (
-          <Grid item xs={12} sm={6} md={4} key={section.id}>
+          <Grid item xs={12} sm={6} lg={4} key={section.id}>
             <Card sx={{ 
               height: '100%', 
-              borderRadius: 4,
+              borderRadius: '20px',
               background: section.bgColor,
-              boxShadow: `0 6px 20px ${section.color}08`,
-              border: `1px solid ${section.color}10`,
+              boxShadow: `0 10px 30px ${section.color}08`,
+              border: `1px solid ${section.color}15`,
+              backdropFilter: 'blur(20px)',
               transition: 'all 0.3s ease',
+              position: 'relative',
+              overflow: 'hidden',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '4px',
+                background: `linear-gradient(90deg, ${section.color}, ${section.color}80)`,
+                zIndex: 1
+              },
               '&:hover': {
-                transform: 'translateY(-4px)',
-                boxShadow: `0 12px 32px ${section.color}15`
+                transform: 'translateY(-8px)',
+                boxShadow: `0 20px 40px ${section.color}15`,
+                '& .edit-button': {
+                  transform: 'scale(1.1)',
+                  backgroundColor: `${section.color}20`
+                }
               }
             }}>
-              <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+              <CardContent sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Box sx={{ color: section.color, mr: 2, fontSize: '1.5rem' }}>
+                    <Box sx={{ 
+                      color: section.color, 
+                      mr: 2, 
+                      fontSize: '1.8rem',
+                      p: 1,
+                      borderRadius: '12px',
+                      backgroundColor: `${section.color}10`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
                       {section.icon}
                     </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+                    <Typography variant="h6" sx={{ 
+                      fontWeight: 700, 
+                      color: '#2d3748',
+                      fontSize: '1.1rem'
+                    }}>
                       {section.title}
                     </Typography>
                   </Box>
                   <IconButton 
+                    className="edit-button"
                     onClick={() => openModal(section.id as keyof typeof openModals)}
                     sx={{ 
                       color: section.color,
                       backgroundColor: `${section.color}10`,
+                      width: 44,
+                      height: 44,
+                      transition: 'all 0.3s ease',
                       '&:hover': {
                         backgroundColor: `${section.color}20`,
                         transform: 'scale(1.1)'
-                      },
-                      transition: 'all 0.2s ease'
+                      }
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon sx={{ fontSize: '1.2rem' }} />
                   </IconButton>
                 </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ 
+                <Typography variant="body2" sx={{ 
                   flex: 1,
                   display: 'flex',
                   alignItems: 'center',
-                  fontSize: '0.95rem',
-                  lineHeight: 1.4
+                  fontSize: '1rem',
+                  lineHeight: 1.5,
+                  color: '#4a5568',
+                  fontWeight: 400
                 }}>
                   {section.data}
                 </Typography>
