@@ -133,7 +133,7 @@ export default function InlineEditField({
 
   if (disabled) {
     return (
-      <Box>
+      <Box sx={{ minHeight: '72px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <Typography variant="body2" color="text.secondary" gutterBottom>
           {label}
         </Typography>
@@ -146,7 +146,7 @@ export default function InlineEditField({
 
   if (isEditing) {
     return (
-      <Box>
+      <Box sx={{ minHeight: '72px' }}>
         <Typography variant="body2" color="text.secondary" gutterBottom>
           {label}
         </Typography>
@@ -175,7 +175,7 @@ export default function InlineEditField({
   }
 
   return (
-    <Box>
+    <Box sx={{ minHeight: '72px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       <Typography variant="body2" color="text.secondary" gutterBottom>
         {label}
       </Typography>

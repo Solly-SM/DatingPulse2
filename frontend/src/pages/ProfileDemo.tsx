@@ -143,8 +143,13 @@ function ProfileDemo() {
       <Grid container spacing={3}>
         {/* Photos Section */}
         <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
+          <Paper sx={{ 
+            p: 4, 
+            borderRadius: 3,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            border: '1px solid rgba(0,0,0,0.04)'
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 'bold', color: 'primary.main' }}>
               📸 Photos
             </Typography>
             
@@ -183,12 +188,17 @@ function ProfileDemo() {
 
         {/* Profile Information with Inline Editing */}
         <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
+          <Paper sx={{ 
+            p: 4, 
+            borderRadius: 3,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            border: '1px solid rgba(0,0,0,0.04)'
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 'bold', color: 'primary.main' }}>
               👤 Profile Information
             </Typography>
             
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               {/* Basic Information */}
               <Grid item xs={12} sm={6}>
                 <InlineEditField
@@ -289,9 +299,16 @@ function ProfileDemo() {
 
               {/* Physical Attributes */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  💪 Physical Attributes
-                </Typography>
+                <Box sx={{ 
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                  pt: 2,
+                  mt: 2
+                }}>
+                  <Typography variant="subtitle1" gutterBottom sx={{ mb: 2, fontWeight: 'bold', color: 'text.primary' }}>
+                    💪 Physical Attributes
+                  </Typography>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={3}>
                 <InlineEditField
@@ -350,9 +367,16 @@ function ProfileDemo() {
 
               {/* Professional Information */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  💼 Professional Information
-                </Typography>
+                <Box sx={{ 
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                  pt: 2,
+                  mt: 2
+                }}>
+                  <Typography variant="subtitle1" gutterBottom sx={{ mb: 2, fontWeight: 'bold', color: 'text.primary' }}>
+                    💼 Professional Information
+                  </Typography>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <InlineEditField
@@ -381,9 +405,16 @@ function ProfileDemo() {
 
               {/* Lifestyle & Preferences */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  🌟 Lifestyle & Preferences
-                </Typography>
+                <Box sx={{ 
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                  pt: 2,
+                  mt: 2
+                }}>
+                  <Typography variant="subtitle1" gutterBottom sx={{ mb: 2, fontWeight: 'bold', color: 'text.primary' }}>
+                    🌟 Lifestyle & Preferences
+                  </Typography>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <InlineEditField
@@ -507,9 +538,16 @@ function ProfileDemo() {
 
               {/* Dating Preferences */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  💕 Dating Preferences
-                </Typography>
+                <Box sx={{ 
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                  pt: 2,
+                  mt: 2
+                }}>
+                  <Typography variant="subtitle1" gutterBottom sx={{ mb: 2, fontWeight: 'bold', color: 'text.primary' }}>
+                    💕 Dating Preferences
+                  </Typography>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <InlineEditField
@@ -564,9 +602,16 @@ function ProfileDemo() {
 
               {/* Personality */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  🧠 Personality
-                </Typography>
+                <Box sx={{ 
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                  pt: 2,
+                  mt: 2
+                }}>
+                  <Typography variant="subtitle1" gutterBottom sx={{ mb: 2, fontWeight: 'bold', color: 'text.primary' }}>
+                    🧠 Personality
+                  </Typography>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <InlineEditField
@@ -616,9 +661,16 @@ function ProfileDemo() {
 
               {/* Location Details */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  🗺️ Location Details
-                </Typography>
+                <Box sx={{ 
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                  pt: 2,
+                  mt: 2
+                }}>
+                  <Typography variant="subtitle1" gutterBottom sx={{ mb: 2, fontWeight: 'bold', color: 'text.primary' }}>
+                    🗺️ Location Details
+                  </Typography>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <InlineEditField
@@ -647,9 +699,16 @@ function ProfileDemo() {
 
               {/* Privacy Settings */}
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                  🔒 Privacy Settings
-                </Typography>
+                <Box sx={{ 
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                  pt: 2,
+                  mt: 2
+                }}>
+                  <Typography variant="subtitle1" gutterBottom sx={{ mb: 2, fontWeight: 'bold', color: 'text.primary' }}>
+                    🔒 Privacy Settings
+                  </Typography>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={3}>
                 <InlineEditField
