@@ -53,6 +53,8 @@ import InterestsEditModal from '../components/profile-edit/InterestsEditModal';
 import PhysicalAttributesEditModal from '../components/profile-edit/PhysicalAttributesEditModal';
 import LifestyleEditModal from '../components/profile-edit/LifestyleEditModal';
 import PersonalityEditModal from '../components/profile-edit/PersonalityEditModal';
+import AdditionalInfoEditModal from '../components/profile-edit/AdditionalInfoEditModal';
+import PreferencesEditModal from '../components/profile-edit/PreferencesEditModal';
 
 function Profile() {
   const { user } = useAuth();
@@ -84,7 +86,9 @@ function Profile() {
     interests: false,
     physicalAttributes: false,
     lifestyle: false,
-    personality: false
+    personality: false,
+    additionalInfo: false,
+    preferences: false
   });
 
   const loadProfile = useCallback(async () => {
@@ -398,6 +402,22 @@ function Profile() {
       color: '#a855f7',
       bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(168, 85, 247, 0.05) 100%)',
       data: profile?.communicationStyle || profile?.loveLanguage ? 'Personality traits added' : 'Add personality traits'
+    },
+    {
+      id: 'additionalInfo',
+      title: 'Additional Info',
+      icon: <PersonIcon />,
+      color: '#dc2626',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(220, 38, 38, 0.05) 100%)',
+      data: profile?.religion || profile?.politicalViews || profile?.familyPlans || profile?.industry ? 'Additional information added' : 'Add more about yourself'
+    },
+    {
+      id: 'preferences',
+      title: 'Preferences',
+      icon: <FavoriteIcon />,
+      color: '#059669',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(5, 150, 105, 0.05) 100%)',
+      data: profile?.musicPreferences?.length || profile?.foodPreferences?.length || profile?.entertainmentPreferences?.length ? 'Preferences added' : 'Add your preferences'
     }
   ];
 
@@ -1199,6 +1219,34 @@ function Profile() {
           communicationStyle: profile?.communicationStyle,
           loveLanguage: profile?.loveLanguage,
           zodiacSign: profile?.zodiacSign
+        }}
+        onSave={(data) => handleUpdateProfile(data)}
+      />
+
+      <AdditionalInfoEditModal
+        open={openModals.additionalInfo}
+        onClose={() => closeModal('additionalInfo')}
+        currentData={{
+          religion: profile?.religion,
+          politicalViews: profile?.politicalViews,
+          familyPlans: profile?.familyPlans,
+          fitnessLevel: profile?.fitnessLevel,
+          travelFrequency: profile?.travelFrequency,
+          industry: profile?.industry
+        }}
+        onSave={(data) => handleUpdateProfile(data)}
+      />
+
+      <PreferencesEditModal
+        open={openModals.preferences}
+        onClose={() => closeModal('preferences')}
+        currentData={{
+          musicPreferences: profile?.musicPreferences,
+          foodPreferences: profile?.foodPreferences,
+          entertainmentPreferences: profile?.entertainmentPreferences,
+          currentlyReading: profile?.currentlyReading,
+          lifeGoals: profile?.lifeGoals,
+          petPreferences: profile?.petPreferences
         }}
         onSave={(data) => handleUpdateProfile(data)}
       />
