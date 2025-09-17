@@ -13,7 +13,7 @@ import { locationService, LocationInfo, LocationError } from '../services/locati
 
 interface LocationFieldProps {
   value: string;
-  onSave: (location: string, coordinates?: { latitude: number; longitude: number }) => Promise<void>;
+  onSave: (location: string, coordinates?: { latitude: number; longitude: number }, address?: { city?: string; region?: string; country?: string }) => Promise<void>;
   disabled?: boolean;
 }
 
@@ -81,6 +81,11 @@ export default function LocationField({ value, onSave, disabled = false }: Locat
               {
                 latitude: locationInfo.coordinates.latitude,
                 longitude: locationInfo.coordinates.longitude
+              },
+              {
+                city: locationInfo.address.city,
+                region: locationInfo.address.region,
+                country: locationInfo.address.country
               }
             );
             setIsEditing(false);

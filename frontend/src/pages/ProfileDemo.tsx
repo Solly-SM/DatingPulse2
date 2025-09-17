@@ -117,13 +117,16 @@ function ProfileDemo() {
     }
   };
 
-  const updateLocationField = async (location: string, coordinates?: { latitude: number; longitude: number }) => {
+  const updateLocationField = async (location: string, coordinates?: { latitude: number; longitude: number }, address?: { city?: string; region?: string; country?: string }) => {
     try {
       setProfile(prev => ({ 
         ...prev, 
         location: location,
         ...(coordinates?.latitude && { latitude: coordinates.latitude }),
-        ...(coordinates?.longitude && { longitude: coordinates.longitude })
+        ...(coordinates?.longitude && { longitude: coordinates.longitude }),
+        ...(address?.city && { city: address.city }),
+        ...(address?.region && { region: address.region }),
+        ...(address?.country && { country: address.country })
       }));
       setSuccess('Location updated successfully!');
       setTimeout(() => setSuccess(''), 3000);

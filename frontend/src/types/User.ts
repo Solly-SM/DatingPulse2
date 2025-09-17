@@ -24,6 +24,8 @@ export interface UserProfile {
   city?: string;
   region?: string;
   country?: string;
+  latitude?: number;
+  longitude?: number;
   interests?: string[];
   photos?: Photo[];
   profileCompleted?: boolean;
@@ -136,6 +138,8 @@ export interface ProfileSetupRequest {
   city?: string;
   region?: string;
   country?: string;
+  latitude?: number;
+  longitude?: number;
   interests: string[];
   gender: 'male' | 'female' | 'other';
   interestedIn: 'male' | 'female' | 'both';

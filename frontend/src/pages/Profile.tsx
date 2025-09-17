@@ -42,6 +42,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/userService';
 import { UserProfile } from '../types/User';
+import LocationField from '../components/LocationField';
 
 // Import the new twelve edit modals that match registration steps
 import NameAboutEditModal from '../components/profile-edit/NameAboutEditModal';
@@ -159,6 +160,8 @@ function Profile() {
         city: profile.city,
         region: profile.region,
         country: profile.country,
+        latitude: profile.latitude,
+        longitude: profile.longitude,
         interests: profile.interests || [],
         gender: profile.gender || 'other' as 'male' | 'female' | 'other',
         interestedIn: profile.interestedIn || 'both' as 'male' | 'female' | 'both',
@@ -178,6 +181,28 @@ function Profile() {
     } catch (err) {
       setError('Failed to update profile');
       console.error('Update error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Location update handler
+  const updateLocationField = async (location: string, coordinates?: { latitude: number; longitude: number }, address?: { city?: string; region?: string; country?: string }) => {
+    if (!user || !profile) return;
+    try {
+      setLoading(true);
+      const updateData: Partial<UserProfile> = {
+        location: location,
+        ...(coordinates?.latitude && { latitude: coordinates.latitude }),
+        ...(coordinates?.longitude && { longitude: coordinates.longitude }),
+        ...(address?.city && { city: address.city }),
+        ...(address?.region && { region: address.region }),
+        ...(address?.country && { country: address.country })
+      };
+      await handleUpdateProfile(updateData);
+    } catch (err) {
+      setError('Failed to update location');
+      console.error('Location update error:', err);
     } finally {
       setLoading(false);
     }
@@ -1092,6 +1117,108 @@ function Profile() {
               </>
             )}
           </Box>
+        </CardContent>
+      </Card>
+
+      {/* Location Section */}
+      <Card sx={{ 
+        mb: 5, 
+        borderRadius: '20px', 
+        overflow: 'visible',
+        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%)',
+        boxShadow: '0 20px 40px rgba(76, 175, 80, 0.1), 0 8px 16px rgba(76, 175, 80, 0.05)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        backdropFilter: 'blur(20px)',
+        position: 'relative',
+        zIndex: 1,
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 25px 50px rgba(76, 175, 80, 0.15), 0 12px 24px rgba(76, 175, 80, 0.08)'
+        }
+      }}>
+        <CardContent sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
+          <Typography variant="h5" sx={{ 
+            fontWeight: 700, 
+            color: '#2d3748', 
+            display: 'flex', 
+            alignItems: 'center',
+            fontSize: { xs: '1.3rem', sm: '1.5rem' },
+            mb: 4
+          }}>
+            <LocationIcon sx={{ mr: 2, color: '#4caf50', fontSize: '1.8rem' }} />
+            Living in
+          </Typography>
+
+          <Grid container spacing={3}>
+            {/* Primary Location with GPS Detection */}
+            <Grid item xs={12} md={6}>
+              <LocationField
+                value={profile?.location || ''}
+                onSave={updateLocationField}
+                disabled={loading}
+              />
+            </Grid>
+
+            {/* Manual Location Details */}
+            <Grid item xs={12} md={6}>
+              <Box sx={{ 
+                p: 3,
+                backgroundColor: 'rgba(76, 175, 80, 0.05)',
+                borderRadius: '16px',
+                border: '1px solid rgba(76, 175, 80, 0.2)',
+                height: '100%'
+              }}>
+                <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#2d3748' }}>
+                  Location Details
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                        City
+                      </Typography>
+                      <Typography variant="body1" sx={{ 
+                        color: profile?.city ? '#4a5568' : '#a0aec0',
+                        fontStyle: profile?.city ? 'normal' : 'italic'
+                      }}>
+                        {profile?.city || 'Not specified'}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                        Region/State
+                      </Typography>
+                      <Typography variant="body1" sx={{ 
+                        color: profile?.region ? '#4a5568' : '#a0aec0',
+                        fontStyle: profile?.region ? 'normal' : 'italic'
+                      }}>
+                        {profile?.region || 'Not specified'}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                        Country
+                      </Typography>
+                      <Typography variant="body1" sx={{ 
+                        color: profile?.country ? '#4a5568' : '#a0aec0',
+                        fontStyle: profile?.country ? 'normal' : 'italic'
+                      }}>
+                        {profile?.country || 'Not specified'}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                  💡 Use "Detect Location" to automatically fill these details
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
         </CardContent>
       </Card>
 
