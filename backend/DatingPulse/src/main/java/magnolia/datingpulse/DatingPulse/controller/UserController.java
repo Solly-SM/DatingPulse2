@@ -12,7 +12,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import magnolia.datingpulse.DatingPulse.dto.UserDTO;
+import magnolia.datingpulse.DatingPulse.dto.UserProfileDTO;
 import magnolia.datingpulse.DatingPulse.service.UserService;
+import magnolia.datingpulse.DatingPulse.service.UserProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.Page;
@@ -32,6 +34,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserProfileService userProfileService;
 
     @PostMapping
     @Operation(summary = "Create a new user", 
@@ -216,5 +219,51 @@ public class UserController {
             @PathVariable @NotBlank(message = "Email cannot be blank") String email) {
         boolean isTaken = userService.isEmailTaken(email);
         return ResponseEntity.ok(isTaken);
+    }
+
+    @GetMapping("/{userId}/profile")
+    @Operation(summary = "Get user profile", 
+               description = "Retrieves the profile information for a specific user including verification and completion status")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Profile retrieved successfully",
+                    content = @Content(mediaType = "application/json", 
+                    schema = @Schema(implementation = UserProfileDTO.class))),
+        @ApiResponse(responseCode = "404", description = "User or profile not found",
+                    content = @Content)
+    })
+    public ResponseEntity<UserProfileDTO> getUserProfile(
+            @Parameter(description = "User ID", required = true)
+            @PathVariable @Positive(message = "User ID must be positive") Long userId) {
+        try {
+            UserProfileDTO profile = userProfileService.getUserProfile(userId);
+            return ResponseEntity.ok(profile);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/{userId}/profile")
+    @Operation(summary = "Update user profile", 
+               description = "Updates the profile information for a specific user and recalculates completion status")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Profile updated successfully",
+                    content = @Content(mediaType = "application/json", 
+                    schema = @Schema(implementation = UserProfileDTO.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid profile data",
+                    content = @Content),
+        @ApiResponse(responseCode = "404", description = "User or profile not found",
+                    content = @Content)
+    })
+    public ResponseEntity<UserProfileDTO> updateUserProfile(
+            @Parameter(description = "User ID", required = true)
+            @PathVariable @Positive(message = "User ID must be positive") Long userId,
+            @Parameter(description = "Profile data to update", required = true)
+            @Valid @RequestBody UserProfileDTO profileDTO) {
+        try {
+            UserProfileDTO updatedProfile = userProfileService.updateUserProfile(userId, profileDTO);
+            return ResponseEntity.ok(updatedProfile);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -67,6 +67,10 @@ public class UserProfileDTO {
     private Boolean showAge;
     private Boolean showLocation;
     
+    // Profile completion and verification status
+    private Boolean isVerified;
+    private Boolean profileCompleted;
+    
     // Compatibility score for matching purposes (not persisted)
     private Double compatibilityScore;
 }

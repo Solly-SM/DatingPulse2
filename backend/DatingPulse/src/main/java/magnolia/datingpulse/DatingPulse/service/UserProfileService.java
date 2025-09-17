@@ -30,6 +30,7 @@ public class UserProfileService {
     private final InterestRepository interestRepository;
     private final PreferenceRepository preferenceRepository;
     private final UserProfileMapper userProfileMapper;
+    private final ProfileVerificationService profileVerificationService;
 
     @Transactional
     public UserProfileDTO createUserProfile(UserProfileDTO profileDTO) {
@@ -74,7 +75,13 @@ public class UserProfileService {
         // }
 
         UserProfile saved = userProfileRepository.save(profile);
-        return userProfileMapper.toDTO(saved);
+        UserProfileDTO savedDTO = userProfileMapper.toDTO(saved);
+        
+        // Calculate verification and completion status for new profile
+        savedDTO.setIsVerified(calculateVerificationStatus(saved.getUserID()));
+        savedDTO.setProfileCompleted(calculateProfileCompletionStatus(saved));
+        
+        return savedDTO;
     }
 
     @Transactional(readOnly = true)
@@ -85,7 +92,15 @@ public class UserProfileService {
         UserProfile profile = userProfileRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found for user ID: " + userId));
 
-        return userProfileMapper.toDTO(profile);
+        UserProfileDTO profileDTO = userProfileMapper.toDTO(profile);
+        
+        // Calculate and set verification status
+        profileDTO.setIsVerified(calculateVerificationStatus(userId));
+        
+        // Calculate and set profile completion status
+        profileDTO.setProfileCompleted(calculateProfileCompletionStatus(profile));
+        
+        return profileDTO;
     }
 
     @Transactional(readOnly = true)
@@ -94,7 +109,12 @@ public class UserProfileService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
         Optional<UserProfile> profile = userProfileRepository.findByUser(user);
-        return profile.map(userProfileMapper::toDTO);
+        return profile.map(p -> {
+            UserProfileDTO dto = userProfileMapper.toDTO(p);
+            dto.setIsVerified(calculateVerificationStatus(userId));
+            dto.setProfileCompleted(calculateProfileCompletionStatus(p));
+            return dto;
+        });
     }
 
     @Transactional(readOnly = true)
@@ -208,7 +228,13 @@ public class UserProfileService {
         }
 
         UserProfile updated = userProfileRepository.save(existing);
-        return userProfileMapper.toDTO(updated);
+        UserProfileDTO updatedDTO = userProfileMapper.toDTO(updated);
+        
+        // Recalculate verification and completion status after update
+        updatedDTO.setIsVerified(calculateVerificationStatus(userId));
+        updatedDTO.setProfileCompleted(calculateProfileCompletionStatus(updated));
+        
+        return updatedDTO;
     }
 
     @Transactional
@@ -325,5 +351,43 @@ public class UserProfileService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         
         return R * c; // distance in kilometers
+    }
+    
+    /**
+     * Calculate verification status based on approved verifications
+     */
+    private boolean calculateVerificationStatus(Long userId) {
+        try {
+            // A user is considered verified if they have any approved verification
+            // Check for common verification types: PHOTO, ID, PHONE, EMAIL
+            return profileVerificationService.hasApprovedVerification(userId, "PHOTO") ||
+                   profileVerificationService.hasApprovedVerification(userId, "ID") ||
+                   profileVerificationService.hasApprovedVerification(userId, "PHONE") ||
+                   profileVerificationService.hasApprovedVerification(userId, "EMAIL") ||
+                   profileVerificationService.hasApprovedVerification(userId, "SOCIAL");
+        } catch (Exception e) {
+            // If verification service fails, return false
+            return false;
+        }
+    }
+    
+    /**
+     * Calculate profile completion status based on required fields
+     */
+    private boolean calculateProfileCompletionStatus(UserProfile profile) {
+        // Check if all required fields are filled
+        boolean hasBasicInfo = profile.getFirstname() != null && !profile.getFirstname().trim().isEmpty() &&
+                              profile.getLastname() != null && !profile.getLastname().trim().isEmpty() &&
+                              profile.getAge() != null && profile.getAge() > 0 &&
+                              profile.getGender() != null && !profile.getGender().trim().isEmpty() &&
+                              profile.getDob() != null;
+        
+        boolean hasBio = profile.getBio() != null && !profile.getBio().trim().isEmpty();
+        
+        boolean hasLocation = profile.getCity() != null && !profile.getCity().trim().isEmpty() ||
+                             profile.getCountry() != null && !profile.getCountry().trim().isEmpty();
+        
+        // Profile is considered complete if it has basic info, bio, and location
+        return hasBasicInfo && hasBio && hasLocation;
     }
 }
