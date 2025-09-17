@@ -279,8 +279,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <Verified 
                   sx={{ 
                     fontSize: 18, 
-                    color: '#1976d2',
-                    filter: 'drop-shadow(0 0 2px rgba(25, 118, 210, 0.3))',
+                    color: '#e91e63',
+                    filter: 'drop-shadow(0 0 2px rgba(233, 30, 99, 0.3))',
                   }} 
                 />
               )}
