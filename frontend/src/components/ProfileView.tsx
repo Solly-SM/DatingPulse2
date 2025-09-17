@@ -12,6 +12,7 @@ import {
   Grid,
   Divider,
   Badge,
+  CircularProgress,
 } from '@mui/material';
 import {
   ArrowBackIos,
@@ -34,9 +35,11 @@ interface ProfileViewProps {
   onClose?: () => void;
   compact?: boolean;
   hidePhotos?: boolean;
+  completionPercentage?: number;
+  verifiedTypes?: string[];
 }
 
-function ProfileView({ user, onClose, compact = false, hidePhotos = false }: ProfileViewProps) {
+function ProfileView({ user, onClose, compact = false, hidePhotos = false, completionPercentage = 85, verifiedTypes = ['PHOTO', 'ID'] }: ProfileViewProps) {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   
   // Mock user data with more details for demo
@@ -133,6 +136,56 @@ function ProfileView({ user, onClose, compact = false, hidePhotos = false }: Pro
               }}
             />
             
+            {/* Completion Percentage Indicator */}
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 16,
+                right: 16,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                <CircularProgress
+                  variant="determinate"
+                  value={completionPercentage}
+                  size={compact ? 50 : 60}
+                  thickness={4}
+                  sx={{
+                    color: '#4caf50',
+                    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                    borderRadius: '50%',
+                  }}
+                />
+                <Box
+                  sx={{
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    position: 'absolute',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    borderRadius: '50%',
+                    margin: '6px',
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    component="div"
+                    color="text.primary"
+                    sx={{ fontWeight: 600, fontSize: compact ? '0.7rem' : '0.8rem' }}
+                  >
+                    {Math.round(completionPercentage)}%
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+            
             {/* Photo Navigation */}
             {profileUser.photos.length > 1 && (
               <>
@@ -210,9 +263,29 @@ function ProfileView({ user, onClose, compact = false, hidePhotos = false }: Pro
             <Typography variant={compact ? "h6" : "h5"} fontWeight="bold">
               {profileUser.firstName || profileUser.username} {profileUser.lastName || ''}
             </Typography>
+            
+            {/* Enhanced Verification Badge */}
             {profileUser.verified && (
-              <Verified color="primary" sx={{ fontSize: compact ? 18 : 20 }} />
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <Verified color="primary" sx={{ fontSize: compact ? 18 : 20 }} />
+                {verifiedTypes.length > 0 && (
+                  <Chip
+                    label={`Verified ${verifiedTypes.join(', ')}`}
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                    sx={{
+                      height: compact ? 20 : 24,
+                      fontSize: compact ? '0.6rem' : '0.7rem',
+                      fontWeight: 600,
+                      borderColor: '#1976d2',
+                      color: '#1976d2',
+                    }}
+                  />
+                )}
+              </Box>
             )}
+            
             <Typography variant={compact ? "h6" : "h5"} color="text.secondary">
               {getDisplayAge()}
             </Typography>

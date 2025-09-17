@@ -190,3 +190,11 @@ export interface ProfileSetupRequest {
   lifeGoals?: string;
   petPreferences?: string;
 }
+
+export interface ProfileResponse {
+  profile: UserProfile;
+  isVerified: boolean;
+  completionPercentage: number;
+  verifiedTypes: string[];
+  missingFields: string[];
+}

@@ -1,5 +1,5 @@
 import api from './api';
-import { User, UserProfile, ProfileSetupRequest } from '../types/User';
+import { User, UserProfile, ProfileSetupRequest, ProfileResponse } from '../types/User';
 
 const USE_MOCK_DATA = process.env.NODE_ENV === 'development';
 
@@ -241,6 +241,39 @@ export const userService = {
     } catch (error) {
       console.warn('API unavailable, simulating primary photo setting');
       await delay(300);
+    }
+  },
+
+  async getProfileWithStatus(userId: number): Promise<ProfileResponse> {
+    if (USE_MOCK_DATA) {
+      await delay(600);
+      const profile = { ...mockProfile, userID: userId };
+      
+      // Mock profile response with verification and completion status
+      return {
+        profile,
+        isVerified: true,
+        completionPercentage: 85.0,
+        verifiedTypes: ['PHOTO', 'ID'],
+        missingFields: ['bio'],
+      };
+    }
+    
+    try {
+      const response = await api.get(`/user-profiles/profile/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.warn('API unavailable, using mock profile data with status');
+      await delay(600);
+      const profile = { ...mockProfile, userID: userId };
+      
+      return {
+        profile,
+        isVerified: true,
+        completionPercentage: 85.0,
+        verifiedTypes: ['PHOTO', 'ID'],
+        missingFields: ['bio'],
+      };
     }
   },
 };
