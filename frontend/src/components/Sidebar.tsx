@@ -12,6 +12,7 @@ import {
   Divider,
   IconButton,
   useTheme,
+  CircularProgress,
 } from '@mui/material';
 import {
   Search,
@@ -22,10 +23,12 @@ import {
   ExitToApp,
   Home,
   Notifications,
+  Verified,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { notificationService } from '../services/notificationService';
+import { userService } from '../services/userService';
 import NotificationBadge from './NotificationBadge';
 import PulseLogo from './PulseLogo';
 
@@ -54,11 +57,20 @@ const Sidebar: React.FC<SidebarProps> = ({
     likes: 0,
   });
 
+  // Profile completion and verification state
+  const [isVerified, setIsVerified] = useState(false);
+  const [completionPercentage, setCompletionPercentage] = useState(0);
+  const [verifiedTypes, setVerifiedTypes] = useState<string[]>([]);
+
   useEffect(() => {
     if (user?.userID) {
       loadNotificationCounts();
+      loadProfileStatus();
       // Refresh counts every 30 seconds
-      const interval = setInterval(loadNotificationCounts, 30000);
+      const interval = setInterval(() => {
+        loadNotificationCounts();
+        loadProfileStatus();
+      }, 30000);
       return () => clearInterval(interval);
     }
   }, [user?.userID]);
@@ -70,6 +82,19 @@ const Sidebar: React.FC<SidebarProps> = ({
         setNotificationCounts(counts);
       } catch (error) {
         console.error('Failed to load notification counts:', error);
+      }
+    }
+  };
+
+  const loadProfileStatus = async () => {
+    if (user?.userID) {
+      try {
+        const profileResponse = await userService.getProfileWithStatus(user.userID);
+        setIsVerified(profileResponse.isVerified);
+        setCompletionPercentage(profileResponse.completionPercentage);
+        setVerifiedTypes(profileResponse.verifiedTypes);
+      } catch (error) {
+        console.error('Failed to load profile status:', error);
       }
     }
   };
@@ -187,28 +212,79 @@ const Sidebar: React.FC<SidebarProps> = ({
           }}
           onClick={() => handleNavigation('/profile')}
         >
-          <Avatar 
-            sx={{ 
-              width: 48, 
-              height: 48,
-              border: '2px solid rgba(255,255,255,0.3)',
-            }}
-          >
-            {user?.username?.charAt(0).toUpperCase() || 'U'}
-          </Avatar>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography 
-              variant="subtitle1" 
+          {/* Avatar with Completion Progress */}
+          <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+            <CircularProgress
+              variant="determinate"
+              value={completionPercentage}
+              size={56}
+              thickness={3}
+              sx={{
+                color: '#4caf50',
+                position: 'absolute',
+                top: -4,
+                left: -4,
+              }}
+            />
+            <Avatar 
               sx={{ 
-                fontWeight: 600,
-                color: 'white',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
+                width: 48, 
+                height: 48,
+                border: '2px solid rgba(255,255,255,0.3)',
               }}
             >
-              {user?.username || 'User'}
-            </Typography>
+              {user?.username?.charAt(0).toUpperCase() || 'U'}
+            </Avatar>
+            {/* Completion Percentage Text */}
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: -8,
+                right: -8,
+                backgroundColor: 'rgba(76, 175, 80, 0.9)',
+                borderRadius: '12px',
+                px: 1,
+                py: 0.25,
+                minWidth: 24,
+              }}
+            >
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'white',
+                  fontSize: '0.65rem',
+                  fontWeight: 600,
+                }}
+              >
+                {Math.round(completionPercentage)}%
+              </Typography>
+            </Box>
+          </Box>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.25 }}>
+              <Typography 
+                variant="subtitle1" 
+                sx={{ 
+                  fontWeight: 600,
+                  color: 'white',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {user?.username || 'User'}
+              </Typography>
+              {/* Verified Badge */}
+              {isVerified && (
+                <Verified 
+                  sx={{ 
+                    fontSize: 18, 
+                    color: '#1976d2',
+                    filter: 'drop-shadow(0 0 2px rgba(25, 118, 210, 0.3))',
+                  }} 
+                />
+              )}
+            </Box>
             <Typography 
               variant="body2" 
               sx={{ 
