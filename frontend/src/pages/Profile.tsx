@@ -31,6 +31,7 @@ import {
   Search as InterestedInIcon,
   Settings as PreferencesIcon,
   Explore as LookingForIcon,
+  Radar as RadarIcon,
   PhotoCamera,
   Close,
   Delete,
@@ -57,6 +58,7 @@ import LifestyleEditModal from '../components/profile-edit/LifestyleEditModal';
 import PersonalityEditModal from '../components/profile-edit/PersonalityEditModal';
 import AdditionalInfoEditModal from '../components/profile-edit/AdditionalInfoEditModal';
 import PreferencesEditModal from '../components/profile-edit/PreferencesEditModal';
+import LocationEditModal from '../components/profile-edit/LocationEditModal';
 
 function Profile() {
   const { user } = useAuth();
@@ -90,6 +92,7 @@ function Profile() {
     sexualOrientation: false,
     interestedIn: false,
     lookingFor: false,
+    location: false,
     distancePreference: false,
     interests: false,
     physicalAttributes: false,
@@ -376,11 +379,19 @@ function Profile() {
       data: profile?.lookingFor || 'What type of relationship?'
     },
     {
-      id: 'distancePreference',
-      title: 'Distance',
+      id: 'location',
+      title: 'Living In',
       icon: <LocationIcon />,
       color: '#f97316',
       bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 115, 22, 0.05) 100%)',
+      data: profile?.city && profile?.region ? `${profile.city}, ${profile.region}` : profile?.location || 'Add your location'
+    },
+    {
+      id: 'distancePreference',
+      title: 'Distance',
+      icon: <RadarIcon />,
+      color: '#7c3aed',
+      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(124, 58, 237, 0.05) 100%)',
       data: profile?.maxDistance ? `Within ${profile.maxDistance} km` : 'Set distance preference'
     },
     {
@@ -1244,6 +1255,18 @@ function Profile() {
         onClose={() => closeModal('lookingFor')}
         currentData={{
           lookingFor: profile?.lookingFor || ''
+        }}
+        onSave={(data) => handleUpdateProfile(data)}
+      />
+
+      <LocationEditModal
+        open={openModals.location}
+        onClose={() => closeModal('location')}
+        currentData={{
+          location: profile?.location || '',
+          city: profile?.city || '',
+          region: profile?.region || '',
+          country: profile?.country || ''
         }}
         onSave={(data) => handleUpdateProfile(data)}
       />
