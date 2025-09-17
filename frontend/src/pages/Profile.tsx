@@ -35,11 +35,14 @@ import {
   Delete,
   PlayArrow,
   Stop,
-  AddPhotoAlternate
+  AddPhotoAlternate,
+  Verified as VerifiedIcon,
+  CheckCircle as CheckCircleIcon,
+  Warning as WarningIcon
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/userService';
-import { UserProfile } from '../types/User';
+import { UserProfile, ProfileResponse } from '../types/User';
 
 // Import the new twelve edit modals that match registration steps
 import NameAboutEditModal from '../components/profile-edit/NameAboutEditModal';
@@ -59,6 +62,12 @@ import PreferencesEditModal from '../components/profile-edit/PreferencesEditModa
 function Profile() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profileStatus, setProfileStatus] = useState<{
+    isVerified: boolean;
+    completionPercentage: number;
+    verifiedTypes: string[];
+    missingFields: string[];
+  } | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
@@ -97,8 +106,14 @@ function Profile() {
     setLoading(true);
     setError('');
     try {
-      const profileData = await userService.getProfile(user.userID);
-      setProfile(profileData);
+      const profileResponse = await userService.getProfileWithStatus(user.userID);
+      setProfile(profileResponse.profile);
+      setProfileStatus({
+        isVerified: profileResponse.isVerified,
+        completionPercentage: profileResponse.completionPercentage,
+        verifiedTypes: profileResponse.verifiedTypes,
+        missingFields: profileResponse.missingFields
+      });
     } catch (err) {
       setError('Failed to load profile');
       console.error('Failed to load profile:', err);
@@ -573,6 +588,83 @@ function Profile() {
                   </Typography>
                 </Box>
               )}
+              
+              {/* Profile Status Section */}
+              {profileStatus && (
+                <Box sx={{ mb: 3 }}>
+                  {/* Verification Status */}
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                    {profileStatus.isVerified ? (
+                      <>
+                        <VerifiedIcon sx={{ mr: 1, color: '#48bb78', fontSize: '1.4rem' }} />
+                        <Typography color="#48bb78" variant="body1" sx={{ fontWeight: 600 }}>
+                          Verified Profile
+                        </Typography>
+                        <Box sx={{ ml: 1 }}>
+                          {profileStatus.verifiedTypes.map((type) => (
+                            <Chip
+                              key={type}
+                              label={type}
+                              size="small"
+                              sx={{
+                                backgroundColor: '#48bb78',
+                                color: 'white',
+                                fontSize: '0.7rem',
+                                height: '20px',
+                                ml: 0.5
+                              }}
+                            />
+                          ))}
+                        </Box>
+                      </>
+                    ) : (
+                      <>
+                        <WarningIcon sx={{ mr: 1, color: '#ed8936', fontSize: '1.4rem' }} />
+                        <Typography color="#ed8936" variant="body1" sx={{ fontWeight: 600 }}>
+                          Unverified Profile
+                        </Typography>
+                      </>
+                    )}
+                  </Box>
+                  
+                  {/* Profile Completion */}
+                  <Box sx={{ mb: 2, justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                      <CheckCircleIcon sx={{ mr: 1, color: '#667eea', fontSize: '1.2rem' }} />
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: '#4a5568' }}>
+                        Profile Completion: {Math.round(profileStatus.completionPercentage)}%
+                      </Typography>
+                    </Box>
+                    
+                    {/* Progress Bar */}
+                    <Box sx={{ 
+                      width: '100%', 
+                      backgroundColor: 'rgba(102, 126, 234, 0.1)', 
+                      borderRadius: '10px',
+                      height: '8px',
+                      overflow: 'hidden'
+                    }}>
+                      <Box sx={{ 
+                        width: `${profileStatus.completionPercentage}%`,
+                        backgroundColor: '#667eea',
+                        height: '100%',
+                        borderRadius: '10px',
+                        transition: 'width 0.3s ease'
+                      }} />
+                    </Box>
+                    
+                    {/* Missing Fields */}
+                    {profileStatus.missingFields.length > 0 && (
+                      <Box sx={{ mt: 1 }}>
+                        <Typography variant="caption" sx={{ color: '#a0aec0', fontSize: '0.8rem' }}>
+                          Missing: {profileStatus.missingFields.join(', ')}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+              )}
+              
               <Typography variant="body1" sx={{ 
                 fontStyle: profile?.bio ? 'normal' : 'italic',
                 color: profile?.bio ? '#4a5568' : '#a0aec0',
