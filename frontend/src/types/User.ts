@@ -13,6 +13,14 @@ export interface User {
   phoneVerified?: boolean;
 }
 
+export interface ProfileResponse {
+  profile: UserProfile;
+  isVerified: boolean;
+  completionPercentage: number;
+  verifiedTypes: string[];
+  missingFields: string[];
+}
+
 export interface UserProfile {
   userID: number;
   firstName?: string;

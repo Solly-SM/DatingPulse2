@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import magnolia.datingpulse.DatingPulse.dto.UserProfileDTO;
+import magnolia.datingpulse.DatingPulse.dto.ProfileResponseDTO;
 import magnolia.datingpulse.DatingPulse.service.UserProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,21 @@ import java.util.Optional;
 public class UserProfileController {
 
     private final UserProfileService userProfileService;
+
+    /**
+     * Get current user's profile with verification and completion status
+     * This endpoint validates profile completeness and includes verification information
+     */
+    @GetMapping("/profile/{userId}")
+    public ResponseEntity<ProfileResponseDTO> getProfileWithStatus(
+            @PathVariable @Positive(message = "User ID must be positive") Long userId) {
+        try {
+            ProfileResponseDTO profileResponse = userProfileService.getProfileWithStatus(userId);
+            return ResponseEntity.ok(profileResponse);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
 
     @PostMapping
     public ResponseEntity<UserProfileDTO> createUserProfile(@Valid @RequestBody UserProfileDTO profileDTO) {
