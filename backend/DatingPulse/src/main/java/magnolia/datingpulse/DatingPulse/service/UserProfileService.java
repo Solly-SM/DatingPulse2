@@ -2,16 +2,19 @@ package magnolia.datingpulse.DatingPulse.service;
 
 import lombok.RequiredArgsConstructor;
 import magnolia.datingpulse.DatingPulse.dto.UserProfileDTO;
+import magnolia.datingpulse.DatingPulse.dto.ProfileResponseDTO;
 import magnolia.datingpulse.DatingPulse.entity.Interest;
 import magnolia.datingpulse.DatingPulse.entity.Preference;
 import magnolia.datingpulse.DatingPulse.entity.PrivacyLevel;
 import magnolia.datingpulse.DatingPulse.entity.User;
 import magnolia.datingpulse.DatingPulse.entity.UserProfile;
+import magnolia.datingpulse.DatingPulse.entity.ProfileVerification;
 import magnolia.datingpulse.DatingPulse.mapper.UserProfileMapper;
 import magnolia.datingpulse.DatingPulse.repositories.InterestRepository;
 import magnolia.datingpulse.DatingPulse.repositories.PreferenceRepository;
 import magnolia.datingpulse.DatingPulse.repositories.UserProfileRepository;
 import magnolia.datingpulse.DatingPulse.repositories.UserRepository;
+import magnolia.datingpulse.DatingPulse.repositories.ProfileVerificationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +33,7 @@ public class UserProfileService {
     private final InterestRepository interestRepository;
     private final PreferenceRepository preferenceRepository;
     private final UserProfileMapper userProfileMapper;
+    private final ProfileVerificationRepository profileVerificationRepository;
 
     @Transactional
     public UserProfileDTO createUserProfile(UserProfileDTO profileDTO) {
@@ -325,5 +329,85 @@ public class UserProfileService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         
         return R * c; // distance in kilometers
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileResponseDTO getProfileWithStatus(Long userId) {
+        // Get user profile
+        UserProfileDTO profile = getUserProfile(userId);
+        
+        // Get user entity for verification lookup
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+        
+        // Get verification status
+        List<ProfileVerification> verifications = profileVerificationRepository.findByUser(user);
+        
+        // Calculate verification status
+        boolean isVerified = verifications.stream()
+                .anyMatch(v -> "APPROVED".equals(v.getStatus()));
+        
+        // Get verified types
+        List<String> verifiedTypes = verifications.stream()
+                .filter(v -> "APPROVED".equals(v.getStatus()))
+                .map(ProfileVerification::getType)
+                .collect(Collectors.toList());
+        
+        // Calculate completion percentage
+        double completionPercentage = calculateCompletionPercentage(profile);
+        
+        // Get missing fields
+        List<String> missingFields = getMissingFields(profile);
+        
+        return ProfileResponseDTO.builder()
+                .profile(profile)
+                .isVerified(isVerified)
+                .completionPercentage(completionPercentage)
+                .verifiedTypes(verifiedTypes)
+                .missingFields(missingFields)
+                .build();
+    }
+    
+    private double calculateCompletionPercentage(UserProfileDTO profile) {
+        int totalFields = 0;
+        int completedFields = 0;
+        
+        // Required fields (must be completed)
+        totalFields += 5; // firstname, lastname, age, gender, dob
+        if (profile.getFirstname() != null && !profile.getFirstname().trim().isEmpty()) completedFields++;
+        if (profile.getLastname() != null && !profile.getLastname().trim().isEmpty()) completedFields++;
+        if (profile.getAge() != null) completedFields++;
+        if (profile.getGender() != null && !profile.getGender().trim().isEmpty()) completedFields++;
+        if (profile.getDob() != null) completedFields++;
+        
+        // Optional fields that improve completion
+        totalFields += 5; // bio, pp, education, jobTitle, city
+        if (profile.getBio() != null && !profile.getBio().trim().isEmpty()) completedFields++;
+        if (profile.getPp() != null && !profile.getPp().trim().isEmpty()) completedFields++;
+        if (profile.getEducation() != null && !profile.getEducation().trim().isEmpty()) completedFields++;
+        if (profile.getJobTitle() != null && !profile.getJobTitle().trim().isEmpty()) completedFields++;
+        if (profile.getCity() != null && !profile.getCity().trim().isEmpty()) completedFields++;
+        
+        return totalFields > 0 ? (double) completedFields / totalFields * 100.0 : 0.0;
+    }
+    
+    private List<String> getMissingFields(UserProfileDTO profile) {
+        List<String> missing = new java.util.ArrayList<>();
+        
+        // Check required fields
+        if (profile.getFirstname() == null || profile.getFirstname().trim().isEmpty()) missing.add("firstname");
+        if (profile.getLastname() == null || profile.getLastname().trim().isEmpty()) missing.add("lastname");
+        if (profile.getAge() == null) missing.add("age");
+        if (profile.getGender() == null || profile.getGender().trim().isEmpty()) missing.add("gender");
+        if (profile.getDob() == null) missing.add("dateOfBirth");
+        
+        // Check important optional fields
+        if (profile.getBio() == null || profile.getBio().trim().isEmpty()) missing.add("bio");
+        if (profile.getPp() == null || profile.getPp().trim().isEmpty()) missing.add("profilePicture");
+        if (profile.getEducation() == null || profile.getEducation().trim().isEmpty()) missing.add("education");
+        if (profile.getJobTitle() == null || profile.getJobTitle().trim().isEmpty()) missing.add("jobTitle");
+        if (profile.getCity() == null || profile.getCity().trim().isEmpty()) missing.add("location");
+        
+        return missing;
     }
 }

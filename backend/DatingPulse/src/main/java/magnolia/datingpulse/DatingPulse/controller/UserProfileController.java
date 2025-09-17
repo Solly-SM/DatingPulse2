@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import magnolia.datingpulse.DatingPulse.dto.UserProfileDTO;
+import magnolia.datingpulse.DatingPulse.dto.ProfileResponseDTO;
 import magnolia.datingpulse.DatingPulse.service.UserProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -156,6 +157,17 @@ public class UserProfileController {
         try {
             double distance = userProfileService.calculateDistance(userId1, userId2);
             return ResponseEntity.ok(distance);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/profile/{userId}")
+    public ResponseEntity<ProfileResponseDTO> getProfile(
+            @PathVariable @Positive(message = "User ID must be positive") Long userId) {
+        try {
+            ProfileResponseDTO profileResponse = userProfileService.getProfileWithStatus(userId);
+            return ResponseEntity.ok(profileResponse);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

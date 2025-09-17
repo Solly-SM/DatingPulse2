@@ -13,7 +13,8 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-  Chip
+  Chip,
+  CircularProgress
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -35,7 +36,8 @@ import {
   Delete,
   PlayArrow,
   Stop,
-  AddPhotoAlternate
+  AddPhotoAlternate,
+  Verified
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/userService';
@@ -62,6 +64,12 @@ function Profile() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+
+  // Profile status state
+  const [isVerified, setIsVerified] = useState(false);
+  const [completionPercentage, setCompletionPercentage] = useState(0);
+  const [verifiedTypes, setVerifiedTypes] = useState<string[]>([]);
+  const [missingFields, setMissingFields] = useState<string[]>([]);
 
   // Photo and audio state
   const [photoUploadPreview, setPhotoUploadPreview] = useState<string[]>([]);
@@ -97,8 +105,12 @@ function Profile() {
     setLoading(true);
     setError('');
     try {
-      const profileData = await userService.getProfile(user.userID);
-      setProfile(profileData);
+      const profileResponse = await userService.getProfileWithStatus(user.userID);
+      setProfile(profileResponse.profile);
+      setIsVerified(profileResponse.isVerified);
+      setCompletionPercentage(profileResponse.completionPercentage);
+      setVerifiedTypes(profileResponse.verifiedTypes);
+      setMissingFields(profileResponse.missingFields);
     } catch (err) {
       setError('Failed to load profile');
       console.error('Failed to load profile:', err);
@@ -522,42 +534,110 @@ function Profile() {
             mb: 3,
             gap: { xs: 3, md: 4 }
           }}>
-            <Avatar
-              sx={{
-                width: { xs: 100, sm: 120, md: 140 },
-                height: { xs: 100, sm: 120, md: 140 },
-                fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                boxShadow: '0 12px 30px rgba(102, 126, 234, 0.3)',
-                border: '4px solid rgba(255, 255, 255, 0.8)',
-                position: 'relative',
-                '&::before': {
-                  content: '""',
+            {/* Avatar with Completion Progress */}
+            <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+              <CircularProgress
+                variant="determinate"
+                value={completionPercentage}
+                size={160}
+                thickness={3}
+                sx={{
+                  color: completionPercentage >= 80 ? '#4caf50' : completionPercentage >= 50 ? '#ff9800' : '#f44336',
                   position: 'absolute',
-                  top: '-6px',
-                  left: '-6px',
-                  right: '-6px',
-                  bottom: '-6px',
-                  background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                  borderRadius: '50%',
-                  zIndex: -1,
-                  opacity: 0.3
-                }
-              }}
-            >
-              {profile?.firstName?.charAt(0) || 'U'}
-            </Avatar>
+                  top: -10,
+                  left: -10,
+                  zIndex: 1,
+                  width: { xs: '120px !important', sm: '140px !important', md: '160px !important' },
+                  height: { xs: '120px !important', sm: '140px !important', md: '160px !important' },
+                }}
+              />
+              <Avatar
+                sx={{
+                  width: { xs: 100, sm: 120, md: 140 },
+                  height: { xs: 100, sm: 120, md: 140 },
+                  fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  boxShadow: '0 12px 30px rgba(102, 126, 234, 0.3)',
+                  border: '4px solid rgba(255, 255, 255, 0.8)',
+                  position: 'relative',
+                  zIndex: 2,
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: '-6px',
+                    left: '-6px',
+                    right: '-6px',
+                    bottom: '-6px',
+                    background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                    borderRadius: '50%',
+                    zIndex: -1,
+                    opacity: 0.3
+                  }
+                }}
+              >
+                {profile?.firstName?.charAt(0) || 'U'}
+              </Avatar>
+              
+              {/* Completion Percentage Label */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  bottom: -8,
+                  right: -8,
+                  backgroundColor: 'white',
+                  borderRadius: '16px',
+                  padding: '4px 8px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                  zIndex: 3,
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: '0.7rem',
+                    color: completionPercentage >= 80 ? '#4caf50' : completionPercentage >= 50 ? '#ff9800' : '#f44336',
+                  }}
+                >
+                  {Math.round(completionPercentage)}%
+                </Typography>
+              </Box>
+            </Box>
             <Box sx={{ flex: 1, textAlign: { xs: 'center', md: 'left' } }}>
-              <Typography variant="h3" component="h2" sx={{ 
-                mb: 2, 
-                fontWeight: 700, 
-                color: '#2d3748',
-                fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-                letterSpacing: '-1px'
-              }}>
-                {profile?.firstName || 'Your Name'}
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                <Typography variant="h3" component="h2" sx={{ 
+                  fontWeight: 700, 
+                  color: '#2d3748',
+                  fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                  letterSpacing: '-1px'
+                }}>
+                  {profile?.firstName || 'Your Name'}
+                </Typography>
+                
+                {/* Enhanced Verification Badge */}
+                {isVerified && (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Verified color="primary" sx={{ fontSize: { xs: 24, sm: 28, md: 32 } }} />
+                    {verifiedTypes.length > 0 && (
+                      <Chip
+                        label={`Verified ${verifiedTypes.join(', ')}`}
+                        size="medium"
+                        variant="outlined"
+                        color="primary"
+                        sx={{
+                          fontWeight: 600,
+                          borderColor: '#1976d2',
+                          color: '#1976d2',
+                          backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                        }}
+                      />
+                    )}
+                  </Box>
+                )}
+              </Box>
+              
               <Typography variant="h5" sx={{ 
+                mt: 2,
                 mb: 3, 
                 fontWeight: 500, 
                 color: '#667eea',
