@@ -29,14 +29,14 @@ const mockUserBasic: DiscoverUser = {
     {
       photoID: 1,
       userID: 1,
-      url: 'https://images.unsplash.com/photo-1494790108755-2616b2bef569?w=400&h=400&fit=crop&crop=face',
+      url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTkxZTYzIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0OCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkE8L3RleHQ+PC9zdmc+',
       isPrimary: true,
       uploadedAt: '2024-01-01T00:00:00.000Z',
     },
     {
       photoID: 2,
       userID: 1,
-      url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop&crop=face',
+      url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmY0MDgxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0OCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPjI8L3RleHQ+PC9zdmc+',
       isPrimary: false,
       uploadedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -49,8 +49,8 @@ const mockUserEnhanced: DiscoverUser = {
   firstName: 'Alex',
   username: 'alex_fitness',
   age: 28,
-  // Audio intro
-  audioIntroUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+  // Audio intro - Using a simple tone audio data URL that works reliably
+  audioIntroUrl: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmAfBz2L0/PJdSgFKn3J8N2QQgoeaLvu5Z9NEAxPqeXwtWQcBz2N1fDMeywFJHfA8N2QQAoUXrTp66hWFApFmuPztV8gCj2L0/PJdSgEKn3J8N2QQgoeaLvu5Z9NEAxPqeXwtWQcBz2N1fDNeysFJHfI8N2QQAoUXrTp66hWFApGn+PytV8gCj2L0/PJdSgFK3zJ8N2QQgoeaLvu5Z9NEAxPpuHvxGklEwdBlM3vzW0rEzQ7stn1wGP/AP2gYuAyB3YAAAAASUVORK0=',
   
   // Physical attributes
   height: 180,
@@ -78,7 +78,7 @@ const mockUserEnhanced: DiscoverUser = {
     {
       photoID: 3,
       userID: 2,
-      url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+      url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNzY0YmEyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0OCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkI8L3RleHQ+PC9zdmc+',
       isPrimary: true,
       uploadedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -91,7 +91,7 @@ const mockUserCompact: DiscoverUser = {
   firstName: 'Emma',
   username: 'emma_art',
   age: 24,
-  audioIntroUrl: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+  audioIntroUrl: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmAfBz2L0/PJdSgFKn3J8N2QQgoeaLvu5Z9NEAxPqeXwtWQcBz2N1fDMeywFJHfA8N2QQAoUXrTp66hWFApFmuPztV8gCj2L0/PJdSgEKn3J8N2QQgoeaLvu5Z9NEAxPqeXwtWQcBz2N1fDNeysFJHfI8N2QQAoUXrTp66hWFApGn+PytV8gCj2L0/PJdSgFK3zJ8N2QQgoeaLvu5Z9NEAxPpuHvxGklEwdBlM3vzW0rEzQ7stn1wGP/AP2gYuAyB3YAAAAASUVORK0=',
   height: 158,
   gender: 'female',
   workout: 'Sometimes',
@@ -104,7 +104,7 @@ const mockUserCompact: DiscoverUser = {
     {
       photoID: 4,
       userID: 3,
-      url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face',
+      url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjdhZTYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0OCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkM8L3RleHQ+PC9zdmc+',
       isPrimary: true,
       uploadedAt: '2024-01-01T00:00:00.000Z',
     }

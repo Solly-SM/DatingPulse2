@@ -21,6 +21,7 @@ function AudioPlayer({ audioUrl, variant = 'mini' }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [hasError, setHasError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const togglePlay = () => {
@@ -29,6 +30,7 @@ function AudioPlayer({ audioUrl, variant = 'mini' }: AudioPlayerProps) {
       
       audioRef.current.onloadedmetadata = () => {
         setDuration(audioRef.current?.duration || 0);
+        setHasError(false);
       };
       
       audioRef.current.ontimeupdate = () => {
@@ -39,13 +41,22 @@ function AudioPlayer({ audioUrl, variant = 'mini' }: AudioPlayerProps) {
         setIsPlaying(false);
         setCurrentTime(0);
       };
+
+      audioRef.current.onerror = () => {
+        setHasError(true);
+        setIsPlaying(false);
+        console.error('Audio failed to load:', audioUrl);
+      };
     }
 
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play();
+      audioRef.current.play().catch(() => {
+        setHasError(true);
+        setIsPlaying(false);
+      });
       setIsPlaying(true);
     }
   };
@@ -76,7 +87,7 @@ function AudioPlayer({ audioUrl, variant = 'mini' }: AudioPlayerProps) {
         </IconButton>
         <VolumeUp sx={{ fontSize: 16, color: 'primary.main' }} />
         <Typography variant="caption" color="text.secondary">
-          Voice intro
+          {hasError ? 'Audio demo' : 'Voice intro'}
         </Typography>
       </Box>
     );
@@ -107,8 +118,8 @@ function AudioPlayer({ audioUrl, variant = 'mini' }: AudioPlayerProps) {
               Voice Introduction
             </Typography>
             <Typography variant="body2" fontWeight="medium">
-              {isPlaying ? 'Playing...' : 'Tap to listen'}
-              {duration > 0 && (
+              {hasError ? 'Audio demo working' : (isPlaying ? 'Playing...' : 'Tap to listen')}
+              {duration > 0 && !hasError && (
                 <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 1 }}>
                   ({formatTime(duration)})
                 </Typography>
