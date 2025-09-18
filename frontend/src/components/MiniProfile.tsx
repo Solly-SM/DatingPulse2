@@ -25,8 +25,11 @@ import {
   Pets,
   SmokingRooms,
   LocalBar,
+  Psychology,
+  FavoriteBorder,
 } from '@mui/icons-material';
 import { DiscoverUser } from '../types/Dating';
+import AudioPlayer from './AudioPlayer';
 
 interface MiniProfileProps {
   user: DiscoverUser;
@@ -48,6 +51,23 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
     interests: user.interests || [],
     verified: user.verified || false,
     photos: user.photos || [],
+    audioIntroUrl: user.audioIntroUrl || undefined,
+    
+    // Physical attributes
+    weight: user.weight || undefined,
+    bodyType: user.bodyType || undefined,
+    ethnicity: user.ethnicity || undefined,
+    
+    // Lifestyle
+    pets: user.pets || undefined,
+    drinking: user.drinking || undefined,
+    smoking: user.smoking || undefined,
+    workout: user.workout || undefined,
+    
+    // Preferences
+    relationshipGoal: user.relationshipGoal || undefined,
+    sexualOrientation: user.sexualOrientation || undefined,
+    lookingFor: user.lookingFor || undefined,
   };
 
   const getDisplayAge = () => {
@@ -80,6 +100,10 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
   const hasEducation = profileUser.education;
   const hasBio = profileUser.bio;
   const hasInterests = profileUser.interests && profileUser.interests.length > 0;
+  const hasAudioIntro = profileUser.audioIntroUrl;
+  const hasPhysicalAttributes = profileUser.height || profileUser.gender || profileUser.bodyType || profileUser.ethnicity;
+  const hasLifestyleInfo = profileUser.pets || profileUser.drinking || profileUser.smoking || profileUser.workout;
+  const hasPreferences = profileUser.relationshipGoal || profileUser.lookingFor;
 
   // Different layouts based on variant
   const isSidebar = variant === 'sidebar';
@@ -95,7 +119,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
         background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(255, 255, 255, 0.3)',
-        height: isCompact ? 'auto' : isSidebar ? '70vh' : '100%', // Limit sidebar height to 70vh
+        height: '100%', // Use full height instead of limited vh
         maxHeight: maxHeight,
         display: 'flex',
         flexDirection: 'column',
@@ -257,19 +281,35 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
           </Box>
         )}
 
-        {/* Location - Only show if available */}
+        {/* PRIORITY 1: Audio Intro - Most important after name/age */}
+        {hasAudioIntro && !isCompact && (
+          <Box sx={{ mb: 2 }}>
+            <AudioPlayer audioUrl={profileUser.audioIntroUrl!} variant="mini" />
+          </Box>
+        )}
+
+        {/* PRIORITY 2: Location and Distance */}
+        {/* PRIORITY 2: Location and Distance */}
         {hasLocation && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
             <LocationOn fontSize="small" color="action" />
             <Typography variant="body2" color="text.secondary" noWrap>
               {profileUser.location}
+              {profileUser.distance && (
+                <Typography component="span" color="primary" sx={{ ml: 1, fontWeight: 'medium' }}>
+                  • {Math.round(profileUser.distance)}km away
+                </Typography>
+              )}
             </Typography>
           </Box>
         )}
 
-        {/* Important physical info - Height and Gender */}
-        {(profileUser.height || profileUser.gender) && !isCompact && (
+        {/* PRIORITY 3: Physical Attributes - Height, Gender, Body Type */}
+        {hasPhysicalAttributes && !isCompact && (
           <Box sx={{ mb: 2 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+              Physical Attributes
+            </Typography>
             <Grid container spacing={1}>
               {profileUser.height && (
                 <Grid item xs={6}>
@@ -310,32 +350,58 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
                   </Card>
                 </Grid>
               )}
+
+              {profileUser.bodyType && (
+                <Grid item xs={6}>
+                  <Card variant="outlined" sx={{ border: '1px solid rgba(0,0,0,0.08)' }}>
+                    <CardContent sx={{ py: 1, px: 1.5, '&:last-child': { pb: 1 } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <FitnessCenter color="primary" sx={{ fontSize: 16 }} />
+                        <Box sx={{ minWidth: 0, flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Body Type
+                          </Typography>
+                          <Typography variant="body2" fontWeight="medium" sx={{ textTransform: 'capitalize' }}>
+                            {profileUser.bodyType}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )}
+
+              {profileUser.ethnicity && (
+                <Grid item xs={6}>
+                  <Card variant="outlined" sx={{ border: '1px solid rgba(0,0,0,0.08)' }}>
+                    <CardContent sx={{ py: 1, px: 1.5, '&:last-child': { pb: 1 } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Psychology color="primary" sx={{ fontSize: 16 }} />
+                        <Box sx={{ minWidth: 0, flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Ethnicity
+                          </Typography>
+                          <Typography variant="body2" fontWeight="medium" sx={{ textTransform: 'capitalize' }}>
+                            {profileUser.ethnicity}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )}
             </Grid>
           </Box>
         )}
 
-        {/* Bio - Only show if available */}
-        {hasBio && !isCompact && (
-          <Typography 
-            variant="body2" 
-            sx={{ 
-              mb: 2, 
-              lineHeight: 1.4,
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {profileUser.bio}
-          </Typography>
-        )}
-
-        {/* Work and Education - Only show if available */}
+        {/* PRIORITY 4: Work and Education */}
+        {/* PRIORITY 4: Work and Education */}
         {(hasWork || hasEducation) && !isCompact && (
           <>
             <Divider sx={{ my: 1.5 }} />
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+              Professional & Education
+            </Typography>
             <Grid container spacing={1}>
               {hasWork && (
                 <Grid item xs={12}>
@@ -380,7 +446,174 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
           </>
         )}
 
-        {/* Interests - Only show if available */}
+        {/* PRIORITY 5: Bio */}
+        {hasBio && !isCompact && (
+          <>
+            <Divider sx={{ my: 1.5 }} />
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+              About Me
+            </Typography>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                mb: 2, 
+                lineHeight: 1.4,
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {profileUser.bio}
+            </Typography>
+          </>
+        )}
+
+        {/* PRIORITY 6: Lifestyle Preferences */}
+        {hasLifestyleInfo && !isCompact && (
+          <>
+            <Divider sx={{ my: 1.5 }} />
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+              Lifestyle
+            </Typography>
+            <Grid container spacing={1}>
+              {profileUser.workout && (
+                <Grid item xs={6}>
+                  <Card variant="outlined" sx={{ border: '1px solid rgba(0,0,0,0.08)' }}>
+                    <CardContent sx={{ py: 1, px: 1.5, '&:last-child': { pb: 1 } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <FitnessCenter color="primary" sx={{ fontSize: 16 }} />
+                        <Box sx={{ minWidth: 0, flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Fitness
+                          </Typography>
+                          <Typography variant="body2" fontWeight="medium" sx={{ textTransform: 'capitalize' }}>
+                            {profileUser.workout}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )}
+
+              {profileUser.pets && (
+                <Grid item xs={6}>
+                  <Card variant="outlined" sx={{ border: '1px solid rgba(0,0,0,0.08)' }}>
+                    <CardContent sx={{ py: 1, px: 1.5, '&:last-child': { pb: 1 } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Pets color="primary" sx={{ fontSize: 16 }} />
+                        <Box sx={{ minWidth: 0, flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Pets
+                          </Typography>
+                          <Typography variant="body2" fontWeight="medium" sx={{ textTransform: 'capitalize' }}>
+                            {profileUser.pets}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )}
+
+              {profileUser.drinking && (
+                <Grid item xs={6}>
+                  <Card variant="outlined" sx={{ border: '1px solid rgba(0,0,0,0.08)' }}>
+                    <CardContent sx={{ py: 1, px: 1.5, '&:last-child': { pb: 1 } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <LocalBar color="primary" sx={{ fontSize: 16 }} />
+                        <Box sx={{ minWidth: 0, flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Drinking
+                          </Typography>
+                          <Typography variant="body2" fontWeight="medium" sx={{ textTransform: 'capitalize' }}>
+                            {profileUser.drinking}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )}
+
+              {profileUser.smoking && (
+                <Grid item xs={6}>
+                  <Card variant="outlined" sx={{ border: '1px solid rgba(0,0,0,0.08)' }}>
+                    <CardContent sx={{ py: 1, px: 1.5, '&:last-child': { pb: 1 } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <SmokingRooms color="primary" sx={{ fontSize: 16 }} />
+                        <Box sx={{ minWidth: 0, flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Smoking
+                          </Typography>
+                          <Typography variant="body2" fontWeight="medium" sx={{ textTransform: 'capitalize' }}>
+                            {profileUser.smoking}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )}
+            </Grid>
+          </>
+        )}
+
+        {/* PRIORITY 7: Relationship Preferences */}
+        {hasPreferences && !isCompact && (
+          <>
+            <Divider sx={{ my: 1.5 }} />
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+              Looking For
+            </Typography>
+            <Grid container spacing={1}>
+              {profileUser.relationshipGoal && (
+                <Grid item xs={12}>
+                  <Card variant="outlined" sx={{ border: '1px solid rgba(0,0,0,0.08)' }}>
+                    <CardContent sx={{ py: 1, px: 1.5, '&:last-child': { pb: 1 } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <FavoriteBorder color="primary" sx={{ fontSize: 16 }} />
+                        <Box sx={{ minWidth: 0, flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Relationship Goal
+                          </Typography>
+                          <Typography variant="body2" fontWeight="medium" sx={{ textTransform: 'capitalize' }}>
+                            {profileUser.relationshipGoal}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )}
+
+              {profileUser.lookingFor && (
+                <Grid item xs={12}>
+                  <Card variant="outlined" sx={{ border: '1px solid rgba(0,0,0,0.08)' }}>
+                    <CardContent sx={{ py: 1, px: 1.5, '&:last-child': { pb: 1 } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Psychology color="primary" sx={{ fontSize: 16 }} />
+                        <Box sx={{ minWidth: 0, flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Looking For
+                          </Typography>
+                          <Typography variant="body2" fontWeight="medium" sx={{ textTransform: 'capitalize' }}>
+                            {profileUser.lookingFor}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )}
+            </Grid>
+          </>
+        )}
+
+        {/* PRIORITY 8: Interests */}
+        {/* PRIORITY 8: Interests */}
         {hasInterests && !isCompact && (
           <>
             <Divider sx={{ my: 1.5 }} />
@@ -416,6 +649,13 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
         {/* Compact view key info - show most important details */}
         {isCompact && (
           <Box sx={{ mt: 1 }}>
+            {/* Audio intro for compact view */}
+            {hasAudioIntro && (
+              <Box sx={{ mb: 1 }}>
+                <AudioPlayer audioUrl={profileUser.audioIntroUrl!} variant="compact" />
+              </Box>
+            )}
+            
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
               {profileUser.height && (
                 <Chip
@@ -434,6 +674,16 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
                   variant="outlined"
                   color="primary"
                   icon={<Wc sx={{ fontSize: 14 }} />}
+                  sx={{ fontSize: '0.65rem', height: 20, textTransform: 'capitalize' }}
+                />
+              )}
+              {profileUser.workout && (
+                <Chip
+                  label={profileUser.workout}
+                  size="small"
+                  variant="outlined"
+                  color="secondary"
+                  icon={<FitnessCenter sx={{ fontSize: 14 }} />}
                   sx={{ fontSize: '0.65rem', height: 20, textTransform: 'capitalize' }}
                 />
               )}

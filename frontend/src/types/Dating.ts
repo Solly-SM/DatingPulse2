@@ -24,6 +24,25 @@ export interface DiscoverUser {
   gender?: 'male' | 'female' | 'other';
   distance?: number;
   verified?: boolean;
+  
+  // Audio intro
+  audioIntroUrl?: string;
+  
+  // Physical attributes
+  weight?: number;
+  bodyType?: string;
+  ethnicity?: string;
+  
+  // Lifestyle attributes
+  pets?: string;
+  drinking?: string;
+  smoking?: string;
+  workout?: string;
+  
+  // Personality and preferences
+  relationshipGoal?: string;
+  sexualOrientation?: string;
+  lookingFor?: string;
 }
 
 export interface Photo {
