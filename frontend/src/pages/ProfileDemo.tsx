@@ -135,11 +135,34 @@ function ProfileDemo() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center' }}>
+      <Typography 
+        variant="h4" 
+        gutterBottom 
+        sx={{ 
+          mb: 3, 
+          fontWeight: 700, 
+          textAlign: 'center',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          color: 'transparent'
+        }}
+      >
         ✨ Enhanced Profile Demo
       </Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4, textAlign: 'center' }}>
-        Showcasing the comprehensive profile fields with organized sections and emoji visual indicators
+      <Typography 
+        variant="body1" 
+        color="text.secondary" 
+        sx={{ 
+          mb: 5, 
+          textAlign: 'center',
+          fontSize: '1.1rem',
+          maxWidth: '600px',
+          mx: 'auto',
+          lineHeight: 1.6
+        }}
+      >
+        A comprehensive profile interface with organized sections and intuitive editing capabilities
       </Typography>
 
       {success && (
@@ -154,21 +177,26 @@ function ProfileDemo() {
         </Alert>
       )}
 
-      <Grid container spacing={3}>
+      <Grid container spacing={4}>
         {/* Photos Section */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ 
+            p: 4, 
+            borderRadius: '16px', 
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(102, 126, 234, 0.05) 100%)'
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: '#2d3748', mb: 3 }}>
               📸 Photos
             </Typography>
             
             <Grid container spacing={2}>
               {profile?.photos?.map((photo) => (
-                <Grid item xs={6} sm={4} md={3} key={photo.photoID}>
-                  <Card sx={{ position: 'relative', height: 200 }}>
+                <Grid item xs={6} sm={4} md={6} key={photo.photoID}>
+                  <Card sx={{ position: 'relative', height: 160, borderRadius: '12px', overflow: 'hidden' }}>
                     <CardMedia
                       component="img"
-                      height="200"
+                      height="160"
                       image={photo.url}
                       alt={photo.caption || 'Profile photo'}
                       sx={{ objectFit: 'cover' }}
@@ -196,13 +224,18 @@ function ProfileDemo() {
         </Grid>
 
         {/* Profile Information with Inline Editing */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ 
+            p: 4, 
+            borderRadius: '16px', 
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 158, 11, 0.05) 100%)'
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: '#2d3748', mb: 3 }}>
               👤 Profile Information
             </Typography>
             
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               {/* Basic Information */}
               <Grid item xs={12} sm={6}>
                 <InlineEditField

@@ -328,119 +328,131 @@ function Profile() {
     );
   }
 
-  // Profile data sections for clean organization
+  // Consolidated profile sections with related information grouped together
   const profileSections = [
     {
-      id: 'nameAbout',
-      title: 'Name & About',
+      id: 'basicInfo',
+      title: 'Basic Information',
       icon: <PersonIcon />,
       color: '#667eea',
       bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(102, 126, 234, 0.05) 100%)',
-      data: profile?.firstName || profile?.bio ? `${profile?.firstName || 'Name not set'}${profile?.bio ? ' • Bio added' : ' • No bio'}` : 'Add your name and tell us about yourself'
+      sections: [
+        {
+          id: 'nameAbout',
+          label: 'Name & Bio',
+          value: profile?.firstName || profile?.bio ? `${profile?.firstName || 'Name not set'}${profile?.bio ? ' • Bio added' : ' • No bio'}` : 'Add your name and tell us about yourself'
+        },
+        {
+          id: 'birthDate',
+          label: 'Age',
+          value: profile?.dateOfBirth ? `${calculateAge(profile.dateOfBirth)} years old` : 'Add your birth date'
+        },
+        {
+          id: 'location',
+          label: 'Location',
+          value: profile?.city && profile?.region ? `${profile.city}, ${profile.region}` : profile?.location || 'Add your location'
+        }
+      ]
     },
     {
-      id: 'birthDate',
-      title: 'Age',
-      icon: <CakeIcon />,
-      color: '#10b981',
-      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(16, 185, 129, 0.05) 100%)',
-      data: profile?.dateOfBirth ? `${calculateAge(profile.dateOfBirth)} years old` : 'Add your birth date'
-    },
-    {
-      id: 'genderDisplay',
-      title: 'Gender Identity',
+      id: 'identity',
+      title: 'Identity & Preferences',
       icon: <GenderIcon />,
       color: '#f59e0b',
       bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 158, 11, 0.05) 100%)',
-      data: profile?.gender || 'Set your gender identity'
+      sections: [
+        {
+          id: 'genderDisplay',
+          label: 'Gender Identity',
+          value: profile?.gender || 'Set your gender identity'
+        },
+        {
+          id: 'sexualOrientation',
+          label: 'Sexual Orientation',
+          value: profile?.sexualOrientation || 'Add your sexual orientation'
+        },
+        {
+          id: 'interestedIn',
+          label: 'Interested In',
+          value: profile?.interestedIn || 'Who are you interested in?'
+        }
+      ]
     },
     {
-      id: 'sexualOrientation',
-      title: 'Sexual Orientation',
-      icon: <FavoriteIcon />,
-      color: '#ef4444',
-      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(239, 68, 68, 0.05) 100%)',
-      data: profile?.sexualOrientation || 'Add your sexual orientation'
-    },
-    {
-      id: 'interestedIn',
-      title: 'Interested In',
-      icon: <InterestedInIcon />,
-      color: '#8b5cf6',
-      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(139, 92, 246, 0.05) 100%)',
-      data: profile?.interestedIn || 'Who are you interested in?'
-    },
-    {
-      id: 'lookingFor',
-      title: 'Looking For',
+      id: 'dating',
+      title: 'Dating Goals',
       icon: <LookingForIcon />,
-      color: '#06b6d4',
-      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(6, 182, 212, 0.05) 100%)',
-      data: profile?.lookingFor || 'What type of relationship?'
-    },
-    {
-      id: 'location',
-      title: 'Living In',
-      icon: <LocationIcon />,
-      color: '#f97316',
-      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 115, 22, 0.05) 100%)',
-      data: profile?.city && profile?.region ? `${profile.city}, ${profile.region}` : profile?.location || 'Add your location'
-    },
-    {
-      id: 'distancePreference',
-      title: 'Distance',
-      icon: <RadarIcon />,
-      color: '#7c3aed',
-      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(124, 58, 237, 0.05) 100%)',
-      data: profile?.maxDistance ? `Within ${profile.maxDistance} km` : 'Set distance preference'
-    },
-    {
-      id: 'interests',
-      title: 'Interests',
-      icon: <FavoriteIcon />,
       color: '#ec4899',
       bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(236, 72, 153, 0.05) 100%)',
-      data: profile?.interests?.length ? `${profile.interests.length} interests selected` : 'Add your interests'
+      sections: [
+        {
+          id: 'lookingFor',
+          label: 'Looking For',
+          value: profile?.lookingFor || 'What type of relationship?'
+        },
+        {
+          id: 'distancePreference',
+          label: 'Distance Range',
+          value: profile?.maxDistance ? `Within ${profile.maxDistance} km` : 'Set distance preference'
+        },
+        {
+          id: 'interests',
+          label: 'Interests',
+          value: profile?.interests?.length ? `${profile.interests.length} interests selected` : 'Add your interests'
+        }
+      ]
     },
     {
-      id: 'physicalAttributes',
-      title: 'Physical',
+      id: 'physical',
+      title: 'Physical & Lifestyle',
       icon: <FitnessCenterIcon />,
       color: '#3b82f6',
       bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(59, 130, 246, 0.05) 100%)',
-      data: profile?.height || profile?.bodyType ? 'Physical attributes added' : 'Add physical attributes'
-    },
-    {
-      id: 'lifestyle',
-      title: 'Lifestyle',
-      icon: <LifestyleIcon />,
-      color: '#84cc16',
-      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(132, 204, 22, 0.05) 100%)',
-      data: profile?.pets || profile?.drinking || profile?.smoking ? 'Lifestyle info added' : 'Add lifestyle preferences'
+      sections: [
+        {
+          id: 'physicalAttributes',
+          label: 'Physical Attributes',
+          value: profile?.height || profile?.bodyType ? 'Physical attributes added' : 'Add physical attributes'
+        },
+        {
+          id: 'lifestyle',
+          label: 'Lifestyle',
+          value: profile?.pets || profile?.drinking || profile?.smoking ? 'Lifestyle info added' : 'Add lifestyle preferences'
+        }
+      ]
     },
     {
       id: 'personality',
-      title: 'Personality',
+      title: 'Personality & Values',
       icon: <PsychologyIcon />,
       color: '#a855f7',
       bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(168, 85, 247, 0.05) 100%)',
-      data: profile?.communicationStyle || profile?.loveLanguage ? 'Personality traits added' : 'Add personality traits'
-    },
-    {
-      id: 'additionalInfo',
-      title: 'Additional Info',
-      icon: <PersonIcon />,
-      color: '#dc2626',
-      bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(220, 38, 38, 0.05) 100%)',
-      data: profile?.religion || profile?.politicalViews || profile?.familyPlans || profile?.industry ? 'Additional information added' : 'Add more about yourself'
+      sections: [
+        {
+          id: 'personality',
+          label: 'Personality Traits',
+          value: profile?.communicationStyle || profile?.loveLanguage ? 'Personality traits added' : 'Add personality traits'
+        },
+        {
+          id: 'additionalInfo',
+          label: 'Values & Beliefs',
+          value: profile?.religion || profile?.politicalViews || profile?.familyPlans || profile?.industry ? 'Additional information added' : 'Add more about yourself'
+        }
+      ]
     },
     {
       id: 'preferences',
-      title: 'Preferences',
+      title: 'Interests & Hobbies',
       icon: <FavoriteIcon />,
       color: '#059669',
       bgColor: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(5, 150, 105, 0.05) 100%)',
-      data: profile?.musicPreferences?.length || profile?.foodPreferences?.length || profile?.entertainmentPreferences?.length ? 'Preferences added' : 'Add your preferences'
+      sections: [
+        {
+          id: 'preferences',
+          label: 'Preferences',
+          value: profile?.musicPreferences?.length || profile?.foodPreferences?.length || profile?.entertainmentPreferences?.length ? 'Preferences added' : 'Add your preferences'
+        }
+      ]
     }
   ];
 
@@ -1106,10 +1118,10 @@ function Profile() {
         </CardContent>
       </Card>
 
-      {/* Profile Sections Grid */}
+      {/* Profile Sections Grid - Consolidated Layout */}
       <Grid container spacing={4}>
         {profileSections.map((section) => (
-          <Grid item xs={12} sm={6} lg={4} key={section.id}>
+          <Grid item xs={12} md={6} key={section.id}>
             <Card sx={{ 
               height: '100%', 
               borderRadius: '20px',
@@ -1131,67 +1143,92 @@ function Profile() {
                 zIndex: 1
               },
               '&:hover': {
-                transform: 'translateY(-8px)',
-                boxShadow: `0 20px 40px ${section.color}15`,
-                '& .edit-button': {
-                  transform: 'scale(1.1)',
-                  backgroundColor: `${section.color}20`
-                }
+                transform: 'translateY(-4px)',
+                boxShadow: `0 20px 40px ${section.color}15`
               }
             }}>
-              <CardContent sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Box sx={{ 
-                      color: section.color, 
-                      mr: 2, 
-                      fontSize: '1.8rem',
-                      p: 1,
-                      borderRadius: '12px',
-                      backgroundColor: `${section.color}10`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      {section.icon}
-                    </Box>
-                    <Typography variant="h6" sx={{ 
-                      fontWeight: 700, 
-                      color: '#2d3748',
-                      fontSize: '1.1rem'
-                    }}>
-                      {section.title}
-                    </Typography>
+              <CardContent sx={{ p: 4 }}>
+                {/* Section Header */}
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                  <Box sx={{ 
+                    color: section.color, 
+                    mr: 2, 
+                    fontSize: '1.8rem',
+                    p: 1,
+                    borderRadius: '12px',
+                    backgroundColor: `${section.color}10`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    {section.icon}
                   </Box>
-                  <IconButton 
-                    className="edit-button"
-                    onClick={() => openModal(section.id as keyof typeof openModals)}
-                    sx={{ 
-                      color: section.color,
-                      backgroundColor: `${section.color}10`,
-                      width: 44,
-                      height: 44,
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        backgroundColor: `${section.color}20`,
-                        transform: 'scale(1.1)'
-                      }
-                    }}
-                  >
-                    <EditIcon sx={{ fontSize: '1.2rem' }} />
-                  </IconButton>
+                  <Typography variant="h6" sx={{ 
+                    fontWeight: 700, 
+                    color: '#2d3748',
+                    fontSize: '1.2rem'
+                  }}>
+                    {section.title}
+                  </Typography>
                 </Box>
-                <Typography variant="body2" sx={{ 
-                  flex: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  fontSize: '1rem',
-                  lineHeight: 1.5,
-                  color: '#4a5568',
-                  fontWeight: 400
-                }}>
-                  {section.data}
-                </Typography>
+
+                {/* Section Content */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {section.sections.map((item) => (
+                    <Box 
+                      key={item.id}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        p: 2,
+                        borderRadius: '12px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                        border: `1px solid rgba(${section.color === '#667eea' ? '102, 126, 234' : section.color === '#f59e0b' ? '245, 158, 11' : section.color === '#ec4899' ? '236, 72, 153' : section.color === '#3b82f6' ? '59, 130, 246' : section.color === '#a855f7' ? '168, 85, 247' : '5, 150, 105'}, 0.1)`,
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                          transform: 'translateX(4px)'
+                        }
+                      }}
+                    >
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="subtitle2" sx={{ 
+                          fontWeight: 600, 
+                          color: '#374151',
+                          fontSize: '0.9rem',
+                          mb: 0.5
+                        }}>
+                          {item.label}
+                        </Typography>
+                        <Typography variant="body2" sx={{ 
+                          color: '#6b7280',
+                          fontSize: '0.85rem',
+                          lineHeight: 1.4
+                        }}>
+                          {item.value}
+                        </Typography>
+                      </Box>
+                      <IconButton 
+                        size="small"
+                        onClick={() => openModal(item.id as keyof typeof openModals)}
+                        sx={{ 
+                          color: section.color,
+                          backgroundColor: `${section.color}10`,
+                          width: 32,
+                          height: 32,
+                          transition: 'all 0.2s ease',
+                          '&:hover': {
+                            backgroundColor: `${section.color}20`,
+                            transform: 'scale(1.1)'
+                          }
+                        }}
+                      >
+                        <EditIcon sx={{ fontSize: '1rem' }} />
+                      </IconButton>
+                    </Box>
+                  ))}
+                </Box>
               </CardContent>
             </Card>
           </Grid>
