@@ -43,6 +43,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/userService';
 import { UserProfile } from '../types/User';
+import MiniProfile from '../components/MiniProfile';
 
 // Import the new twelve edit modals that match registration steps
 import NameAboutEditModal from '../components/profile-edit/NameAboutEditModal';
@@ -485,40 +486,45 @@ function Profile() {
         ✨ My Profile
       </Typography>
 
-      {success && (
-        <Alert 
-          severity="success" 
-          sx={{ 
-            mb: 4,
-            borderRadius: '12px',
-            boxShadow: '0 8px 25px rgba(76, 175, 80, 0.15)',
-            border: '1px solid rgba(76, 175, 80, 0.2)',
-            position: 'relative',
-            zIndex: 1,
-            backdropFilter: 'blur(10px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)'
-          }}
-        >
-          {success}
-        </Alert>
-      )}
-      {error && (
-        <Alert 
-          severity="error" 
-          sx={{ 
-            mb: 4,
-            borderRadius: '12px',
-            boxShadow: '0 8px 25px rgba(244, 67, 54, 0.15)',
-            border: '1px solid rgba(244, 67, 54, 0.2)',
-            position: 'relative',
-            zIndex: 1,
-            backdropFilter: 'blur(10px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)'
-          }}
-        >
-          {error}
-        </Alert>
-      )}
+      {/* Main Content Area - Two Column Layout */}
+      <Grid container spacing={4}>
+        {/* Left Column - Profile Editing (70%) */}
+        <Grid item xs={12} lg={8}>
+          {/* Alerts */}
+          {success && (
+            <Alert 
+              severity="success" 
+              sx={{ 
+                mb: 4,
+                borderRadius: '12px',
+                boxShadow: '0 8px 25px rgba(76, 175, 80, 0.15)',
+                border: '1px solid rgba(76, 175, 80, 0.2)',
+                position: 'relative',
+                zIndex: 1,
+                backdropFilter: 'blur(10px)',
+                backgroundColor: 'rgba(255, 255, 255, 0.9)'
+              }}
+            >
+              {success}
+            </Alert>
+          )}
+          {error && (
+            <Alert 
+              severity="error" 
+              sx={{ 
+                mb: 4,
+                borderRadius: '12px',
+                boxShadow: '0 8px 25px rgba(244, 67, 54, 0.15)',
+                border: '1px solid rgba(244, 67, 54, 0.2)',
+                position: 'relative',
+                zIndex: 1,
+                backdropFilter: 'blur(10px)',
+                backgroundColor: 'rgba(255, 255, 255, 0.9)'
+              }}
+            >
+              {error}
+            </Alert>
+          )}
 
       {/* Profile Header Card */}
       <Card sx={{ 
@@ -1106,97 +1112,142 @@ function Profile() {
         </CardContent>
       </Card>
 
-      {/* Profile Sections Grid */}
-      <Grid container spacing={4}>
-        {profileSections.map((section) => (
-          <Grid item xs={12} sm={6} lg={4} key={section.id}>
-            <Card sx={{ 
-              height: '100%', 
-              borderRadius: '20px',
-              background: section.bgColor,
-              boxShadow: `0 10px 30px ${section.color}08`,
-              border: `1px solid ${section.color}15`,
-              backdropFilter: 'blur(20px)',
-              transition: 'all 0.3s ease',
-              position: 'relative',
-              overflow: 'hidden',
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                height: '4px',
-                background: `linear-gradient(90deg, ${section.color}, ${section.color}80)`,
-                zIndex: 1
-              },
-              '&:hover': {
-                transform: 'translateY(-8px)',
-                boxShadow: `0 20px 40px ${section.color}15`,
-                '& .edit-button': {
-                  transform: 'scale(1.1)',
-                  backgroundColor: `${section.color}20`
-                }
-              }
-            }}>
-              <CardContent sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Box sx={{ 
-                      color: section.color, 
-                      mr: 2, 
-                      fontSize: '1.8rem',
-                      p: 1,
-                      borderRadius: '12px',
-                      backgroundColor: `${section.color}10`,
+          {/* Profile Sections Grid */}
+          <Grid container spacing={4}>
+            {profileSections.map((section) => (
+              <Grid item xs={12} sm={6} lg={6} key={section.id}>
+                <Card sx={{ 
+                  height: '100%', 
+                  borderRadius: '20px',
+                  background: section.bgColor,
+                  boxShadow: `0 10px 30px ${section.color}08`,
+                  border: `1px solid ${section.color}15`,
+                  backdropFilter: 'blur(20px)',
+                  transition: 'all 0.3s ease',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '4px',
+                    background: `linear-gradient(90deg, ${section.color}, ${section.color}80)`,
+                    zIndex: 1
+                  },
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: `0 20px 40px ${section.color}15`,
+                    '& .edit-button': {
+                      transform: 'scale(1.1)',
+                      backgroundColor: `${section.color}20`
+                    }
+                  }
+                }}>
+                  <CardContent sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ 
+                          color: section.color, 
+                          mr: 2, 
+                          fontSize: '1.8rem',
+                          p: 1,
+                          borderRadius: '12px',
+                          backgroundColor: `${section.color}10`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          {section.icon}
+                        </Box>
+                        <Typography variant="h6" sx={{ 
+                          fontWeight: 700, 
+                          color: '#2d3748',
+                          fontSize: '1.1rem'
+                        }}>
+                          {section.title}
+                        </Typography>
+                      </Box>
+                      <IconButton 
+                        className="edit-button"
+                        onClick={() => openModal(section.id as keyof typeof openModals)}
+                        sx={{ 
+                          color: section.color,
+                          backgroundColor: `${section.color}10`,
+                          width: 44,
+                          height: 44,
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: `${section.color}20`,
+                            transform: 'scale(1.1)'
+                          }
+                        }}
+                      >
+                        <EditIcon sx={{ fontSize: '1.2rem' }} />
+                      </IconButton>
+                    </Box>
+                    <Typography variant="body2" sx={{ 
+                      flex: 1,
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center'
+                      fontSize: '1rem',
+                      lineHeight: 1.5,
+                      color: '#4a5568',
+                      fontWeight: 400
                     }}>
-                      {section.icon}
-                    </Box>
-                    <Typography variant="h6" sx={{ 
-                      fontWeight: 700, 
-                      color: '#2d3748',
-                      fontSize: '1.1rem'
-                    }}>
-                      {section.title}
+                      {section.data}
                     </Typography>
-                  </Box>
-                  <IconButton 
-                    className="edit-button"
-                    onClick={() => openModal(section.id as keyof typeof openModals)}
-                    sx={{ 
-                      color: section.color,
-                      backgroundColor: `${section.color}10`,
-                      width: 44,
-                      height: 44,
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        backgroundColor: `${section.color}20`,
-                        transform: 'scale(1.1)'
-                      }
-                    }}
-                  >
-                    <EditIcon sx={{ fontSize: '1.2rem' }} />
-                  </IconButton>
-                </Box>
-                <Typography variant="body2" sx={{ 
-                  flex: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  fontSize: '1rem',
-                  lineHeight: 1.5,
-                  color: '#4a5568',
-                  fontWeight: 400
-                }}>
-                  {section.data}
-                </Typography>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
           </Grid>
-        ))}
+        </Grid>
+
+        {/* Right Column - Profile Preview (30%) */}
+        <Grid item xs={12} lg={4}>
+          <Box sx={{ position: 'sticky', top: 20 }}>
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                mb: 3,
+                fontWeight: 700,
+                color: '#2d3748',
+                textAlign: 'center',
+                position: 'relative',
+                zIndex: 1
+              }}
+            >
+              Profile Preview
+            </Typography>
+            {profile && (
+              <MiniProfile
+                user={{
+                  userID: profile.userID || 0,
+                  firstName: profile.firstName,
+                  username: profile.firstName,
+                  age: profile.dateOfBirth ? 
+                    new Date().getFullYear() - new Date(profile.dateOfBirth).getFullYear() : 
+                    undefined,
+                  bio: profile.bio,
+                  location: profile.location,
+                  occupation: profile.occupation,
+                  education: profile.education,
+                  interests: profile.interests,
+                  verified: true,
+                  photos: profile.photos || [],
+                }}
+                showPhoto={true}
+                variant="preview"
+                maxHeight="calc(100vh - 160px)"
+              />
+            )}
+          </Box>
+        </Grid>
       </Grid>
+
+      {/* Profile Sections Grid - End of Left Column */}
 
       {/* All Twelve Edit Modals */}
       <NameAboutEditModal
