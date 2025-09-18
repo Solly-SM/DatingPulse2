@@ -25,6 +25,7 @@ import DemoSidebar from './pages/DemoSidebar';
 import DemoNotifications from './pages/DemoNotifications';
 import DiscoverDemo from './pages/DiscoverDemo';
 import ComponentsDemo from './pages/ComponentsDemo';
+import MiniProfileDemo from './pages/MiniProfileDemo';
 import './App.css';
 // Conditionally import demo auth only in development
 if (process.env.NODE_ENV === 'development') {
@@ -317,6 +318,7 @@ function App() {
               <Route path="/demo-home" element={<Home />} />
               <Route path="/demo-profile" element={<ProfileDemo />} />
               <Route path="/demo-components" element={<ComponentsDemo />} />
+              <Route path="/demo-miniprofile" element={<MiniProfileDemo />} />
               <Route path="/home" element={
                 <ProtectedRoute>
                   <Layout>
