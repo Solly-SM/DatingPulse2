@@ -55,6 +55,21 @@ function generateMockUser(id: number): DiscoverUser {
     "Book lover and wine enthusiast 📚🍷 Perfect evening for me is a good book, great wine, and meaningful conversation. Let's explore life's beautiful moments together!"
   ];
 
+  // Enhanced attributes for comprehensive profiles
+  const bodyTypes = ['Slim', 'Athletic', 'Average', 'Curvy', 'Muscular'];
+  const ethnicities = ['Mixed', 'African', 'Caucasian', 'Asian', 'Hispanic', 'Other'];
+  const petPreferences = ['Dog lover', 'Cat person', 'No pets', 'All animals'];
+  const drinkingHabits = ['Never', 'Socially', 'Regularly', 'Occasionally'];
+  const smokingHabits = ['Never', 'Socially', 'Regularly', 'Trying to quit'];
+  const workoutFrequency = ['Daily', 'Weekly', 'Occasionally', 'Rarely'];
+  const relationshipGoals = ['Casual dating', 'Long-term', 'Marriage', 'Friends first'];
+  const lookingFor = ['Serious relationship', 'Casual dating', 'New friends', 'Networking'];
+
+  // Audio intro URL - using a simple tone audio data URL that works reliably
+  const audioIntroUrl = Math.random() > 0.4 ? 
+    "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N+QQAoUXrTp66hVFApGn+DyvmkeCjuO1fLNeSsFJHfH8N+QQAoUXrTp66hVFApGnU6S" :
+    undefined;
+
   return {
     userID: id,
     username: `${firstName.toLowerCase()}${id}`,
@@ -86,6 +101,17 @@ function generateMockUser(id: number): DiscoverUser {
     gender: gender as 'male' | 'female',
     distance: Math.floor(Math.random() * 20) + 1,
     verified: Math.random() > 0.3,
+    
+    // Enhanced profile attributes
+    audioIntroUrl,
+    bodyType: bodyTypes[Math.floor(Math.random() * bodyTypes.length)],
+    ethnicity: ethnicities[Math.floor(Math.random() * ethnicities.length)],
+    pets: petPreferences[Math.floor(Math.random() * petPreferences.length)],
+    drinking: drinkingHabits[Math.floor(Math.random() * drinkingHabits.length)],
+    smoking: smokingHabits[Math.floor(Math.random() * smokingHabits.length)],
+    workout: workoutFrequency[Math.floor(Math.random() * workoutFrequency.length)],
+    relationshipGoal: relationshipGoals[Math.floor(Math.random() * relationshipGoals.length)],
+    lookingFor: lookingFor[Math.floor(Math.random() * lookingFor.length)],
   };
 }
 
