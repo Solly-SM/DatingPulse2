@@ -26,7 +26,7 @@ import {
 import { datingService } from '../services/datingService';
 import { DiscoverUser } from '../types/Dating';
 import PhotoViewer from '../components/PhotoViewer';
-import ProfileDetail from '../components/ProfileDetail';
+import MiniProfile from '../components/MiniProfile';
 
 function Discover() {
   const [users, setUsers] = useState<DiscoverUser[]>([]);
@@ -525,9 +525,9 @@ function Discover() {
           </Box>
         </Grid>
 
-        {/* Right column - Profile details */}
+        {/* Right column - Mini Profile details */}
         <Grid item xs={3.25}>
-          <ProfileDetail user={currentUser} />
+          <MiniProfile user={currentUser} />
         </Grid>
       </Grid>
     </Box>
