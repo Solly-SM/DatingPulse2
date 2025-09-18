@@ -12,7 +12,7 @@ import { datingService } from '../services/datingService';
 import { Conversation } from '../types/Dating';
 import InboxComponent from '../components/InboxComponent';
 import ConversationView from '../components/ConversationView';
-import ProfileView from '../components/ProfileView';
+import MiniProfile from '../components/MiniProfile';
 
 function Messages() {
   const location = useLocation();
@@ -160,11 +160,10 @@ function Messages() {
         />
       </Box>
 
-      {/* Right Section - Profile (40%) */}
+      {/* Right Section - Mini Profile (40%) */}
       <Box sx={{ flex: 0.4, minWidth: '300px' }}>
-        <ProfileView
+        <MiniProfile
           user={selectedConversation.otherUser}
-          compact={false}
         />
       </Box>
     </Box>

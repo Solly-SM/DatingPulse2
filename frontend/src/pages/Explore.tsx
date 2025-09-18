@@ -40,7 +40,7 @@ import {
 } from '@mui/icons-material';
 import { datingService } from '../services/datingService';
 import { DiscoverUser } from '../types/Dating';
-import ProfileView from '../components/ProfileView';
+import MiniProfile from '../components/MiniProfile';
 import PhotoViewer from '../components/PhotoViewer';
 import PulseLogo from '../components/PulseLogo';
 import PulseLoader from '../components/PulseLoader';
@@ -628,9 +628,9 @@ function Explore() {
           </Paper>
         </Grid>
 
-        {/* Right column - Profile details WITHOUT pictures */}
+        {/* Right column - Mini Profile details WITHOUT pictures */}
         <Grid item xs={5}>
-          <ProfileView user={currentUser} compact={true} hidePhotos={true} />
+          <MiniProfile user={currentUser} />
         </Grid>
       </Grid>
     </Box>

@@ -23,7 +23,7 @@ import {
 } from '@mui/icons-material';
 import { DiscoverUser } from '../types/Dating';
 import PhotoViewer from '../components/PhotoViewer';
-import ProfileDetail from '../components/ProfileDetail';
+import MiniProfile from '../components/MiniProfile';
 
 // Mock user data for demo
 const mockUsers: DiscoverUser[] = [
@@ -349,9 +349,9 @@ function DiscoverDemo() {
           </Box>
         </Grid>
 
-        {/* Right column - Profile details */}
+        {/* Right column - Mini Profile details */}
         <Grid item xs={3.25}>
-          <ProfileDetail user={currentUser} />
+          <MiniProfile user={currentUser} />
         </Grid>
       </Grid>
 
