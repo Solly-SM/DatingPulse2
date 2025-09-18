@@ -20,10 +20,53 @@ export interface DiscoverUser {
   photos?: Photo[];
   education?: string;
   occupation?: string;
+  jobTitle?: string;
   height?: number;
   gender?: 'male' | 'female' | 'other';
   distance?: number;
   verified?: boolean;
+  
+  // Physical Attributes
+  weight?: number;
+  bodyType?: string;
+  ethnicity?: string;
+  
+  // Lifestyle Data  
+  pets?: string;
+  drinking?: string;
+  smoking?: string;
+  workout?: string;
+  dietaryPreference?: string;
+  socialMedia?: string;
+  sleepingHabits?: string;
+  languages?: string[];
+  
+  // Preferences
+  relationshipGoal?: string;
+  sexualOrientation?: string;
+  lookingFor?: string;
+  
+  // Personality
+  communicationStyle?: string;
+  loveLanguage?: string;
+  zodiacSign?: string;
+  
+  // Media
+  audioIntroUrl?: string;
+  
+  // Additional Optional Profile Fields
+  religion?: string;
+  politicalViews?: string;
+  familyPlans?: string;
+  fitnessLevel?: string;
+  travelFrequency?: string;
+  industry?: string;
+  musicPreferences?: string[];
+  foodPreferences?: string[];
+  entertainmentPreferences?: string[];
+  currentlyReading?: string;
+  lifeGoals?: string;
+  petPreferences?: string;
 }
 
 export interface Photo {
