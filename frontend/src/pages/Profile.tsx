@@ -1226,7 +1226,7 @@ function Profile() {
                 user={{
                   userID: profile.userID || 0,
                   firstName: profile.firstName,
-                  username: profile.firstName,
+                  username: profile.firstName || 'User',
                   age: profile.dateOfBirth ? 
                     new Date().getFullYear() - new Date(profile.dateOfBirth).getFullYear() : 
                     undefined,
