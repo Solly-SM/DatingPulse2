@@ -1233,14 +1233,52 @@ function Profile() {
                   bio: profile.bio,
                   location: profile.location,
                   occupation: profile.occupation,
+                  jobTitle: profile.jobTitle,
                   education: profile.education,
                   interests: profile.interests,
                   verified: true,
                   photos: profile.photos || [],
+                  height: profile.height,
+                  gender: profile.gender,
+                  // Physical attributes
+                  weight: profile.weight,
+                  bodyType: profile.bodyType,
+                  ethnicity: profile.ethnicity,
+                  // Audio intro
+                  audioIntroUrl: profile.audioIntroUrl,
+                  // Lifestyle
+                  pets: profile.pets,
+                  drinking: profile.drinking,
+                  smoking: profile.smoking,
+                  workout: profile.workout,
+                  dietaryPreference: profile.dietaryPreference,
+                  sleepingHabits: profile.sleepingHabits,
+                  languages: profile.languages,
+                  // Preferences
+                  relationshipGoal: profile.relationshipGoal,
+                  sexualOrientation: profile.sexualOrientation,
+                  lookingFor: profile.lookingFor,
+                  // Personality
+                  communicationStyle: profile.communicationStyle,
+                  loveLanguage: profile.loveLanguage,
+                  zodiacSign: profile.zodiacSign,
+                  // Additional info
+                  religion: profile.religion,
+                  politicalViews: profile.politicalViews,
+                  familyPlans: profile.familyPlans,
+                  fitnessLevel: profile.fitnessLevel,
+                  travelFrequency: profile.travelFrequency,
+                  industry: profile.industry,
+                  musicPreferences: profile.musicPreferences,
+                  foodPreferences: profile.foodPreferences,
+                  entertainmentPreferences: profile.entertainmentPreferences,
+                  currentlyReading: profile.currentlyReading,
+                  lifeGoals: profile.lifeGoals,
+                  petPreferences: profile.petPreferences,
                 }}
                 showPhoto={true}
                 variant="preview"
-                maxHeight="calc(100vh - 160px)"
+                maxHeight="100%" // Remove height restriction to allow full height
               />
             )}
           </Box>
