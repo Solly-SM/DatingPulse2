@@ -52,6 +52,12 @@ import {
   LightMode,
   PersonPin,
   Message,
+  CreditCard,
+  Star,
+  AutoAwesome,
+  Send,
+  Favorite,
+  FilterList,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -65,6 +71,7 @@ interface UserPreferences {
     likes: boolean;
     superLikes: boolean;
     profileViews: boolean;
+    promotions: boolean;
   };
   discovery: {
     ageRange: [number, number];
@@ -79,7 +86,7 @@ interface UserPreferences {
     showReadReceipts: boolean;
     incognitoMode: boolean;
     locationPrecision: 'exact' | 'approximate' | 'city';
-    profileVisibility: 'everyone' | 'matches';
+    profileVisibility: 'everyone' | 'matches' | 'premium_only';
   };
   account: {
     dataUsage: 'low' | 'normal' | 'high';
@@ -91,10 +98,24 @@ interface UserPreferences {
   communication: {
     messageFilters: boolean;
     onlyVerifiedCanMessage: boolean;
+    autoReply: boolean;
+    allowSuperLikes: boolean;
   };
   security: {
     twoFactorEnabled: boolean;
     loginAlerts: boolean;
+  };
+  subscription: {
+    isPremium: boolean;
+    plan: 'free' | 'premium' | 'platinum';
+    autoRenew: boolean;
+    expiresAt?: string;
+  };
+  dating: {
+    relationshipGoal: 'casual' | 'serious' | 'marriage' | 'friendship' | '';
+    lookingFor: string[];
+    dealBreakers: string[];
+    showIntention: boolean;
   };
 }
 
@@ -107,6 +128,7 @@ const defaultPreferences: UserPreferences = {
     likes: true,
     superLikes: true,
     profileViews: false,
+    promotions: true,
   },
   discovery: {
     ageRange: [18, 35],
@@ -133,10 +155,23 @@ const defaultPreferences: UserPreferences = {
   communication: {
     messageFilters: true,
     onlyVerifiedCanMessage: false,
+    autoReply: false,
+    allowSuperLikes: true,
   },
   security: {
     twoFactorEnabled: false,
     loginAlerts: true,
+  },
+  subscription: {
+    isPremium: false,
+    plan: 'free',
+    autoRenew: false,
+  },
+  dating: {
+    relationshipGoal: '',
+    lookingFor: [],
+    dealBreakers: [],
+    showIntention: true,
   },
 };
 
@@ -148,6 +183,7 @@ function Settings() {
   const [success, setSuccess] = useState('');
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     account: true,
+    subscription: false,
     profile: false,
     security: false,
     appearance: false,
@@ -155,6 +191,7 @@ function Settings() {
     notifications: false,
     privacy: false,
     communication: false,
+    dating: false,
     data: false,
     verification: false,
   });
@@ -366,6 +403,118 @@ function Settings() {
           </Collapse>
         </Paper>
 
+        {/* Subscription & Premium */}
+        <Paper sx={{ p: 3 }}>
+          {renderSectionHeader(
+            <CreditCard />, 
+            'Subscription & Premium', 
+            'subscription',
+            preferences.subscription.isPremium ? 0 : 1
+          )}
+          <Collapse in={expandedSections.subscription}>
+            <Box sx={{ pt: 2 }}>
+              {preferences.subscription.isPremium ? (
+                <Stack spacing={2}>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 1, 
+                    p: 2, 
+                    bgcolor: 'warning.light', 
+                    borderRadius: 1 
+                  }}>
+                    <Star color="warning" />
+                    <Typography variant="h6">Premium Active</Typography>
+                    <Chip 
+                      label={preferences.subscription.plan.toUpperCase()} 
+                      color="warning" 
+                      size="small" 
+                    />
+                  </Box>
+                  
+                  <Typography variant="body2" color="text.secondary">
+                    Your premium subscription is active. Enjoy unlimited likes, super likes, and advanced features!
+                  </Typography>
+                  
+                  {preferences.subscription.expiresAt && (
+                    <Typography variant="body2">
+                      Expires: {new Date(preferences.subscription.expiresAt).toLocaleDateString()}
+                    </Typography>
+                  )}
+                  
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={preferences.subscription.autoRenew}
+                        onChange={handleSwitchChange('subscription', 'autoRenew')}
+                      />
+                    }
+                    label="Auto-renewal"
+                  />
+                  
+                  <Stack direction="row" spacing={2}>
+                    <Button variant="outlined" fullWidth>
+                      View Billing History
+                    </Button>
+                    <Button variant="outlined" color="error" fullWidth>
+                      Cancel Subscription
+                    </Button>
+                  </Stack>
+                </Stack>
+              ) : (
+                <Stack spacing={2}>
+                  <Alert severity="info">
+                    Upgrade to Premium for unlimited likes, super likes, incognito mode, and more features!
+                  </Alert>
+                  
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <Paper sx={{ p: 2, border: '1px solid', borderColor: 'primary.main' }}>
+                        <Typography variant="h6" color="primary" gutterBottom>
+                          Premium Monthly
+                        </Typography>
+                        <Typography variant="h4" gutterBottom>
+                          $9.99<Typography component="span" variant="body2">/month</Typography>
+                        </Typography>
+                        <Box component="ul" sx={{ pl: 2, mb: 2 }}>
+                          <li>Unlimited likes</li>
+                          <li>Super likes</li>
+                          <li>Incognito mode</li>
+                          <li>See who liked you</li>
+                        </Box>
+                        <Button variant="contained" fullWidth startIcon={<Star />}>
+                          Upgrade Now
+                        </Button>
+                      </Paper>
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={6}>
+                      <Paper sx={{ p: 2, border: '1px solid', borderColor: 'warning.main' }}>
+                        <Typography variant="h6" color="warning.main" gutterBottom>
+                          Platinum Yearly
+                        </Typography>
+                        <Typography variant="h4" gutterBottom>
+                          $99.99<Typography component="span" variant="body2">/year</Typography>
+                        </Typography>
+                        <Chip label="2 months free!" color="warning" size="small" sx={{ mb: 1 }} />
+                        <Box component="ul" sx={{ pl: 2, mb: 2 }}>
+                          <li>All Premium features</li>
+                          <li>Priority support</li>
+                          <li>Exclusive filters</li>
+                          <li>Profile boost</li>
+                        </Box>
+                        <Button variant="contained" color="warning" fullWidth startIcon={<AutoAwesome />}>
+                          Best Value
+                        </Button>
+                      </Paper>
+                    </Grid>
+                  </Grid>
+                </Stack>
+              )}
+            </Box>
+          </Collapse>
+        </Paper>
+
         {/* Profile Management */}
         <Paper sx={{ p: 3 }}>
           {renderSectionHeader(<Edit />, 'Profile Management', 'profile')}
@@ -397,8 +546,109 @@ function Settings() {
                   >
                     <MenuItem value="everyone">Everyone</MenuItem>
                     <MenuItem value="matches">Matches Only</MenuItem>
+                    <MenuItem 
+                      value="premium_only"
+                      disabled={!preferences.subscription.isPremium}
+                    >
+                      Premium Members Only
+                      {!preferences.subscription.isPremium && (
+                        <Chip 
+                          label="Premium" 
+                          size="small" 
+                          color="warning" 
+                          sx={{ ml: 1 }} 
+                        />
+                      )}
+                    </MenuItem>
                   </Select>
                 </FormControl>
+              </Stack>
+            </Box>
+          </Collapse>
+        </Paper>
+
+        {/* Dating Preferences */}
+        <Paper sx={{ p: 3 }}>
+          {renderSectionHeader(<Favorite />, 'Dating Preferences', 'dating')}
+          <Collapse in={expandedSections.dating}>
+            <Box sx={{ pt: 2 }}>
+              <Stack spacing={2}>
+                <FormControl fullWidth>
+                  <InputLabel>Relationship Goal</InputLabel>
+                  <Select
+                    value={preferences.dating.relationshipGoal}
+                    onChange={handleSelectChange('dating', 'relationshipGoal')}
+                    label="Relationship Goal"
+                  >
+                    <MenuItem value="">Not specified</MenuItem>
+                    <MenuItem value="casual">Casual dating</MenuItem>
+                    <MenuItem value="serious">Serious relationship</MenuItem>
+                    <MenuItem value="marriage">Marriage</MenuItem>
+                    <MenuItem value="friendship">Friendship</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={preferences.dating.showIntention}
+                      onChange={handleSwitchChange('dating', 'showIntention')}
+                    />
+                  }
+                  label="Show my relationship intentions on profile"
+                />
+
+                <Typography variant="body2" color="text.secondary">
+                  Looking for: Select what you're interested in to help with better matches
+                </Typography>
+                
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                  {['Long-term partner', 'Something casual', 'New friends', 'Short-term fun', 'Life partner'].map((option) => (
+                    <Chip
+                      key={option}
+                      label={option}
+                      clickable
+                      color={preferences.dating.lookingFor.includes(option) ? 'primary' : 'default'}
+                      onClick={() => {
+                        const currentLookingFor = preferences.dating.lookingFor;
+                        const newLookingFor = currentLookingFor.includes(option)
+                          ? currentLookingFor.filter(item => item !== option)
+                          : [...currentLookingFor, option];
+                        setPreferences(prev => ({
+                          ...prev,
+                          dating: { ...prev.dating, lookingFor: newLookingFor }
+                        }));
+                      }}
+                    />
+                  ))}
+                </Box>
+
+                <Divider />
+
+                <Typography variant="body2" color="text.secondary">
+                  Deal breakers: Select what you absolutely don't want
+                </Typography>
+                
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                  {['Smoking', 'Heavy drinking', 'No pets', 'Different politics', 'Age gap 10+'].map((option) => (
+                    <Chip
+                      key={option}
+                      label={option}
+                      clickable
+                      color={preferences.dating.dealBreakers.includes(option) ? 'error' : 'default'}
+                      onClick={() => {
+                        const currentDealBreakers = preferences.dating.dealBreakers;
+                        const newDealBreakers = currentDealBreakers.includes(option)
+                          ? currentDealBreakers.filter(item => item !== option)
+                          : [...currentDealBreakers, option];
+                        setPreferences(prev => ({
+                          ...prev,
+                          dating: { ...prev.dating, dealBreakers: newDealBreakers }
+                        }));
+                      }}
+                    />
+                  ))}
+                </Box>
               </Stack>
             </Box>
           </Collapse>
@@ -637,6 +887,15 @@ function Settings() {
                   </ListItemSecondaryAction>
                 </ListItem>
 
+                <ListItem>
+                  <ListItemText primary="Promotions & Offers" secondary="Get notified about special deals and promotions" />
+                  <ListItemSecondaryAction>
+                    <Switch
+                      checked={preferences.notifications.promotions}
+                      onChange={handleNotificationChange('promotions')}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
 
               </List>
             </Box>
@@ -675,9 +934,39 @@ function Settings() {
                   </ListItemSecondaryAction>
                 </ListItem>
                 
-
+                <ListItem>
+                  <ListItemText 
+                    primary={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        Auto Reply
+                        {!preferences.subscription.isPremium && (
+                          <Chip label="Premium" size="small" color="warning" />
+                        )}
+                      </Box>
+                    }
+                    secondary="Automatically reply to messages with custom responses" 
+                  />
+                  <ListItemSecondaryAction>
+                    <Switch
+                      checked={preferences.communication.autoReply}
+                      onChange={handleSwitchChange('communication', 'autoReply')}
+                      disabled={!preferences.subscription.isPremium}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
                 
-
+                <ListItem>
+                  <ListItemText 
+                    primary="Allow Super Likes"
+                    secondary="Let others send you super likes to get priority attention" 
+                  />
+                  <ListItemSecondaryAction>
+                    <Switch
+                      checked={preferences.communication.allowSuperLikes}
+                      onChange={handleSwitchChange('communication', 'allowSuperLikes')}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
               </List>
             </Box>
           </Collapse>
@@ -743,13 +1032,21 @@ function Settings() {
                 
                 <ListItem>
                   <ListItemText 
-                    primary="Incognito Mode" 
+                    primary={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        Incognito Mode
+                        {!preferences.subscription.isPremium && (
+                          <Chip label="Premium" size="small" color="warning" />
+                        )}
+                      </Box>
+                    }
                     secondary="Browse profiles without being seen" 
                   />
                   <ListItemSecondaryAction>
                     <Switch
                       checked={preferences.privacy.incognitoMode}
                       onChange={handlePrivacyChange('incognitoMode')}
+                      disabled={!preferences.subscription.isPremium}
                     />
                   </ListItemSecondaryAction>
                 </ListItem>
