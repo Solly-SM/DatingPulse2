@@ -38,7 +38,9 @@ import {
   PlayArrow,
   Stop,
   AddPhotoAlternate,
-  Verified
+  Verified,
+  Visibility,
+  VisibilityOff
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/userService';
@@ -84,6 +86,9 @@ function Profile() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Preview mode state
+  const [showPreview, setShowPreview] = useState(false);
 
   // Modal states for edit modals (removing media and audioIntro)
   const [openModals, setOpenModals] = useState({
@@ -486,10 +491,41 @@ function Profile() {
         ✨ My Profile
       </Typography>
 
-      {/* Main Content Area - Two Column Layout */}
+      {/* Preview Control Button */}
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+        <Button
+          variant="contained"
+          startIcon={showPreview ? <VisibilityOff /> : <Visibility />}
+          onClick={() => setShowPreview(!showPreview)}
+          sx={{
+            background: showPreview 
+              ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
+              : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            borderRadius: '12px',
+            px: 4,
+            py: 1.5,
+            fontSize: '1rem',
+            fontWeight: 600,
+            boxShadow: showPreview
+              ? '0 8px 20px rgba(239, 68, 68, 0.3)'
+              : '0 8px 20px rgba(102, 126, 234, 0.3)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-2px)',
+              boxShadow: showPreview
+                ? '0 12px 25px rgba(239, 68, 68, 0.4)'
+                : '0 12px 25px rgba(102, 126, 234, 0.4)'
+            }
+          }}
+        >
+          {showPreview ? 'Hide Preview' : 'View Preview Profile'}
+        </Button>
+      </Box>
+
+      {/* Main Content Area - Dynamic Layout Based on Preview Mode */}
       <Grid container spacing={4}>
-        {/* Left Column - Profile Editing (70%) */}
-        <Grid item xs={12} lg={8}>
+        {/* Left Column - Profile Editing */}
+        <Grid item xs={12} lg={showPreview ? 5 : 8}>
           {/* Alerts */}
           {success && (
             <Alert 
@@ -1205,8 +1241,64 @@ function Profile() {
           </Grid>
         </Grid>
 
-        {/* Right Column - Profile Preview (30%) */}
-        <Grid item xs={12} lg={4}>
+        {/* Center Column - Main Profile Preview (only shown when preview mode is active) */}
+        {showPreview && (
+          <Grid item xs={12} lg={4}>
+            <Box sx={{ position: 'sticky', top: 20 }}>
+              <Typography 
+                variant="h5" 
+                sx={{ 
+                  mb: 3,
+                  fontWeight: 700,
+                  color: '#2d3748',
+                  textAlign: 'center',
+                  position: 'relative',
+                  zIndex: 1
+                }}
+              >
+                Full Profile Preview
+              </Typography>
+              {profile && (
+                <MiniProfile
+                  user={{
+                    userID: profile.userID || 0,
+                    firstName: profile.firstName,
+                    username: profile.firstName || 'User',
+                    age: profile.dateOfBirth ? 
+                      new Date().getFullYear() - new Date(profile.dateOfBirth).getFullYear() : 
+                      undefined,
+                    bio: profile.bio,
+                    location: profile.location,
+                    occupation: profile.occupation,
+                    education: profile.education,
+                    interests: profile.interests || [],
+                    verified: true,
+                    photos: profile.photos || [],
+                    height: profile.height,
+                    gender: profile.gender,
+                    audioIntroUrl: profile.audioIntroUrl,
+                    weight: profile.weight,
+                    bodyType: profile.bodyType,
+                    ethnicity: profile.ethnicity,
+                    pets: profile.pets,
+                    drinking: profile.drinking,
+                    smoking: profile.smoking,
+                    workout: profile.workout,
+                    relationshipGoal: profile.relationshipGoal,
+                    sexualOrientation: profile.sexualOrientation,
+                    lookingFor: profile.lookingFor,
+                  }}
+                  showPhoto={true}
+                  variant="preview"
+                  maxHeight="calc(100vh - 160px)"
+                />
+              )}
+            </Box>
+          </Grid>
+        )}
+
+        {/* Right Column - Mini Profile Preview */}
+        <Grid item xs={12} lg={showPreview ? 3 : 4}>
           <Box sx={{ position: 'sticky', top: 20 }}>
             <Typography 
               variant="h5" 
@@ -1219,7 +1311,7 @@ function Profile() {
                 zIndex: 1
               }}
             >
-              Profile Preview
+              {showPreview ? 'Mini Preview' : 'Profile Preview'}
             </Typography>
             {profile && (
               <MiniProfile
@@ -1252,7 +1344,7 @@ function Profile() {
                   lookingFor: profile.lookingFor,
                 }}
                 showPhoto={true}
-                variant="preview"
+                variant={showPreview ? "compact" : "preview"}
                 maxHeight="calc(100vh - 160px)"
               />
             )}
