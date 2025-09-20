@@ -646,19 +646,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight }:
           </>
         )}
 
-        {/* Compact view key info - show most important details only if not already shown above */}
-        {isCompact && hasInterests && (
-          <Box sx={{ mt: 1 }}>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <Favorite fontSize="small" color="action" sx={{ fontSize: 14 }} />
-                <Typography variant="caption" color="text.secondary">
-                  {profileUser.interests.length} interests
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-        )}
+
       </Box>
     </Paper>
   );
