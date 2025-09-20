@@ -38,7 +38,9 @@ import {
   PlayArrow,
   Stop,
   AddPhotoAlternate,
-  Verified
+  Verified,
+  Visibility,
+  VisibilityOff
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/userService';
@@ -103,6 +105,9 @@ function Profile() {
     preferences: false
   });
 
+  // Profile preview visibility state
+  const [showProfilePreview, setShowProfilePreview] = useState(true);
+
   const loadProfile = useCallback(async () => {
     if (!user) return;
 
@@ -127,6 +132,13 @@ function Profile() {
     loadProfile();
   }, [loadProfile]);
 
+  // Sync profile preview visibility with profile data
+  useEffect(() => {
+    if (profile) {
+      setShowProfilePreview(profile.showProfilePreview !== false);
+    }
+  }, [profile]);
+
   // Modal handlers
   const openModal = (modalName: keyof typeof openModals) => {
     setOpenModals(prev => ({ ...prev, [modalName]: true }));
@@ -134,6 +146,22 @@ function Profile() {
 
   const closeModal = (modalName: keyof typeof openModals) => {
     setOpenModals(prev => ({ ...prev, [modalName]: false }));
+  };
+
+  // Profile preview toggle handler
+  const toggleProfilePreview = async () => {
+    if (!user || !profile) return;
+    
+    const newVisibility = !showProfilePreview;
+    setShowProfilePreview(newVisibility);
+    
+    try {
+      await handleUpdateProfile({ showProfilePreview: newVisibility });
+    } catch (err) {
+      // Revert on error
+      setShowProfilePreview(!newVisibility);
+      console.error('Failed to update profile preview visibility:', err);
+    }
   };
 
   // Calculate age from date of birth
@@ -1206,58 +1234,118 @@ function Profile() {
         </Grid>
 
         {/* Right Column - Profile Preview (30%) */}
-        <Grid item xs={12} lg={4}>
-          <Box sx={{ position: 'sticky', top: 20 }}>
-            <Typography 
-              variant="h5" 
-              sx={{ 
+        {showProfilePreview && (
+          <Grid item xs={12} lg={4}>
+            <Box sx={{ position: 'sticky', top: 20 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
                 mb: 3,
-                fontWeight: 700,
-                color: '#2d3748',
-                textAlign: 'center',
-                position: 'relative',
-                zIndex: 1
-              }}
-            >
-              Profile Preview
-            </Typography>
-            {profile && (
-              <MiniProfile
-                user={{
-                  userID: profile.userID || 0,
-                  firstName: profile.firstName,
-                  username: profile.firstName || 'User',
-                  age: profile.dateOfBirth ? 
-                    new Date().getFullYear() - new Date(profile.dateOfBirth).getFullYear() : 
-                    undefined,
-                  bio: profile.bio,
-                  location: profile.location,
-                  occupation: profile.occupation,
-                  education: profile.education,
-                  interests: profile.interests || [],
-                  verified: true,
-                  photos: profile.photos || [],
-                  height: profile.height,
-                  gender: profile.gender,
-                  audioIntroUrl: profile.audioIntroUrl,
-                  weight: profile.weight,
-                  bodyType: profile.bodyType,
-                  ethnicity: profile.ethnicity,
-                  pets: profile.pets,
-                  drinking: profile.drinking,
-                  smoking: profile.smoking,
-                  workout: profile.workout,
-                  relationshipGoal: profile.relationshipGoal,
-                  sexualOrientation: profile.sexualOrientation,
-                  lookingFor: profile.lookingFor,
+                position: 'relative'
+              }}>
+                <Typography 
+                  variant="h5" 
+                  sx={{ 
+                    fontWeight: 700,
+                    color: '#2d3748',
+                    position: 'relative',
+                    zIndex: 1
+                  }}
+                >
+                  Profile Preview
+                </Typography>
+                <IconButton
+                  onClick={toggleProfilePreview}
+                  sx={{
+                    ml: 1,
+                    color: '#6b7280',
+                    '&:hover': {
+                      color: '#8b5cf6',
+                      backgroundColor: 'rgba(139, 92, 246, 0.08)'
+                    },
+                    transition: 'all 0.2s ease'
+                  }}
+                  title="Hide profile preview"
+                >
+                  <VisibilityOff />
+                </IconButton>
+              </Box>
+              {profile && (
+                <MiniProfile
+                  user={{
+                    userID: profile.userID || 0,
+                    firstName: profile.firstName,
+                    username: profile.firstName || 'User',
+                    age: profile.dateOfBirth ? 
+                      new Date().getFullYear() - new Date(profile.dateOfBirth).getFullYear() : 
+                      undefined,
+                    bio: profile.bio,
+                    location: profile.location,
+                    occupation: profile.occupation,
+                    education: profile.education,
+                    interests: profile.interests || [],
+                    verified: true,
+                    photos: profile.photos || [],
+                    height: profile.height,
+                    gender: profile.gender,
+                    audioIntroUrl: profile.audioIntroUrl,
+                    weight: profile.weight,
+                    bodyType: profile.bodyType,
+                    ethnicity: profile.ethnicity,
+                    pets: profile.pets,
+                    drinking: profile.drinking,
+                    smoking: profile.smoking,
+                    workout: profile.workout,
+                    relationshipGoal: profile.relationshipGoal,
+                    sexualOrientation: profile.sexualOrientation,
+                    lookingFor: profile.lookingFor,
+                  }}
+                  showPhoto={true}
+                  variant="preview"
+                  maxHeight="calc(100vh - 160px)"
+                />
+              )}
+            </Box>
+          </Grid>
+        )}
+
+        {/* Show Preview Button when hidden */}
+        {!showProfilePreview && (
+          <Grid item xs={12} lg={4}>
+            <Box sx={{ 
+              position: 'sticky', 
+              top: 20,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '100px'
+            }}>
+              <Button
+                variant="outlined"
+                startIcon={<Visibility />}
+                onClick={toggleProfilePreview}
+                sx={{
+                  borderColor: '#8b5cf6',
+                  color: '#8b5cf6',
+                  fontWeight: 600,
+                  px: 3,
+                  py: 1.5,
+                  borderRadius: '12px',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    backgroundColor: '#8b5cf6',
+                    color: 'white',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 8px 20px rgba(139, 92, 246, 0.3)'
+                  }
                 }}
-                showPhoto={true}
-                variant="preview"
-                maxHeight="calc(100vh - 160px)"
-              />
-            )}
-          </Box>
-        </Grid>
+              >
+                Show Profile Preview
+              </Button>
+            </Box>
+          </Grid>
+        )}
       </Grid>
 
       {/* Profile Sections Grid - End of Left Column */}

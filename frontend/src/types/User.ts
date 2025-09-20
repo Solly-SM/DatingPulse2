@@ -68,6 +68,7 @@ export interface UserProfile {
   showAge?: boolean;
   showLocation?: boolean;
   showOrientation?: boolean;
+  showProfilePreview?: boolean;
   
   // Additional Optional Profile Fields
   religion?: string;
@@ -175,6 +176,7 @@ export interface ProfileSetupRequest {
   showAge?: boolean;
   showLocation?: boolean;
   showOrientation?: boolean;
+  showProfilePreview?: boolean;
   
   // Additional Optional Profile Fields
   religion?: string;
