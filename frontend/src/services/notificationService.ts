@@ -61,7 +61,7 @@ export const notificationService = {
   // Mark notification as read
   async markAsRead(notificationId: number, userId: number) {
     try {
-      const response = await api.put(`/api/notifications/${notificationId}/read`, { userId });
+      const response = await api.put(`/api/notifications/${notificationId}/mark-read`, { userId });
       return response.data;
     } catch (error) {
       console.error('Error marking notification as read:', error);
@@ -72,7 +72,7 @@ export const notificationService = {
   // Mark all notifications as read for a user
   async markAllAsRead(userId: number) {
     try {
-      const response = await api.put(`/api/notifications/user/${userId}/read-all`);
+      const response = await api.put(`/api/notifications/user/${userId}/mark-all-read`);
       return response.data;
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
