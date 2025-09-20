@@ -38,7 +38,7 @@ interface MiniProfileProps {
   maxHeight?: string;
 }
 
-function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = '400px' }: MiniProfileProps) {
+function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight }: MiniProfileProps) {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   
   // Create profile user with fallback data
@@ -120,7 +120,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(255, 255, 255, 0.3)',
         height: '100%', // Use full height instead of limited vh
-        maxHeight: maxHeight,
+        maxHeight: maxHeight || 'none', // Only apply maxHeight if explicitly provided
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -282,9 +282,9 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
         )}
 
         {/* PRIORITY 1: Audio Intro - Most important after name/age */}
-        {hasAudioIntro && !isCompact && (
+        {hasAudioIntro && (
           <Box sx={{ mb: 2 }}>
-            <AudioPlayer audioUrl={profileUser.audioIntroUrl!} variant="mini" />
+            <AudioPlayer audioUrl={profileUser.audioIntroUrl!} variant={isCompact ? "compact" : "mini"} />
           </Box>
         )}
 
@@ -305,7 +305,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
         )}
 
         {/* PRIORITY 3: Physical Attributes - Height, Gender, Body Type */}
-        {hasPhysicalAttributes && !isCompact && (
+        {hasPhysicalAttributes && (
           <Box sx={{ mb: 2 }}>
             <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
               Physical Attributes
@@ -396,7 +396,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
 
         {/* PRIORITY 4: Work and Education */}
         {/* PRIORITY 4: Work and Education */}
-        {(hasWork || hasEducation) && !isCompact && (
+        {(hasWork || hasEducation) && (
           <>
             <Divider sx={{ my: 1.5 }} />
             <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
@@ -447,7 +447,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
         )}
 
         {/* PRIORITY 5: Bio */}
-        {hasBio && !isCompact && (
+        {hasBio && (
           <>
             <Divider sx={{ my: 1.5 }} />
             <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
@@ -459,7 +459,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
                 mb: 2, 
                 lineHeight: 1.4,
                 display: '-webkit-box',
-                WebkitLineClamp: 3,
+                WebkitLineClamp: isCompact ? 2 : 3,
                 WebkitBoxOrient: 'vertical',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -471,7 +471,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
         )}
 
         {/* PRIORITY 6: Lifestyle Preferences */}
-        {hasLifestyleInfo && !isCompact && (
+        {hasLifestyleInfo && (
           <>
             <Divider sx={{ my: 1.5 }} />
             <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
@@ -562,7 +562,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
         )}
 
         {/* PRIORITY 7: Relationship Preferences */}
-        {hasPreferences && !isCompact && (
+        {hasPreferences && (
           <>
             <Divider sx={{ my: 1.5 }} />
             <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
@@ -614,7 +614,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
 
         {/* PRIORITY 8: Interests */}
         {/* PRIORITY 8: Interests */}
-        {hasInterests && !isCompact && (
+        {hasInterests && (
           <>
             <Divider sx={{ my: 1.5 }} />
             <Box>
@@ -622,7 +622,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
                 Interests
               </Typography>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {profileUser.interests.slice(0, 6).map((interest: string, index: number) => (
+                {profileUser.interests.slice(0, isCompact ? 4 : 6).map((interest: string, index: number) => (
                   <Chip
                     key={index}
                     label={interest}
@@ -632,9 +632,9 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
                     sx={{ fontSize: '0.7rem', height: 24 }}
                   />
                 ))}
-                {profileUser.interests.length > 6 && (
+                {profileUser.interests.length > (isCompact ? 4 : 6) && (
                   <Chip
-                    label={`+${profileUser.interests.length - 6}`}
+                    label={`+${profileUser.interests.length - (isCompact ? 4 : 6)}`}
                     size="small"
                     variant="outlined"
                     color="secondary"
@@ -646,55 +646,16 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
           </>
         )}
 
-        {/* Compact view key info - show most important details */}
-        {isCompact && (
+        {/* Compact view key info - show most important details only if not already shown above */}
+        {isCompact && hasInterests && (
           <Box sx={{ mt: 1 }}>
-            {/* Audio intro for compact view */}
-            {hasAudioIntro && (
-              <Box sx={{ mb: 1 }}>
-                <AudioPlayer audioUrl={profileUser.audioIntroUrl!} variant="compact" />
-              </Box>
-            )}
-            
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
-              {profileUser.height && (
-                <Chip
-                  label={`${profileUser.height}cm`}
-                  size="small"
-                  variant="outlined"
-                  color="primary"
-                  icon={<Height sx={{ fontSize: 14 }} />}
-                  sx={{ fontSize: '0.65rem', height: 20 }}
-                />
-              )}
-              {profileUser.gender && (
-                <Chip
-                  label={profileUser.gender}
-                  size="small"
-                  variant="outlined"
-                  color="primary"
-                  icon={<Wc sx={{ fontSize: 14 }} />}
-                  sx={{ fontSize: '0.65rem', height: 20, textTransform: 'capitalize' }}
-                />
-              )}
-              {profileUser.workout && (
-                <Chip
-                  label={profileUser.workout}
-                  size="small"
-                  variant="outlined"
-                  color="secondary"
-                  icon={<FitnessCenter sx={{ fontSize: 14 }} />}
-                  sx={{ fontSize: '0.65rem', height: 20, textTransform: 'capitalize' }}
-                />
-              )}
-              {hasInterests && (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                  <Favorite fontSize="small" color="action" sx={{ fontSize: 14 }} />
-                  <Typography variant="caption" color="text.secondary">
-                    {profileUser.interests.length} interests
-                  </Typography>
-                </Box>
-              )}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <Favorite fontSize="small" color="action" sx={{ fontSize: 14 }} />
+                <Typography variant="caption" color="text.secondary">
+                  {profileUser.interests.length} interests
+                </Typography>
+              </Box>
             </Box>
           </Box>
         )}
