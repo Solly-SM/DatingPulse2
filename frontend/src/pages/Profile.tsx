@@ -1246,7 +1246,6 @@ function Profile() {
                 }}
                 showPhoto={true}
                 variant="sidebar"
-                maxHeight="calc(100vh - 160px)"
               />
             )}
           </Box>
