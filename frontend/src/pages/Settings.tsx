@@ -52,7 +52,6 @@ import {
   LightMode,
   PersonPin,
   Message,
-  Favorite,
   CameraAlt,
   Report,
   FilterList,
@@ -119,14 +118,6 @@ interface UserPreferences {
   security: {
     twoFactorEnabled: boolean;
     loginAlerts: boolean;
-  };
-  // Dating Preferences section
-  datingPreferences: {
-    relationshipGoals: string[];
-    datingIntentions: string;
-    lookingFor: string;
-    dealBreakers: string[];
-    valueAlignment: string[];
   };
   // Safety & Blocking controls
   safetyBlocking: {
@@ -212,14 +203,6 @@ const defaultPreferences: UserPreferences = {
     twoFactorEnabled: false,
     loginAlerts: true,
   },
-  // Dating Preferences section
-  datingPreferences: {
-    relationshipGoals: ['Looking for love'],
-    datingIntentions: 'serious',
-    lookingFor: 'Long-term relationship',
-    dealBreakers: [],
-    valueAlignment: [],
-  },
   // Safety & Blocking controls
   safetyBlocking: {
     safetyMode: true,
@@ -265,7 +248,6 @@ function Settings() {
     communication: false,
     data: false,
     verification: false,
-    datingPreferences: true,
     safetyBlocking: false,
     enhancedVerification: false,
     matchPreferences: false,
@@ -830,125 +812,6 @@ function Settings() {
                 }
                 label="Prioritize interest-based matching"
               />
-            </Box>
-          </Collapse>
-        </Paper>
-
-        {/* Dating Preferences */}
-        <Paper sx={{ p: 3 }}>
-          {renderSectionHeader(<Favorite />, 'Dating Preferences', 'datingPreferences')}
-          <Collapse in={expandedSections.datingPreferences}>
-            <Box sx={{ pt: 2 }}>
-              <Stack spacing={3}>
-                <FormControl fullWidth>
-                  <InputLabel>Dating Intentions</InputLabel>
-                  <Select
-                    value={preferences.datingPreferences.datingIntentions}
-                    onChange={handleSelectChange('datingPreferences', 'datingIntentions')}
-                    label="Dating Intentions"
-                  >
-                    <MenuItem value="serious">Looking for something serious</MenuItem>
-                    <MenuItem value="casual">Open to casual dating</MenuItem>
-                    <MenuItem value="friendship">Friendship first</MenuItem>
-                    <MenuItem value="exploring">Still exploring</MenuItem>
-                    <MenuItem value="marriage">Ready for marriage</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <FormControl fullWidth>
-                  <InputLabel>Relationship Goals</InputLabel>
-                  <Select
-                    multiple
-                    value={preferences.datingPreferences.relationshipGoals}
-                    onChange={(e) => handleSelectChange('datingPreferences', 'relationshipGoals')(e as any)}
-                    label="Relationship Goals"
-                    renderValue={(selected) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((value) => (
-                          <Chip key={value} label={value} size="small" />
-                        ))}
-                      </Box>
-                    )}
-                  >
-                    <MenuItem value="Looking for love">Looking for love</MenuItem>
-                    <MenuItem value="Long-term relationship">Long-term relationship</MenuItem>
-                    <MenuItem value="Marriage">Marriage</MenuItem>
-                    <MenuItem value="Life partner">Life partner</MenuItem>
-                    <MenuItem value="Companionship">Companionship</MenuItem>
-                    <MenuItem value="Something casual">Something casual</MenuItem>
-                    <MenuItem value="New friends">New friends</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <TextField
-                  fullWidth
-                  label="What I'm Looking For"
-                  value={preferences.datingPreferences.lookingFor}
-                  onChange={(e) => {
-                    setPreferences(prev => ({
-                      ...prev,
-                      datingPreferences: {
-                        ...prev.datingPreferences,
-                        lookingFor: e.target.value,
-                      },
-                    }));
-                  }}
-                  placeholder="Describe what you're looking for in a partner..."
-                  multiline
-                  rows={3}
-                />
-
-                <FormControl fullWidth>
-                  <InputLabel>Deal Breakers</InputLabel>
-                  <Select
-                    multiple
-                    value={preferences.datingPreferences.dealBreakers}
-                    onChange={(e) => handleSelectChange('datingPreferences', 'dealBreakers')(e as any)}
-                    label="Deal Breakers"
-                    renderValue={(selected) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((value) => (
-                          <Chip key={value} label={value} size="small" color="error" />
-                        ))}
-                      </Box>
-                    )}
-                  >
-                    <MenuItem value="Smoking">Smoking</MenuItem>
-                    <MenuItem value="Heavy drinking">Heavy drinking</MenuItem>
-                    <MenuItem value="No pets">No pets allowed</MenuItem>
-                    <MenuItem value="Different politics">Different political views</MenuItem>
-                    <MenuItem value="Different religion">Different religious views</MenuItem>
-                    <MenuItem value="No children">Doesn't want children</MenuItem>
-                    <MenuItem value="Long distance">Not open to long distance</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <FormControl fullWidth>
-                  <InputLabel>Value Alignment</InputLabel>
-                  <Select
-                    multiple
-                    value={preferences.datingPreferences.valueAlignment}
-                    onChange={(e) => handleSelectChange('datingPreferences', 'valueAlignment')(e as any)}
-                    label="Value Alignment"
-                    renderValue={(selected) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((value) => (
-                          <Chip key={value} label={value} size="small" />
-                        ))}
-                      </Box>
-                    )}
-                  >
-                    <MenuItem value="Family oriented">Family oriented</MenuItem>
-                    <MenuItem value="Career focused">Career focused</MenuItem>
-                    <MenuItem value="Spiritual">Spiritual/Religious</MenuItem>
-                    <MenuItem value="Health conscious">Health conscious</MenuItem>
-                    <MenuItem value="Adventure seeking">Adventure seeking</MenuItem>
-                    <MenuItem value="Environmentally conscious">Environmentally conscious</MenuItem>
-                    <MenuItem value="Education focused">Values education</MenuItem>
-                    <MenuItem value="Community minded">Community minded</MenuItem>
-                  </Select>
-                </FormControl>
-              </Stack>
             </Box>
           </Collapse>
         </Paper>
