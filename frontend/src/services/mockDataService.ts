@@ -65,10 +65,8 @@ function generateMockUser(id: number): DiscoverUser {
   const relationshipGoals = ['Casual dating', 'Long-term', 'Marriage', 'Friends first'];
   const lookingFor = ['Serious relationship', 'Casual dating', 'New friends', 'Networking'];
 
-  // Audio intro URL - using a simple tone audio data URL that works reliably
-  const audioIntroUrl = Math.random() > 0.4 ? 
-    "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N+QQAoUXrTp66hVFApGn+DyvmkeCjuO1fLNeSsFJHfH8N+QQAoUXrTp66hVFApGnU6S" :
-    undefined;
+  // Audio intro URL - ensure ALL users have audio intros for consistency
+  const audioIntroUrl = "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmAfBz2L0/PJdSgFKn3J8N2QQgoeaLvu5Z9NEAxPqeXwtWQcBz2N1fDMeywFJHfA8N2QQAoUXrTp66hWFApFmuPztV8gCj2L0/PJdSgEKn3J8N2QQgoeaLvu5Z9NEAxPqeXwtWQcBz2N1fDNeysFJHfI8N2QQAoUXrTp66hWFApGn+PytV8gCj2L0/PJdSgFK3zJ8N2QQgoeaLvu5Z9NEAxPpuHvxGklEwdBlM3vzW0rEzQ7stn1wGP/AP2gYuAyB3YAAAAASUVORK0=";
 
   return {
     userID: id,
