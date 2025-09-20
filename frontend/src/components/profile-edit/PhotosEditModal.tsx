@@ -51,6 +51,7 @@ const PhotosEditModal: React.FC<PhotosEditModalProps> = ({
         onComplete={handlePhotosChange}
         onBack={() => {}} // Not used in modal
         loading={loading}
+        hideNavigation={true}
       />
     </EditModal>
   );

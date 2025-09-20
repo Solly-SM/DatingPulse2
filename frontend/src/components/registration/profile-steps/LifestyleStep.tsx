@@ -28,6 +28,7 @@ interface LifestyleStepProps {
   onComplete: (data: LifestyleData) => void;
   onBack: () => void;
   loading: boolean;
+  hideNavigation?: boolean;
 }
 
 const petOptions = [
@@ -54,7 +55,7 @@ const languageOptions = [
   'Japanese', 'Korean', 'Arabic', 'Hindi', 'Dutch', 'Swedish', 'Norwegian', 'Other'
 ];
 
-function LifestyleStep({ data, onComplete, onBack, loading }: LifestyleStepProps) {
+function LifestyleStep({ data, onComplete, onBack, loading, hideNavigation = false }: LifestyleStepProps) {
   const [formData, setFormData] = useState<LifestyleData>(data);
 
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
@@ -242,18 +243,20 @@ function LifestyleStep({ data, onComplete, onBack, loading }: LifestyleStepProps
         </Grid>
       </Grid>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-        <Button onClick={onBack} disabled={loading}>
-          Back
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={loading}
-        >
-          Next
-        </Button>
-      </Box>
+      {!hideNavigation && (
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+          <Button onClick={onBack} disabled={loading}>
+            Back
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading}
+          >
+            Next
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }

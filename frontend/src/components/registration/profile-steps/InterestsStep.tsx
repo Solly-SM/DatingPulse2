@@ -20,6 +20,7 @@ interface InterestsStepProps {
   onComplete: (data: InterestsData) => void;
   onBack: () => void;
   loading: boolean;
+  hideNavigation?: boolean;
 }
 
 const interestCategories = {
@@ -49,7 +50,7 @@ const interestCategories = {
   ]
 };
 
-function InterestsStep({ data, onComplete, onBack, loading }: InterestsStepProps) {
+function InterestsStep({ data, onComplete, onBack, loading, hideNavigation = false }: InterestsStepProps) {
   const [selectedInterests, setSelectedInterests] = useState<string[]>(data.interests);
   const [error, setError] = useState<string>('');
 
@@ -151,18 +152,20 @@ function InterestsStep({ data, onComplete, onBack, loading }: InterestsStepProps
         </Accordion>
       ))}
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-        <Button onClick={onBack} disabled={loading}>
-          Back
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={loading || selectedInterests.length === 0}
-        >
-          Next
-        </Button>
-      </Box>
+      {!hideNavigation && (
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+          <Button onClick={onBack} disabled={loading}>
+            Back
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading || selectedInterests.length === 0}
+          >
+            Next
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }

@@ -63,6 +63,7 @@ const PhysicalAttributesEditModal: React.FC<PhysicalAttributesEditModalProps> = 
         onComplete={handleDataChange}
         onBack={() => {}} // Not used in modal
         loading={loading}
+        hideNavigation={true}
       />
     </EditModal>
   );

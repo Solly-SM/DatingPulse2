@@ -54,6 +54,7 @@ const InterestsEditModal: React.FC<InterestsEditModalProps> = ({
         onComplete={handleInterestsChange}
         onBack={() => {}} // Not used in modal
         loading={loading}
+        hideNavigation={true}
       />
     </EditModal>
   );
