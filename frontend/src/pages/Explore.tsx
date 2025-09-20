@@ -630,7 +630,7 @@ function Explore() {
         </Grid>
 
         {/* Right column - Mini Profile details WITHOUT pictures */}
-        <Grid item xs={5}>
+        <Grid item xs={5} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
           <MiniProfile user={currentUser} showPhoto={false} variant="sidebar" />
         </Grid>
       </Grid>
