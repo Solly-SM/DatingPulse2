@@ -464,27 +464,7 @@ function Profile() {
         zIndex: 0
       }
     }}>
-      <Typography 
-        variant="h3" 
-        component="h1" 
-        gutterBottom 
-        align="center" 
-        sx={{ 
-          mb: 5,
-          fontWeight: 700,
-          fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-          background: 'linear-gradient(45deg, #667eea 30%, #764ba2 90%)',
-          backgroundClip: 'text',
-          WebkitBackgroundClip: 'text',
-          color: 'transparent',
-          textShadow: '0 4px 8px rgba(102, 126, 234, 0.2)',
-          position: 'relative',
-          zIndex: 1,
-          letterSpacing: '-0.5px'
-        }}
-      >
-        ✨ My Profile
-      </Typography>
+
 
       {/* Main Content Area - Two Column Layout */}
       <Grid container spacing={4}>
@@ -1208,19 +1188,7 @@ function Profile() {
         {/* Right Column - Profile Preview (30%) */}
         <Grid item xs={12} lg={4}>
           <Box sx={{ position: 'sticky', top: 20 }}>
-            <Typography 
-              variant="h5" 
-              sx={{ 
-                mb: 3,
-                fontWeight: 700,
-                color: '#2d3748',
-                textAlign: 'center',
-                position: 'relative',
-                zIndex: 1
-              }}
-            >
-              Profile Preview
-            </Typography>
+
             {profile && (
               <MiniProfile
                 user={{
