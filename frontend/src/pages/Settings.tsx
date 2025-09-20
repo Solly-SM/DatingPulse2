@@ -46,7 +46,6 @@ import {
   Lock,
   Storage,
   Verified,
-  CreditCard,
   ExpandMore,
   ExpandLess,
   DarkMode,
@@ -66,7 +65,6 @@ interface UserPreferences {
     likes: boolean;
     superLikes: boolean;
     profileViews: boolean;
-    promotions: boolean;
   };
   discovery: {
     ageRange: [number, number];
@@ -81,10 +79,9 @@ interface UserPreferences {
     showReadReceipts: boolean;
     incognitoMode: boolean;
     locationPrecision: 'exact' | 'approximate' | 'city';
-    profileVisibility: 'everyone' | 'matches' | 'premium';
+    profileVisibility: 'everyone' | 'matches';
   };
   account: {
-    autoRenew: boolean;
     dataUsage: 'low' | 'normal' | 'high';
   };
   appearance: {
@@ -94,8 +91,6 @@ interface UserPreferences {
   communication: {
     messageFilters: boolean;
     onlyVerifiedCanMessage: boolean;
-    allowSuperLikes: boolean;
-    autoReply: boolean;
   };
   security: {
     twoFactorEnabled: boolean;
@@ -112,7 +107,6 @@ const defaultPreferences: UserPreferences = {
     likes: true,
     superLikes: true,
     profileViews: false,
-    promotions: false,
   },
   discovery: {
     ageRange: [18, 35],
@@ -130,7 +124,6 @@ const defaultPreferences: UserPreferences = {
     profileVisibility: 'everyone',
   },
   account: {
-    autoRenew: false,
     dataUsage: 'normal',
   },
   appearance: {
@@ -140,8 +133,6 @@ const defaultPreferences: UserPreferences = {
   communication: {
     messageFilters: true,
     onlyVerifiedCanMessage: false,
-    allowSuperLikes: true,
-    autoReply: false,
   },
   security: {
     twoFactorEnabled: false,
@@ -164,7 +155,6 @@ function Settings() {
     notifications: false,
     privacy: false,
     communication: false,
-    subscription: false,
     data: false,
     verification: false,
   });
@@ -407,7 +397,6 @@ function Settings() {
                   >
                     <MenuItem value="everyone">Everyone</MenuItem>
                     <MenuItem value="matches">Matches Only</MenuItem>
-                    <MenuItem value="premium">Premium Members Only</MenuItem>
                   </Select>
                 </FormControl>
               </Stack>
@@ -648,15 +637,7 @@ function Settings() {
                   </ListItemSecondaryAction>
                 </ListItem>
 
-                <ListItem>
-                  <ListItemText primary="Promotions" secondary="Receive promotional offers and updates" />
-                  <ListItemSecondaryAction>
-                    <Switch
-                      checked={preferences.notifications.promotions}
-                      onChange={handleNotificationChange('promotions')}
-                    />
-                  </ListItemSecondaryAction>
-                </ListItem>
+
               </List>
             </Box>
           </Collapse>
@@ -694,35 +675,9 @@ function Settings() {
                   </ListItemSecondaryAction>
                 </ListItem>
                 
-                <ListItem>
-                  <ListItemText 
-                    primary="Allow Super Likes" 
-                    secondary="Allow others to send you super likes" 
-                  />
-                  <ListItemSecondaryAction>
-                    <Switch
-                      checked={preferences.communication.allowSuperLikes}
-                      onChange={handleSwitchChange('communication', 'allowSuperLikes')}
-                    />
-                  </ListItemSecondaryAction>
-                </ListItem>
+
                 
-                <ListItem>
-                  <ListItemText 
-                    primary="Auto Reply" 
-                    secondary="Send automatic replies when you're away" 
-                  />
-                  <ListItemSecondaryAction>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Chip label="Premium" size="small" color="primary" />
-                      <Switch
-                        checked={preferences.communication.autoReply}
-                        onChange={handleSwitchChange('communication', 'autoReply')}
-                        disabled
-                      />
-                    </Stack>
-                  </ListItemSecondaryAction>
-                </ListItem>
+
               </List>
             </Box>
           </Collapse>
@@ -792,14 +747,10 @@ function Settings() {
                     secondary="Browse profiles without being seen" 
                   />
                   <ListItemSecondaryAction>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Chip label="Premium" size="small" color="primary" />
-                      <Switch
-                        checked={preferences.privacy.incognitoMode}
-                        onChange={handlePrivacyChange('incognitoMode')}
-                        disabled
-                      />
-                    </Stack>
+                    <Switch
+                      checked={preferences.privacy.incognitoMode}
+                      onChange={handlePrivacyChange('incognitoMode')}
+                    />
                   </ListItemSecondaryAction>
                 </ListItem>
               </List>
@@ -822,38 +773,7 @@ function Settings() {
           </Collapse>
         </Paper>
 
-        {/* Subscription Management */}
-        <Paper sx={{ p: 3 }}>
-          {renderSectionHeader(<CreditCard />, 'Subscription & Premium', 'subscription')}
-          <Collapse in={expandedSections.subscription}>
-            <Box sx={{ pt: 2 }}>
-              <Stack spacing={2}>
-                <Box sx={{ p: 2, bgcolor: 'primary.light', borderRadius: 1, color: 'primary.contrastText' }}>
-                  <Typography variant="h6">Free Plan</Typography>
-                  <Typography variant="body2">Upgrade to Premium for more features</Typography>
-                </Box>
-                
-                <Button variant="contained" fullWidth>
-                  Upgrade to Premium
-                </Button>
-                
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={preferences.account.autoRenew}
-                      onChange={handleSwitchChange('account', 'autoRenew')}
-                    />
-                  }
-                  label="Auto-renew subscription"
-                />
-                
-                <Button variant="outlined" onClick={() => alert('Billing history would be shown here.')}>
-                  View Billing History
-                </Button>
-              </Stack>
-            </Box>
-          </Collapse>
-        </Paper>
+
 
         {/* Verification */}
         <Paper sx={{ p: 3 }}>
