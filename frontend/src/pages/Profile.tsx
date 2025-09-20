@@ -1234,9 +1234,22 @@ function Profile() {
                   location: profile.location,
                   occupation: profile.occupation,
                   education: profile.education,
-                  interests: profile.interests,
+                  interests: profile.interests || [],
                   verified: true,
                   photos: profile.photos || [],
+                  height: profile.height,
+                  gender: profile.gender,
+                  audioIntroUrl: profile.audioIntroUrl,
+                  weight: profile.weight,
+                  bodyType: profile.bodyType,
+                  ethnicity: profile.ethnicity,
+                  pets: profile.pets,
+                  drinking: profile.drinking,
+                  smoking: profile.smoking,
+                  workout: profile.workout,
+                  relationshipGoal: profile.relationshipGoal,
+                  sexualOrientation: profile.sexualOrientation,
+                  lookingFor: profile.lookingFor,
                 }}
                 showPhoto={true}
                 variant="preview"

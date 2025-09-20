@@ -245,7 +245,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
         {hasBasicInfo && (
           <Box sx={{ mb: 2 }}>
             {/* Avatar (when no photo is shown) */}
-            {!showPhoto || !getProfilePhoto() && (
+            {(!showPhoto || !getProfilePhoto()) && (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                 <Avatar
                   sx={{
@@ -274,7 +274,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
               </Typography>
               
               {/* Verification badge (when photo is shown) */}
-              {profileUser.verified && (showPhoto && getProfilePhoto()) && (
+              {profileUser.verified && showPhoto && getProfilePhoto() && (
                 <Verified color="primary" sx={{ fontSize: 18 }} />
               )}
             </Box>
@@ -295,7 +295,7 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight = 
             <LocationOn fontSize="small" color="action" />
             <Typography variant="body2" color="text.secondary" noWrap>
               {profileUser.location}
-              {profileUser.distance && (
+              {profileUser.distance !== undefined && profileUser.distance !== null && (
                 <Typography component="span" color="primary" sx={{ ml: 1, fontWeight: 'medium' }}>
                   • {Math.round(profileUser.distance)}km away
                 </Typography>
