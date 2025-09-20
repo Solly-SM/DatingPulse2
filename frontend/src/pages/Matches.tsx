@@ -11,12 +11,14 @@ import {
   Paper,
   useTheme,
   useMediaQuery,
+  IconButton,
 } from '@mui/material';
-import { Chat, Favorite } from '@mui/icons-material';
+import { Chat, Favorite, Person, Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { datingService } from '../services/datingService';
 import { Match, Conversation } from '../types/Dating';
 import InboxComponent from '../components/InboxComponent';
+import MiniProfile from '../components/MiniProfile';
 
 function Matches() {
   const navigate = useNavigate();
@@ -26,6 +28,7 @@ function Matches() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
 
   useEffect(() => {
     loadMatches();
@@ -65,6 +68,14 @@ function Matches() {
     navigate('/messages', { state: { selectedConversation: conversation } });
   };
 
+  const handleViewProfile = (match: Match) => {
+    setSelectedMatch(match);
+  };
+
+  const handleCloseProfile = () => {
+    setSelectedMatch(null);
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
@@ -85,6 +96,29 @@ function Matches() {
 
   // Mobile layout - stack vertically
   if (isMobile) {
+    // If viewing a profile on mobile, show just the profile
+    if (selectedMatch) {
+      return (
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <IconButton onClick={handleCloseProfile} sx={{ mr: 2 }}>
+              <Close />
+            </IconButton>
+            <Typography variant="h6">
+              Profile
+            </Typography>
+          </Box>
+          <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+            <MiniProfile
+              user={selectedMatch.user2}
+              showPhoto={true}
+              variant="preview"
+            />
+          </Box>
+        </Box>
+      );
+    }
+
     return (
       <Box sx={{ p: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
@@ -124,7 +158,6 @@ function Matches() {
                           boxShadow: 4,
                         },
                       }}
-                      onClick={() => handleSayHi(match)}
                     >
                       <Box sx={{ p: 1, textAlign: 'center' }}>
                         <Avatar
@@ -133,9 +166,37 @@ function Matches() {
                         >
                           {otherUser.firstName?.[0] || otherUser.username[0]}
                         </Avatar>
-                        <Typography variant="body2" fontWeight="bold">
+                        <Typography variant="body2" fontWeight="bold" sx={{ mb: 1 }}>
                           {otherUser.firstName || otherUser.username}
                         </Typography>
+                        
+                        {/* Action buttons */}
+                        <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            startIcon={<Person />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleViewProfile(match);
+                            }}
+                            sx={{ fontSize: '0.7rem', px: 1 }}
+                          >
+                            Profile
+                          </Button>
+                          <Button
+                            size="small"
+                            variant="contained"
+                            startIcon={<Chat />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSayHi(match);
+                            }}
+                            sx={{ fontSize: '0.7rem', px: 1 }}
+                          >
+                            Chat
+                          </Button>
+                        </Box>
                       </Box>
                     </Card>
                   </Grid>
@@ -159,7 +220,7 @@ function Matches() {
   return (
     <Box sx={{ height: '100%', display: 'flex', gap: 2, p: 2 }}>
       {/* Left/Middle Section - Matches */}
-      <Box sx={{ flex: 1 }}>
+      <Box sx={{ flex: selectedMatch ? 0.6 : 1 }}>
         <Paper sx={{ height: '100%', p: 2, overflow: 'auto' }}>
           <Typography variant="h4" component="h1" gutterBottom>
             Your Matches 💕
@@ -187,17 +248,18 @@ function Matches() {
               {matches.map((match) => {
                 const otherUser = match.user2;
                 return (
-                  <Grid item xs={12} sm={6} md={4} key={match.matchID}>
+                  <Grid item xs={12} sm={6} md={selectedMatch ? 12 : 4} key={match.matchID}>
                     <Card 
                       sx={{ 
                         cursor: 'pointer',
                         transition: 'transform 0.2s, box-shadow 0.2s',
+                        border: selectedMatch?.matchID === match.matchID ? '2px solid' : '1px solid transparent',
+                        borderColor: selectedMatch?.matchID === match.matchID ? 'primary.main' : 'transparent',
                         '&:hover': {
                           transform: 'translateY(-4px)',
                           boxShadow: 4,
                         },
                       }}
-                      onClick={() => handleSayHi(match)}
                     >
                       <Box sx={{ p: 2, textAlign: 'center' }}>
                         <Avatar
@@ -222,18 +284,32 @@ function Matches() {
                       </Box>
                       
                       <CardContent sx={{ pt: 0 }}>
-                        <Button
-                          fullWidth
-                          variant="contained"
-                          startIcon={<Chat />}
-                          size="small"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSayHi(match);
-                          }}
-                        >
-                          Say Hi
-                        </Button>
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                          <Button
+                            variant="outlined"
+                            startIcon={<Person />}
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleViewProfile(match);
+                            }}
+                            sx={{ flex: 1 }}
+                          >
+                            Profile
+                          </Button>
+                          <Button
+                            variant="contained"
+                            startIcon={<Chat />}
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSayHi(match);
+                            }}
+                            sx={{ flex: 1 }}
+                          >
+                            Say Hi
+                          </Button>
+                        </Box>
                       </CardContent>
                     </Card>
                   </Grid>
@@ -243,6 +319,39 @@ function Matches() {
           )}
         </Paper>
       </Box>
+
+      {/* Right Section - Profile View (only show when profile is selected) */}
+      {selectedMatch && (
+        <Box sx={{ flex: 0.4, minWidth: '300px' }}>
+          <Paper sx={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            {/* Header */}
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center', 
+              p: 2,
+              borderBottom: '1px solid #e0e0e0',
+              flexShrink: 0
+            }}>
+              <Typography variant="h6" fontWeight="bold">
+                Profile
+              </Typography>
+              <IconButton onClick={handleCloseProfile}>
+                <Close />
+              </IconButton>
+            </Box>
+            
+            {/* Profile Content */}
+            <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+              <MiniProfile
+                user={selectedMatch.user2}
+                showPhoto={true}
+                variant="preview"
+              />
+            </Box>
+          </Paper>
+        </Box>
+      )}
     </Box>
   );
 }
