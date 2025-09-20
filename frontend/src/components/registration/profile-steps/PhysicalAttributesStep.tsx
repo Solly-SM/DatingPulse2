@@ -25,6 +25,7 @@ interface PhysicalAttributesStepProps {
   onBack: () => void;
   onSkip?: () => void;
   loading: boolean;
+  hideNavigation?: boolean;
 }
 
 const bodyTypes = [
@@ -36,7 +37,7 @@ const ethnicities = [
   'Native American', 'Pacific Islander', 'Mixed', 'Other', 'Prefer not to say'
 ];
 
-function PhysicalAttributesStep({ data, onComplete, onBack, onSkip, loading }: PhysicalAttributesStepProps) {
+function PhysicalAttributesStep({ data, onComplete, onBack, onSkip, loading, hideNavigation = false }: PhysicalAttributesStepProps) {
   const [formData, setFormData] = useState<PhysicalAttributesData>(data);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,18 +141,20 @@ function PhysicalAttributesStep({ data, onComplete, onBack, onSkip, loading }: P
         </Grid>
       </Grid>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-        <Button onClick={onBack} disabled={loading}>
-          Back
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={loading}
-        >
-          Next
-        </Button>
-      </Box>
+      {!hideNavigation && (
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+          <Button onClick={onBack} disabled={loading}>
+            Back
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading}
+          >
+            Next
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }

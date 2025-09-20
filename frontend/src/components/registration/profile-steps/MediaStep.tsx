@@ -22,9 +22,10 @@ interface MediaStepProps {
   onComplete: (data: MediaData) => void;
   onBack: () => void;
   loading: boolean;
+  hideNavigation?: boolean;
 }
 
-function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
+function MediaStep({ data, onComplete, onBack, loading, hideNavigation = false }: MediaStepProps) {
   const [formData, setFormData] = useState<MediaData>(data);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isRecording, setIsRecording] = useState(false);
@@ -508,47 +509,49 @@ function MediaStep({ data, onComplete, onBack, loading }: MediaStepProps) {
         )}
       </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 5 }}>
-        <Button 
-          onClick={onBack} 
-          disabled={loading}
-          variant="outlined"
-          sx={{
-            borderRadius: 3,
-            px: 4,
-            py: 1.5,
-            fontSize: '1rem',
-            fontWeight: 600,
-          }}
-        >
-          Back
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={loading}
-          sx={{
-            borderRadius: 3,
-            px: 4,
-            py: 1.5,
-            fontSize: '1rem',
-            fontWeight: 600,
-            background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #c2185b 0%, #e91e63 100%)',
-              transform: 'translateY(-1px)',
-              boxShadow: '0px 6px 20px rgba(233, 30, 99, 0.4)',
-            },
-            '&:disabled': {
-              background: '#e0e0e0',
-              color: '#9e9e9e',
-            },
-            transition: 'all 0.2s ease-in-out',
-          }}
-        >
-          {loading ? 'Creating Profile...' : 'Complete Profile'}
-        </Button>
-      </Box>
+      {!hideNavigation && (
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 5 }}>
+          <Button 
+            onClick={onBack} 
+            disabled={loading}
+            variant="outlined"
+            sx={{
+              borderRadius: 3,
+              px: 4,
+              py: 1.5,
+              fontSize: '1rem',
+              fontWeight: 600,
+            }}
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading}
+            sx={{
+              borderRadius: 3,
+              px: 4,
+              py: 1.5,
+              fontSize: '1rem',
+              fontWeight: 600,
+              background: 'linear-gradient(135deg, #e91e63 0%, #ff4081 100%)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #c2185b 0%, #e91e63 100%)',
+                transform: 'translateY(-1px)',
+                boxShadow: '0px 6px 20px rgba(233, 30, 99, 0.4)',
+              },
+              '&:disabled': {
+                background: '#e0e0e0',
+                color: '#9e9e9e',
+              },
+              transition: 'all 0.2s ease-in-out',
+            }}
+          >
+            {loading ? 'Creating Profile...' : 'Complete Profile'}
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }

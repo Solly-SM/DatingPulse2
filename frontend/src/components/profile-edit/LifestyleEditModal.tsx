@@ -71,6 +71,7 @@ const LifestyleEditModal: React.FC<LifestyleEditModalProps> = ({
         onComplete={handleDataChange}
         onBack={() => {}} // Not used in modal
         loading={loading}
+        hideNavigation={true}
       />
     </EditModal>
   );
