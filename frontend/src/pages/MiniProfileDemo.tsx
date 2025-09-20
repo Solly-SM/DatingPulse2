@@ -24,7 +24,20 @@ const mockUserBasic: DiscoverUser = {
   verified: true,
   height: 165,
   gender: 'female',
+  bodyType: 'Slim',
+  ethnicity: 'Asian',
   distance: 3.5,
+  
+  // Lifestyle
+  pets: 'Cat lover',
+  drinking: 'Occasionally',
+  smoking: 'Never',
+  workout: 'Regular',
+  
+  // Preferences  
+  relationshipGoal: 'Long-term',
+  lookingFor: 'Meaningful connection',
+  
   photos: [
     {
       photoID: 1,
@@ -94,11 +107,19 @@ const mockUserCompact: DiscoverUser = {
   audioIntroUrl: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmAfBz2L0/PJdSgFKn3J8N2QQgoeaLvu5Z9NEAxPqeXwtWQcBz2N1fDMeywFJHfA8N2QQAoUXrTp66hWFApFmuPztV8gCj2L0/PJdSgEKn3J8N2QQgoeaLvu5Z9NEAxPqeXwtWQcBz2N1fDNeysFJHfI8N2QQAoUXrTp66hWFApGn+PytV8gCj2L0/PJdSgFK3zJ8N2QQgoeaLvu5Z9NEAxPpuHvxGklEwdBlM3vzW0rEzQ7stn1wGP/AP2gYuAyB3YAAAAASUVORK0=',
   height: 158,
   gender: 'female',
+  bodyType: 'Petite',
+  ethnicity: 'Caucasian',
   workout: 'Sometimes',
-  bio: 'Creative soul with a love for art and music.',
+  pets: 'No pets',
+  drinking: 'Rarely',
+  smoking: 'Never',
+  relationshipGoal: 'Casual dating',
+  lookingFor: 'Fun and friendship',
+  bio: 'Creative soul with a love for art and music. Always exploring new galleries and concerts.',
   location: 'New York, NY',
   occupation: 'Graphic Designer',
-  interests: ['Art', 'Music', 'Design'],
+  education: 'Art Institute',
+  interests: ['Art', 'Music', 'Design', 'Photography', 'Coffee'],
   distance: 1.2,
   photos: [
     {
@@ -131,7 +152,7 @@ function MiniProfileDemo() {
             <Typography variant="body2" color="text.secondary" gutterBottom align="center" sx={{ mb: 2 }}>
               Standard profile without enhanced features
             </Typography>
-            <Box sx={{ height: '600px' }}>
+            <Box sx={{ height: '700px' }}>
               <MiniProfile 
                 user={mockUserBasic} 
                 showPhoto={true} 
@@ -150,7 +171,7 @@ function MiniProfileDemo() {
             <Typography variant="body2" color="text.secondary" gutterBottom align="center" sx={{ mb: 2 }}>
               With audio intro, lifestyle details, and full information
             </Typography>
-            <Box sx={{ height: '600px' }}>
+            <Box sx={{ height: '700px' }}>
               <MiniProfile 
                 user={mockUserEnhanced} 
                 showPhoto={true} 
@@ -169,7 +190,7 @@ function MiniProfileDemo() {
             <Typography variant="body2" color="text.secondary" gutterBottom align="center" sx={{ mb: 2 }}>
               Compact variant with essential info and audio intro
             </Typography>
-            <Box sx={{ height: '300px' }}>
+            <Box sx={{ height: '500px' }}>
               <MiniProfile 
                 user={mockUserCompact} 
                 showPhoto={true} 
