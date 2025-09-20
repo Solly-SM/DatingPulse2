@@ -289,12 +289,12 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight }:
         )}
 
         {/* PRIORITY 2: Location and Distance */}
-        {/* PRIORITY 2: Location and Distance */}
         {hasLocation && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
             <LocationOn fontSize="small" color="action" />
             <Typography variant="body2" color="text.secondary" noWrap>
-              {profileUser.location}
+              {/* Clean location string and add distance separately to avoid duplication */}
+              {profileUser.location?.replace(/,?\s*\d+km\s*away/i, '')}
               {profileUser.distance !== undefined && profileUser.distance !== null && (
                 <Typography component="span" color="primary" sx={{ ml: 1, fontWeight: 'medium' }}>
                   • {Math.round(profileUser.distance)}km away
