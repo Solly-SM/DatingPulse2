@@ -63,11 +63,37 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight }:
     drinking: user.drinking || undefined,
     smoking: user.smoking || undefined,
     workout: user.workout || undefined,
+    dietaryPreference: user.dietaryPreference || undefined,
+    socialMedia: user.socialMedia || undefined,
+    sleepingHabits: user.sleepingHabits || undefined,
+    languages: user.languages || [],
     
     // Preferences
     relationshipGoal: user.relationshipGoal || undefined,
     sexualOrientation: user.sexualOrientation || undefined,
     lookingFor: user.lookingFor || undefined,
+    interestedIn: user.interestedIn || undefined,
+    
+    // Additional personality
+    communicationStyle: user.communicationStyle || undefined,
+    loveLanguage: user.loveLanguage || undefined,
+    zodiacSign: user.zodiacSign || undefined,
+    
+    // Additional info
+    religion: user.religion || undefined,
+    politicalViews: user.politicalViews || undefined,
+    familyPlans: user.familyPlans || undefined,
+    fitnessLevel: user.fitnessLevel || undefined,
+    travelFrequency: user.travelFrequency || undefined,
+    industry: user.industry || undefined,
+    
+    // Extended preferences
+    musicPreferences: user.musicPreferences || [],
+    foodPreferences: user.foodPreferences || [],
+    entertainmentPreferences: user.entertainmentPreferences || [],
+    currentlyReading: user.currentlyReading || undefined,
+    lifeGoals: user.lifeGoals || undefined,
+    petPreferences: user.petPreferences || undefined,
   };
 
   const getDisplayAge = () => {
@@ -102,8 +128,17 @@ function MiniProfile({ user, showPhoto = true, variant = 'sidebar', maxHeight }:
   const hasInterests = profileUser.interests && profileUser.interests.length > 0;
   const hasAudioIntro = profileUser.audioIntroUrl;
   const hasPhysicalAttributes = profileUser.height || profileUser.gender || profileUser.bodyType || profileUser.ethnicity;
-  const hasLifestyleInfo = profileUser.pets || profileUser.drinking || profileUser.smoking || profileUser.workout;
-  const hasPreferences = profileUser.relationshipGoal || profileUser.lookingFor;
+  const hasLifestyleInfo = profileUser.pets || profileUser.drinking || profileUser.smoking || profileUser.workout || 
+                          profileUser.dietaryPreference || profileUser.socialMedia || profileUser.sleepingHabits ||
+                          (profileUser.languages && profileUser.languages.length > 0);
+  const hasPreferences = profileUser.relationshipGoal || profileUser.lookingFor || profileUser.interestedIn;
+  const hasPersonality = profileUser.communicationStyle || profileUser.loveLanguage || profileUser.zodiacSign;
+  const hasAdditionalInfo = profileUser.religion || profileUser.politicalViews || profileUser.familyPlans || 
+                           profileUser.fitnessLevel || profileUser.travelFrequency || profileUser.industry;
+  const hasExtendedPreferences = (profileUser.musicPreferences && profileUser.musicPreferences.length > 0) ||
+                                (profileUser.foodPreferences && profileUser.foodPreferences.length > 0) ||
+                                (profileUser.entertainmentPreferences && profileUser.entertainmentPreferences.length > 0) ||
+                                profileUser.currentlyReading || profileUser.lifeGoals || profileUser.petPreferences;
 
   // Different layouts based on variant
   const isSidebar = variant === 'sidebar';

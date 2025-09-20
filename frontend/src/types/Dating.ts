@@ -38,11 +38,37 @@ export interface DiscoverUser {
   drinking?: string;
   smoking?: string;
   workout?: string;
+  dietaryPreference?: string;
+  socialMedia?: string;
+  sleepingHabits?: string;
+  languages?: string[];
   
   // Personality and preferences
   relationshipGoal?: string;
   sexualOrientation?: string;
   lookingFor?: string;
+  interestedIn?: 'male' | 'female' | 'both';
+  
+  // Additional personality
+  communicationStyle?: string;
+  loveLanguage?: string;
+  zodiacSign?: string;
+  
+  // Additional info
+  religion?: string;
+  politicalViews?: string;
+  familyPlans?: string;
+  fitnessLevel?: string;
+  travelFrequency?: string;
+  industry?: string;
+  
+  // Preferences
+  musicPreferences?: string[];
+  foodPreferences?: string[];
+  entertainmentPreferences?: string[];
+  currentlyReading?: string;
+  lifeGoals?: string;
+  petPreferences?: string;
 }
 
 export interface Photo {

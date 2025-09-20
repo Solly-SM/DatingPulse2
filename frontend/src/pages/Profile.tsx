@@ -1194,10 +1194,9 @@ function Profile() {
                 user={{
                   userID: profile.userID || 0,
                   firstName: profile.firstName,
+                  lastName: profile.lastName,
                   username: profile.firstName || 'User',
-                  age: profile.dateOfBirth ? 
-                    new Date().getFullYear() - new Date(profile.dateOfBirth).getFullYear() : 
-                    undefined,
+                  age: profile.dateOfBirth ? calculateAge(profile.dateOfBirth) : undefined,
                   bio: profile.bio,
                   location: profile.location,
                   occupation: profile.occupation,
@@ -1218,9 +1217,35 @@ function Profile() {
                   relationshipGoal: profile.relationshipGoal,
                   sexualOrientation: profile.sexualOrientation,
                   lookingFor: profile.lookingFor,
+                  // Additional fields for comprehensive profile display
+                  interestedIn: profile.interestedIn,
+                  distance: undefined, // Not applicable for own profile
+                  // Extended lifestyle data
+                  dietaryPreference: profile.dietaryPreference,
+                  socialMedia: profile.socialMedia,
+                  sleepingHabits: profile.sleepingHabits,
+                  languages: profile.languages,
+                  // Personality data
+                  communicationStyle: profile.communicationStyle,
+                  loveLanguage: profile.loveLanguage,
+                  zodiacSign: profile.zodiacSign,
+                  // Additional info
+                  religion: profile.religion,
+                  politicalViews: profile.politicalViews,
+                  familyPlans: profile.familyPlans,
+                  fitnessLevel: profile.fitnessLevel,
+                  travelFrequency: profile.travelFrequency,
+                  industry: profile.industry,
+                  // Preferences
+                  musicPreferences: profile.musicPreferences,
+                  foodPreferences: profile.foodPreferences,
+                  entertainmentPreferences: profile.entertainmentPreferences,
+                  currentlyReading: profile.currentlyReading,
+                  lifeGoals: profile.lifeGoals,
+                  petPreferences: profile.petPreferences,
                 }}
                 showPhoto={true}
-                variant="preview"
+                variant="sidebar"
                 maxHeight="calc(100vh - 160px)"
               />
             )}
