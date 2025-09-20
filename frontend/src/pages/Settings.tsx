@@ -52,6 +52,14 @@ import {
   LightMode,
   PersonPin,
   Message,
+  Favorite,
+  CameraAlt,
+  Report,
+  FilterList,
+  Psychology,
+  BarChart,
+  GppMaybe,
+  Settings as SettingsIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -71,6 +79,18 @@ interface UserPreferences {
     maxDistance: number;
     showMe: 'everyone' | 'men' | 'women';
     showOnlyVerified: boolean;
+    // Advanced discovery filters
+    heightRange: [number, number];
+    educationLevel: string[];
+    occupationTypes: string[];
+    lifestyleFilters: {
+      smoking: string[];
+      drinking: string[];
+      workout: string[];
+      pets: string[];
+    };
+    interestBasedMatching: boolean;
+    dealbreakers: string[];
   };
   privacy: {
     showDistance: boolean;
@@ -80,6 +100,10 @@ interface UserPreferences {
     incognitoMode: boolean;
     locationPrecision: 'exact' | 'approximate' | 'city';
     profileVisibility: 'everyone' | 'matches';
+    // Photo privacy controls
+    photoVisibility: 'public' | 'matches' | 'approved';
+    requirePhotoApproval: boolean;
+    blurPhotosUntilMatch: boolean;
   };
   account: {
     dataUsage: 'low' | 'normal' | 'high';
@@ -95,6 +119,40 @@ interface UserPreferences {
   security: {
     twoFactorEnabled: boolean;
     loginAlerts: boolean;
+  };
+  // Dating Preferences section
+  datingPreferences: {
+    relationshipGoals: string[];
+    datingIntentions: string;
+    lookingFor: string;
+    dealBreakers: string[];
+    valueAlignment: string[];
+  };
+  // Safety & Blocking controls
+  safetyBlocking: {
+    safetyMode: boolean;
+    autoReportInappropriate: boolean;
+    requireVerificationToMessage: boolean;
+    blockUnverifiedUsers: boolean;
+    hideFromSearch: boolean;
+  };
+  // Enhanced verification settings
+  enhancedVerification: {
+    photoVerificationRequired: boolean;
+    idVerificationRequired: boolean;
+    socialMediaVerification: boolean;
+    phoneVerificationRequired: boolean;
+    manualReviewRequired: boolean;
+  };
+  // Match preferences and criteria
+  matchPreferences: {
+    qualityOverQuantity: boolean;
+    mutualInterestsWeight: number;
+    locationImportance: number;
+    ageImportance: number;
+    educationImportance: number;
+    lifestyleCompatibility: number;
+    communicationStyleMatch: boolean;
   };
 }
 
@@ -113,6 +171,18 @@ const defaultPreferences: UserPreferences = {
     maxDistance: 50,
     showMe: 'everyone',
     showOnlyVerified: false,
+    // Advanced discovery filters
+    heightRange: [150, 200],
+    educationLevel: [],
+    occupationTypes: [],
+    lifestyleFilters: {
+      smoking: [],
+      drinking: [],
+      workout: [],
+      pets: [],
+    },
+    interestBasedMatching: true,
+    dealbreakers: [],
   },
   privacy: {
     showDistance: true,
@@ -122,6 +192,10 @@ const defaultPreferences: UserPreferences = {
     incognitoMode: false,
     locationPrecision: 'approximate',
     profileVisibility: 'everyone',
+    // Photo privacy controls
+    photoVisibility: 'public',
+    requirePhotoApproval: false,
+    blurPhotosUntilMatch: false,
   },
   account: {
     dataUsage: 'normal',
@@ -137,6 +211,40 @@ const defaultPreferences: UserPreferences = {
   security: {
     twoFactorEnabled: false,
     loginAlerts: true,
+  },
+  // Dating Preferences section
+  datingPreferences: {
+    relationshipGoals: ['Looking for love'],
+    datingIntentions: 'serious',
+    lookingFor: 'Long-term relationship',
+    dealBreakers: [],
+    valueAlignment: [],
+  },
+  // Safety & Blocking controls
+  safetyBlocking: {
+    safetyMode: true,
+    autoReportInappropriate: true,
+    requireVerificationToMessage: false,
+    blockUnverifiedUsers: false,
+    hideFromSearch: false,
+  },
+  // Enhanced verification settings
+  enhancedVerification: {
+    photoVerificationRequired: false,
+    idVerificationRequired: false,
+    socialMediaVerification: false,
+    phoneVerificationRequired: false,
+    manualReviewRequired: false,
+  },
+  // Match preferences and criteria
+  matchPreferences: {
+    qualityOverQuantity: true,
+    mutualInterestsWeight: 70,
+    locationImportance: 50,
+    ageImportance: 30,
+    educationImportance: 20,
+    lifestyleCompatibility: 60,
+    communicationStyleMatch: true,
   },
 };
 
@@ -157,6 +265,10 @@ function Settings() {
     communication: false,
     data: false,
     verification: false,
+    datingPreferences: true,
+    safetyBlocking: false,
+    enhancedVerification: false,
+    matchPreferences: false,
   });
 
   useEffect(() => {
@@ -283,6 +395,49 @@ function Settings() {
 
   const handleDataDownload = () => {
     alert('Data download would generate a secure download link in a real app.');
+  };
+
+  // Helper function for handling multi-select arrays
+  const handleArrayToggle = (section: keyof UserPreferences, key: string, value: string) => {
+    setPreferences(prev => {
+      const currentArray = (prev[section] as any)[key] as string[];
+      const newArray = currentArray.includes(value)
+        ? currentArray.filter(item => item !== value)
+        : [...currentArray, value];
+      
+      return {
+        ...prev,
+        [section]: {
+          ...prev[section],
+          [key]: newArray,
+        },
+      };
+    });
+  };
+
+  // Helper function for handling nested object changes
+  const handleNestedObjectChange = (section: keyof UserPreferences, parentKey: string, childKey: string, value: any) => {
+    setPreferences(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [parentKey]: {
+          ...(prev[section] as any)[parentKey],
+          [childKey]: value,
+        },
+      },
+    }));
+  };
+
+  // Helper function for handling slider changes
+  const handleSliderChange = (section: keyof UserPreferences, key: string) => (event: Event, newValue: number | number[]) => {
+    setPreferences(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [key]: newValue,
+      },
+    }));
   };
 
   const renderSectionHeader = (icon: React.ReactNode, title: string, sectionKey: string, badge?: number) => (
@@ -535,6 +690,26 @@ function Settings() {
                 </Typography>
               </Box>
 
+              <Box sx={{ mb: 3 }}>
+                <Typography gutterBottom>Height Range (cm)</Typography>
+                <Slider
+                  value={preferences.discovery.heightRange}
+                  onChange={handleSliderChange('discovery', 'heightRange')}
+                  valueLabelDisplay="auto"
+                  min={140}
+                  max={220}
+                  marks={[
+                    { value: 140, label: '140cm' },
+                    { value: 170, label: '170cm' },
+                    { value: 200, label: '200cm' },
+                    { value: 220, label: '220cm' },
+                  ]}
+                />
+                <Typography variant="body2" color="text.secondary">
+                  Show people between {preferences.discovery.heightRange[0]}cm and {preferences.discovery.heightRange[1]}cm
+                </Typography>
+              </Box>
+
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel>Show Me</InputLabel>
                 <Select
@@ -548,6 +723,94 @@ function Settings() {
                 </Select>
               </FormControl>
 
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel>Education Level Preferences</InputLabel>
+                <Select
+                  multiple
+                  value={preferences.discovery.educationLevel}
+                  onChange={(e) => handleSelectChange('discovery', 'educationLevel')(e as any)}
+                  label="Education Level Preferences"
+                  renderValue={(selected) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {selected.map((value) => (
+                        <Chip key={value} label={value} />
+                      ))}
+                    </Box>
+                  )}
+                >
+                  <MenuItem value="High School">High School</MenuItem>
+                  <MenuItem value="Bachelor's Degree">Bachelor's Degree</MenuItem>
+                  <MenuItem value="Master's Degree">Master's Degree</MenuItem>
+                  <MenuItem value="PhD">PhD</MenuItem>
+                  <MenuItem value="Trade School">Trade School</MenuItem>
+                  <MenuItem value="Some College">Some College</MenuItem>
+                </Select>
+              </FormControl>
+
+              <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>
+                Lifestyle Filters
+              </Typography>
+              
+              <Grid container spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Smoking Preference</InputLabel>
+                    <Select
+                      multiple
+                      value={preferences.discovery.lifestyleFilters.smoking}
+                      onChange={(e) => {
+                        setPreferences(prev => ({
+                          ...prev,
+                          discovery: {
+                            ...prev.discovery,
+                            lifestyleFilters: {
+                              ...prev.discovery.lifestyleFilters,
+                              smoking: e.target.value as string[],
+                            },
+                          },
+                        }));
+                      }}
+                      label="Smoking Preference"
+                      renderValue={(selected) => selected.join(', ')}
+                    >
+                      <MenuItem value="Never">Never</MenuItem>
+                      <MenuItem value="Occasionally">Occasionally</MenuItem>
+                      <MenuItem value="Socially">Socially</MenuItem>
+                      <MenuItem value="Regularly">Regularly</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Drinking Preference</InputLabel>
+                    <Select
+                      multiple
+                      value={preferences.discovery.lifestyleFilters.drinking}
+                      onChange={(e) => {
+                        setPreferences(prev => ({
+                          ...prev,
+                          discovery: {
+                            ...prev.discovery,
+                            lifestyleFilters: {
+                              ...prev.discovery.lifestyleFilters,
+                              drinking: e.target.value as string[],
+                            },
+                          },
+                        }));
+                      }}
+                      label="Drinking Preference"
+                      renderValue={(selected) => selected.join(', ')}
+                    >
+                      <MenuItem value="Never">Never</MenuItem>
+                      <MenuItem value="Occasionally">Occasionally</MenuItem>
+                      <MenuItem value="Socially">Socially</MenuItem>
+                      <MenuItem value="Regularly">Regularly</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+
               <FormControlLabel
                 control={
                   <Switch
@@ -557,6 +820,232 @@ function Settings() {
                 }
                 label="Show only verified profiles"
               />
+
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={preferences.discovery.interestBasedMatching}
+                    onChange={handleSwitchChange('discovery', 'interestBasedMatching')}
+                  />
+                }
+                label="Prioritize interest-based matching"
+              />
+            </Box>
+          </Collapse>
+        </Paper>
+
+        {/* Dating Preferences */}
+        <Paper sx={{ p: 3 }}>
+          {renderSectionHeader(<Favorite />, 'Dating Preferences', 'datingPreferences')}
+          <Collapse in={expandedSections.datingPreferences}>
+            <Box sx={{ pt: 2 }}>
+              <Stack spacing={3}>
+                <FormControl fullWidth>
+                  <InputLabel>Dating Intentions</InputLabel>
+                  <Select
+                    value={preferences.datingPreferences.datingIntentions}
+                    onChange={handleSelectChange('datingPreferences', 'datingIntentions')}
+                    label="Dating Intentions"
+                  >
+                    <MenuItem value="serious">Looking for something serious</MenuItem>
+                    <MenuItem value="casual">Open to casual dating</MenuItem>
+                    <MenuItem value="friendship">Friendship first</MenuItem>
+                    <MenuItem value="exploring">Still exploring</MenuItem>
+                    <MenuItem value="marriage">Ready for marriage</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <FormControl fullWidth>
+                  <InputLabel>Relationship Goals</InputLabel>
+                  <Select
+                    multiple
+                    value={preferences.datingPreferences.relationshipGoals}
+                    onChange={(e) => handleSelectChange('datingPreferences', 'relationshipGoals')(e as any)}
+                    label="Relationship Goals"
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value) => (
+                          <Chip key={value} label={value} size="small" />
+                        ))}
+                      </Box>
+                    )}
+                  >
+                    <MenuItem value="Looking for love">Looking for love</MenuItem>
+                    <MenuItem value="Long-term relationship">Long-term relationship</MenuItem>
+                    <MenuItem value="Marriage">Marriage</MenuItem>
+                    <MenuItem value="Life partner">Life partner</MenuItem>
+                    <MenuItem value="Companionship">Companionship</MenuItem>
+                    <MenuItem value="Something casual">Something casual</MenuItem>
+                    <MenuItem value="New friends">New friends</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <TextField
+                  fullWidth
+                  label="What I'm Looking For"
+                  value={preferences.datingPreferences.lookingFor}
+                  onChange={(e) => {
+                    setPreferences(prev => ({
+                      ...prev,
+                      datingPreferences: {
+                        ...prev.datingPreferences,
+                        lookingFor: e.target.value,
+                      },
+                    }));
+                  }}
+                  placeholder="Describe what you're looking for in a partner..."
+                  multiline
+                  rows={3}
+                />
+
+                <FormControl fullWidth>
+                  <InputLabel>Deal Breakers</InputLabel>
+                  <Select
+                    multiple
+                    value={preferences.datingPreferences.dealBreakers}
+                    onChange={(e) => handleSelectChange('datingPreferences', 'dealBreakers')(e as any)}
+                    label="Deal Breakers"
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value) => (
+                          <Chip key={value} label={value} size="small" color="error" />
+                        ))}
+                      </Box>
+                    )}
+                  >
+                    <MenuItem value="Smoking">Smoking</MenuItem>
+                    <MenuItem value="Heavy drinking">Heavy drinking</MenuItem>
+                    <MenuItem value="No pets">No pets allowed</MenuItem>
+                    <MenuItem value="Different politics">Different political views</MenuItem>
+                    <MenuItem value="Different religion">Different religious views</MenuItem>
+                    <MenuItem value="No children">Doesn't want children</MenuItem>
+                    <MenuItem value="Long distance">Not open to long distance</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <FormControl fullWidth>
+                  <InputLabel>Value Alignment</InputLabel>
+                  <Select
+                    multiple
+                    value={preferences.datingPreferences.valueAlignment}
+                    onChange={(e) => handleSelectChange('datingPreferences', 'valueAlignment')(e as any)}
+                    label="Value Alignment"
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value) => (
+                          <Chip key={value} label={value} size="small" />
+                        ))}
+                      </Box>
+                    )}
+                  >
+                    <MenuItem value="Family oriented">Family oriented</MenuItem>
+                    <MenuItem value="Career focused">Career focused</MenuItem>
+                    <MenuItem value="Spiritual">Spiritual/Religious</MenuItem>
+                    <MenuItem value="Health conscious">Health conscious</MenuItem>
+                    <MenuItem value="Adventure seeking">Adventure seeking</MenuItem>
+                    <MenuItem value="Environmentally conscious">Environmentally conscious</MenuItem>
+                    <MenuItem value="Education focused">Values education</MenuItem>
+                    <MenuItem value="Community minded">Community minded</MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
+            </Box>
+          </Collapse>
+        </Paper>
+
+        {/* Safety & Blocking */}
+        <Paper sx={{ p: 3 }}>
+          {renderSectionHeader(<GppMaybe />, 'Safety & Blocking', 'safetyBlocking')}
+          <Collapse in={expandedSections.safetyBlocking}>
+            <Box sx={{ pt: 2 }}>
+              <List>
+                <ListItem>
+                  <ListItemText 
+                    primary="Safety Mode" 
+                    secondary="Enhanced safety features and content filtering" 
+                  />
+                  <ListItemSecondaryAction>
+                    <Switch
+                      checked={preferences.safetyBlocking.safetyMode}
+                      onChange={handleSwitchChange('safetyBlocking', 'safetyMode')}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
+                
+                <ListItem>
+                  <ListItemText 
+                    primary="Auto Report Inappropriate Content" 
+                    secondary="Automatically report messages and profiles that violate community guidelines" 
+                  />
+                  <ListItemSecondaryAction>
+                    <Switch
+                      checked={preferences.safetyBlocking.autoReportInappropriate}
+                      onChange={handleSwitchChange('safetyBlocking', 'autoReportInappropriate')}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
+                
+                <ListItem>
+                  <ListItemText 
+                    primary="Require Verification to Message" 
+                    secondary="Only verified users can send you first messages" 
+                  />
+                  <ListItemSecondaryAction>
+                    <Switch
+                      checked={preferences.safetyBlocking.requireVerificationToMessage}
+                      onChange={handleSwitchChange('safetyBlocking', 'requireVerificationToMessage')}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
+                
+                <ListItem>
+                  <ListItemText 
+                    primary="Block Unverified Users" 
+                    secondary="Prevent unverified profiles from appearing in your discovery" 
+                  />
+                  <ListItemSecondaryAction>
+                    <Switch
+                      checked={preferences.safetyBlocking.blockUnverifiedUsers}
+                      onChange={handleSwitchChange('safetyBlocking', 'blockUnverifiedUsers')}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
+                
+                <ListItem>
+                  <ListItemText 
+                    primary="Hide From Search" 
+                    secondary="Don't appear in other users' discovery unless you've already liked them" 
+                  />
+                  <ListItemSecondaryAction>
+                    <Switch
+                      checked={preferences.safetyBlocking.hideFromSearch}
+                      onChange={handleSwitchChange('safetyBlocking', 'hideFromSearch')}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </List>
+              
+              <Divider sx={{ my: 2 }} />
+              
+              <Stack spacing={2}>
+                <Button
+                  variant="outlined"
+                  startIcon={<Block />}
+                  onClick={() => navigate('/blocked-users')}
+                  fullWidth
+                >
+                  Manage Blocked Users
+                </Button>
+                
+                <Button
+                  variant="outlined"
+                  startIcon={<Report />}
+                  onClick={() => alert('Report user functionality would open here')}
+                  fullWidth
+                >
+                  Report Safety Concerns
+                </Button>
+              </Stack>
             </Box>
           </Collapse>
         </Paper>
@@ -769,16 +1258,61 @@ function Settings() {
                   <MenuItem value="city">City Only</MenuItem>
                 </Select>
               </FormControl>
+
+              <Typography variant="subtitle2" gutterBottom sx={{ mt: 2, mb: 1 }}>
+                Photo Privacy Controls
+              </Typography>
+              
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel>Photo Visibility</InputLabel>
+                <Select
+                  value={preferences.privacy.photoVisibility}
+                  onChange={handleSelectChange('privacy', 'photoVisibility')}
+                  label="Photo Visibility"
+                >
+                  <MenuItem value="public">Public - Anyone can see</MenuItem>
+                  <MenuItem value="matches">Matches Only - Only people you've matched with</MenuItem>
+                  <MenuItem value="approved">Approved Only - Only after you approve</MenuItem>
+                </Select>
+              </FormControl>
+
+              <List dense>
+                <ListItem>
+                  <ListItemText 
+                    primary="Require Photo Approval" 
+                    secondary="Manually approve who can see your photos" 
+                  />
+                  <ListItemSecondaryAction>
+                    <Switch
+                      checked={preferences.privacy.requirePhotoApproval}
+                      onChange={handlePrivacyChange('requirePhotoApproval')}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
+                
+                <ListItem>
+                  <ListItemText 
+                    primary="Blur Photos Until Match" 
+                    secondary="Show blurred photos until both users match" 
+                  />
+                  <ListItemSecondaryAction>
+                    <Switch
+                      checked={preferences.privacy.blurPhotosUntilMatch}
+                      onChange={handlePrivacyChange('blurPhotosUntilMatch')}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </List>
             </Box>
           </Collapse>
         </Paper>
 
 
 
-        {/* Verification */}
+        {/* Enhanced Verification */}
         <Paper sx={{ p: 3 }}>
-          {renderSectionHeader(<Verified />, 'Account Verification', 'verification', user?.isVerified ? 0 : 1)}
-          <Collapse in={expandedSections.verification}>
+          {renderSectionHeader(<Verified />, 'Enhanced Verification', 'enhancedVerification', user?.isVerified ? 0 : 1)}
+          <Collapse in={expandedSections.enhancedVerification}>
             <Box sx={{ pt: 2 }}>
               <Stack spacing={2}>
                 {user?.isVerified ? (
@@ -789,13 +1323,90 @@ function Settings() {
                 ) : (
                   <>
                     <Alert severity="info">
-                      Verify your account to increase trust and get more matches
+                      Enhanced verification increases trust and can improve your match quality
                     </Alert>
                     <Button variant="contained" startIcon={<Verified />}>
-                      Start Verification Process
+                      Start Enhanced Verification
                     </Button>
                   </>
                 )}
+                
+                <Typography variant="subtitle2" gutterBottom>
+                  Verification Requirements
+                </Typography>
+                
+                <List dense>
+                  <ListItem>
+                    <ListItemText 
+                      primary="Photo Verification Required" 
+                      secondary="Require real-time photo verification for interactions" 
+                    />
+                    <ListItemSecondaryAction>
+                      <Switch
+                        checked={preferences.enhancedVerification.photoVerificationRequired}
+                        onChange={handleSwitchChange('enhancedVerification', 'photoVerificationRequired')}
+                      />
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                  
+                  <ListItem>
+                    <ListItemText 
+                      primary="ID Verification Required" 
+                      secondary="Require government ID verification" 
+                    />
+                    <ListItemSecondaryAction>
+                      <Switch
+                        checked={preferences.enhancedVerification.idVerificationRequired}
+                        onChange={handleSwitchChange('enhancedVerification', 'idVerificationRequired')}
+                      />
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                  
+                  <ListItem>
+                    <ListItemText 
+                      primary="Social Media Verification" 
+                      secondary="Link and verify social media accounts" 
+                    />
+                    <ListItemSecondaryAction>
+                      <Switch
+                        checked={preferences.enhancedVerification.socialMediaVerification}
+                        onChange={handleSwitchChange('enhancedVerification', 'socialMediaVerification')}
+                      />
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                  
+                  <ListItem>
+                    <ListItemText 
+                      primary="Phone Verification Required" 
+                      secondary="Require phone number verification" 
+                    />
+                    <ListItemSecondaryAction>
+                      <Switch
+                        checked={preferences.enhancedVerification.phoneVerificationRequired}
+                        onChange={handleSwitchChange('enhancedVerification', 'phoneVerificationRequired')}
+                      />
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                  
+                  <ListItem>
+                    <ListItemText 
+                      primary="Manual Review Required" 
+                      secondary="Require manual review of profile and photos" 
+                    />
+                    <ListItemSecondaryAction>
+                      <Switch
+                        checked={preferences.enhancedVerification.manualReviewRequired}
+                        onChange={handleSwitchChange('enhancedVerification', 'manualReviewRequired')}
+                      />
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                </List>
+
+                <Divider sx={{ my: 2 }} />
+
+                <Typography variant="subtitle2" gutterBottom>
+                  Current Verification Status
+                </Typography>
                 
                 <List dense>
                   <ListItem>
@@ -820,6 +1431,141 @@ function Settings() {
                     <Verified color={user?.phoneVerified ? "success" : "disabled"} />
                   </ListItem>
                 </List>
+              </Stack>
+            </Box>
+          </Collapse>
+        </Paper>
+
+        {/* Match Preferences and Criteria */}
+        <Paper sx={{ p: 3 }}>
+          {renderSectionHeader(<BarChart />, 'Match Preferences & Criteria', 'matchPreferences')}
+          <Collapse in={expandedSections.matchPreferences}>
+            <Box sx={{ pt: 2 }}>
+              <Stack spacing={3}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={preferences.matchPreferences.qualityOverQuantity}
+                      onChange={handleSwitchChange('matchPreferences', 'qualityOverQuantity')}
+                    />
+                  }
+                  label="Quality Over Quantity - Prioritize better matches over more matches"
+                />
+
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={preferences.matchPreferences.communicationStyleMatch}
+                      onChange={handleSwitchChange('matchPreferences', 'communicationStyleMatch')}
+                    />
+                  }
+                  label="Communication Style Matching - Match with similar communication preferences"
+                />
+
+                <Box>
+                  <Typography gutterBottom>
+                    Mutual Interests Weight: {preferences.matchPreferences.mutualInterestsWeight}%
+                  </Typography>
+                  <Slider
+                    value={preferences.matchPreferences.mutualInterestsWeight}
+                    onChange={handleSliderChange('matchPreferences', 'mutualInterestsWeight')}
+                    valueLabelDisplay="auto"
+                    min={0}
+                    max={100}
+                    marks={[
+                      { value: 0, label: 'Not Important' },
+                      { value: 50, label: 'Moderate' },
+                      { value: 100, label: 'Very Important' },
+                    ]}
+                  />
+                  <Typography variant="body2" color="text.secondary">
+                    How important are shared interests in matching
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography gutterBottom>
+                    Location Importance: {preferences.matchPreferences.locationImportance}%
+                  </Typography>
+                  <Slider
+                    value={preferences.matchPreferences.locationImportance}
+                    onChange={handleSliderChange('matchPreferences', 'locationImportance')}
+                    valueLabelDisplay="auto"
+                    min={0}
+                    max={100}
+                    marks={[
+                      { value: 0, label: 'Not Important' },
+                      { value: 50, label: 'Moderate' },
+                      { value: 100, label: 'Very Important' },
+                    ]}
+                  />
+                  <Typography variant="body2" color="text.secondary">
+                    How important is proximity in matching
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography gutterBottom>
+                    Age Compatibility: {preferences.matchPreferences.ageImportance}%
+                  </Typography>
+                  <Slider
+                    value={preferences.matchPreferences.ageImportance}
+                    onChange={handleSliderChange('matchPreferences', 'ageImportance')}
+                    valueLabelDisplay="auto"
+                    min={0}
+                    max={100}
+                    marks={[
+                      { value: 0, label: 'Not Important' },
+                      { value: 50, label: 'Moderate' },
+                      { value: 100, label: 'Very Important' },
+                    ]}
+                  />
+                  <Typography variant="body2" color="text.secondary">
+                    How important is age similarity in matching
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography gutterBottom>
+                    Education Importance: {preferences.matchPreferences.educationImportance}%
+                  </Typography>
+                  <Slider
+                    value={preferences.matchPreferences.educationImportance}
+                    onChange={handleSliderChange('matchPreferences', 'educationImportance')}
+                    valueLabelDisplay="auto"
+                    min={0}
+                    max={100}
+                    marks={[
+                      { value: 0, label: 'Not Important' },
+                      { value: 50, label: 'Moderate' },
+                      { value: 100, label: 'Very Important' },
+                    ]}
+                  />
+                  <Typography variant="body2" color="text.secondary">
+                    How important is education level in matching
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography gutterBottom>
+                    Lifestyle Compatibility: {preferences.matchPreferences.lifestyleCompatibility}%
+                  </Typography>
+                  <Slider
+                    value={preferences.matchPreferences.lifestyleCompatibility}
+                    onChange={handleSliderChange('matchPreferences', 'lifestyleCompatibility')}
+                    valueLabelDisplay="auto"
+                    min={0}
+                    max={100}
+                    marks={[
+                      { value: 0, label: 'Not Important' },
+                      { value: 50, label: 'Moderate' },
+                      { value: 100, label: 'Very Important' },
+                    ]}
+                  />
+                  <Typography variant="body2" color="text.secondary">
+                    How important are similar lifestyle choices (smoking, drinking, fitness, etc.)
+                  </Typography>
+                </Box>
               </Stack>
             </Box>
           </Collapse>
