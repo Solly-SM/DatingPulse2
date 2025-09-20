@@ -1245,7 +1245,7 @@ function Profile() {
                   petPreferences: profile.petPreferences,
                 }}
                 showPhoto={true}
-                variant="sidebar"
+                variant="preview"
               />
             )}
           </Box>
