@@ -17,7 +17,6 @@ import {
 import {
   Search,
   Favorite,
-  FavoriteBorder,
   Chat,
   Person,
   Settings,
@@ -123,11 +122,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       text: 'Explore',
       icon: <Search />,
       path: '/explore',
-    },
-    {
-      text: 'Likes',
-      icon: <FavoriteBorder />,
-      path: '/likes',
     },
     {
       text: 'Matches',
