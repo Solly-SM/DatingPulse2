@@ -11,19 +11,10 @@ import {
   Tab,
   Container,
 } from '@mui/material';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import InboxComponent from '../components/InboxComponent';
 import ConversationView from '../components/ConversationView';
 import ProfileView from '../components/ProfileView';
 import { Conversation, DiscoverUser, Match } from '../types/Dating';
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#e91e63',
-    },
-  },
-});
 
 // Mock data for demonstration
 const mockUser: DiscoverUser = {
@@ -178,8 +169,7 @@ function ComponentsDemo() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+    <Container maxWidth="xl" sx={{ py: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom align="center">
           DatingPulse Chat Components Demo
         </Typography>
@@ -398,8 +388,7 @@ function ComponentsDemo() {
           </Grid>
         </Box>
       </Container>
-    </ThemeProvider>
-  );
-}
+    );
+  }
 
 export default ComponentsDemo;

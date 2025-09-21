@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { vi } from 'vitest';
 import { AuthProvider } from '../../contexts/AuthContext';
 import InboxComponent from '../InboxComponent';
@@ -9,6 +9,7 @@ import ConversationView from '../ConversationView';
 import ProfileView from '../ProfileView';
 import { Conversation, DiscoverUser } from '../../types/Dating';
 import * as datingService from '../../services/datingService';
+import theme from '../../theme/theme';
 
 // Mock the dating service
 vi.mock('../../services/datingService', () => ({
@@ -18,8 +19,6 @@ vi.mock('../../services/datingService', () => ({
     sendMessage: vi.fn(),
   }
 }));
-
-const theme = createTheme();
 
 const mockConversation: Conversation = {
   conversationID: 1,
