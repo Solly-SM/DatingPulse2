@@ -13,6 +13,7 @@ import Login from './pages/Login';
 
 import Home from './pages/Home';
 import Explore from './pages/Explore';
+import Likes from './pages/Likes';
 import Profile from './pages/Profile';
 import ProfileDemo from './pages/ProfileDemo';
 import Discover from './pages/Discover';
@@ -110,6 +111,13 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <Explore />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/likes" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Likes />
                   </Layout>
                 </ProtectedRoute>
               } />

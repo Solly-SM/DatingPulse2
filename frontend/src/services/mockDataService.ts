@@ -1,4 +1,4 @@
-import { DiscoverUser, Match, Conversation, Message } from '../types/Dating';
+import { DiscoverUser, Match, Conversation, Message, ReceivedLike } from '../types/Dating';
 
 // Mock photos from Unsplash
 const samplePhotos = [
@@ -195,6 +195,29 @@ export const mockDataService = {
       });
     }
     return messages.sort((a, b) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime());
+  },
+
+  // Generate received likes with grouping
+  generateReceivedLikes(count: number = 12) {
+    const likes = [];
+    const likeTypes = ['LIKE', 'SUPER_LIKE'] as const;
+    
+    for (let i = 0; i < count; i++) {
+      const daysAgo = Math.floor(Math.random() * 7); // Last 7 days
+      const createdAt = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000);
+      
+      likes.push({
+        likeID: 1000 + i,
+        likerID: 100 + i,
+        likedID: 1, // Current user
+        type: likeTypes[Math.floor(Math.random() * likeTypes.length)],
+        createdAt: createdAt.toISOString(),
+        liker: generateMockUser(100 + i)
+      });
+    }
+    
+    // Sort by most recent first
+    return likes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   },
 
   // Simulate delays for realistic UX
