@@ -35,6 +35,49 @@ const mockProfile: UserProfile = {
   height: 180,
   education: 'University of Cape Town',
   occupation: 'Software Developer',
+  
+  // Audio intro
+  audioIntroUrl: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmAfBz2L0/PJdSgFKn3J8N2QQgoeaLvu5Z9NEAxPqeXwtWQcBz2N1fDMeywFJHfA8N2QQAoUXrTp66hWFApFmuPztV8gCj2L0/PJdSgEKn3J8N2QQgoeaLvu5Z9NEAxPqeXwtWQcBz2N1fDNeysFJHfI8N2QQAoUXrTp66hWFApGn+PytV8gCj2L0/PJdSgFK3zJ8N2QQgoeaLvu5Z9NEAxPpuHvxGklEwdBlM3vzW0rEzQ7stn1wGP/AP2gYuAyB3YAAAAASUVORK0=',
+  
+  // Physical attributes
+  weight: 75,
+  bodyType: 'Athletic',
+  ethnicity: 'Mixed',
+  
+  // Lifestyle data
+  pets: 'Dog lover',
+  drinking: 'Socially',
+  smoking: 'Never',
+  workout: 'Regular',
+  dietaryPreference: 'Balanced',
+  socialMedia: 'Active',
+  sleepingHabits: 'Early bird',
+  languages: ['English', 'Afrikaans'],
+  
+  // Preferences
+  relationshipGoal: 'Long-term relationship',
+  sexualOrientation: 'Straight',
+  lookingFor: 'Serious relationship',
+  maxDistance: 50,
+  
+  // Personality
+  communicationStyle: 'Direct',
+  loveLanguage: 'Quality time',
+  zodiacSign: 'Gemini',
+  
+  // Additional info
+  religion: 'Spiritual',
+  politicalViews: 'Moderate',
+  familyPlans: 'Want kids',
+  fitnessLevel: 'Very active',
+  travelFrequency: 'Monthly',
+  industry: 'Technology',
+  musicPreferences: ['Rock', 'Electronic', 'Jazz'],
+  foodPreferences: ['Mediterranean', 'Asian', 'Local cuisine'],
+  entertainmentPreferences: ['Movies', 'Concerts', 'Theater'],
+  currentlyReading: 'The Pragmatic Programmer',
+  lifeGoals: 'Build meaningful relationships and grow professionally',
+  petPreferences: 'Love dogs and cats',
 };
 
 function delay(ms: number = 500): Promise<void> {
