@@ -56,7 +56,6 @@ import {
   Report,
   FilterList,
   Psychology,
-  BarChart,
   GppMaybe,
   Settings as SettingsIcon,
 } from '@mui/icons-material';
@@ -71,7 +70,6 @@ interface UserPreferences {
     messages: boolean;
     likes: boolean;
     superLikes: boolean;
-    profileViews: boolean;
   };
   discovery: {
     ageRange: [number, number];
@@ -125,7 +123,6 @@ interface UserPreferences {
     autoReportInappropriate: boolean;
     requireVerificationToMessage: boolean;
     blockUnverifiedUsers: boolean;
-    hideFromSearch: boolean;
   };
   // Enhanced verification settings
   enhancedVerification: {
@@ -134,16 +131,6 @@ interface UserPreferences {
     socialMediaVerification: boolean;
     phoneVerificationRequired: boolean;
     manualReviewRequired: boolean;
-  };
-  // Match preferences and criteria
-  matchPreferences: {
-    qualityOverQuantity: boolean;
-    mutualInterestsWeight: number;
-    locationImportance: number;
-    ageImportance: number;
-    educationImportance: number;
-    lifestyleCompatibility: number;
-    communicationStyleMatch: boolean;
   };
 }
 
@@ -155,7 +142,6 @@ const defaultPreferences: UserPreferences = {
     messages: true,
     likes: true,
     superLikes: true,
-    profileViews: false,
   },
   discovery: {
     ageRange: [18, 35],
@@ -209,7 +195,6 @@ const defaultPreferences: UserPreferences = {
     autoReportInappropriate: true,
     requireVerificationToMessage: false,
     blockUnverifiedUsers: false,
-    hideFromSearch: false,
   },
   // Enhanced verification settings
   enhancedVerification: {
@@ -218,16 +203,6 @@ const defaultPreferences: UserPreferences = {
     socialMediaVerification: false,
     phoneVerificationRequired: false,
     manualReviewRequired: false,
-  },
-  // Match preferences and criteria
-  matchPreferences: {
-    qualityOverQuantity: true,
-    mutualInterestsWeight: 70,
-    locationImportance: 50,
-    ageImportance: 30,
-    educationImportance: 20,
-    lifestyleCompatibility: 60,
-    communicationStyleMatch: true,
   },
 };
 
@@ -250,7 +225,6 @@ function Settings() {
     verification: false,
     safetyBlocking: false,
     enhancedVerification: false,
-    matchPreferences: false,
   });
 
   useEffect(() => {
@@ -874,31 +848,12 @@ function Settings() {
                   </ListItemSecondaryAction>
                 </ListItem>
                 
-                <ListItem>
-                  <ListItemText 
-                    primary="Hide From Search" 
-                    secondary="Don't appear in other users' discovery unless you've already liked them" 
-                  />
-                  <ListItemSecondaryAction>
-                    <Switch
-                      checked={preferences.safetyBlocking.hideFromSearch}
-                      onChange={handleSwitchChange('safetyBlocking', 'hideFromSearch')}
-                    />
-                  </ListItemSecondaryAction>
-                </ListItem>
+
               </List>
               
               <Divider sx={{ my: 2 }} />
               
               <Stack spacing={2}>
-                <Button
-                  variant="outlined"
-                  startIcon={<Block />}
-                  onClick={() => navigate('/blocked-users')}
-                  fullWidth
-                >
-                  Manage Blocked Users
-                </Button>
                 
                 <Button
                   variant="outlined"
@@ -979,15 +934,6 @@ function Settings() {
                   </ListItemSecondaryAction>
                 </ListItem>
 
-                <ListItem>
-                  <ListItemText primary="Profile Views" secondary="Get notified when someone views your profile" />
-                  <ListItemSecondaryAction>
-                    <Switch
-                      checked={preferences.notifications.profileViews}
-                      onChange={handleNotificationChange('profileViews')}
-                    />
-                  </ListItemSecondaryAction>
-                </ListItem>
 
 
               </List>
@@ -1299,140 +1245,7 @@ function Settings() {
           </Collapse>
         </Paper>
 
-        {/* Match Preferences and Criteria */}
-        <Paper sx={{ p: 3 }}>
-          {renderSectionHeader(<BarChart />, 'Match Preferences & Criteria', 'matchPreferences')}
-          <Collapse in={expandedSections.matchPreferences}>
-            <Box sx={{ pt: 2 }}>
-              <Stack spacing={3}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={preferences.matchPreferences.qualityOverQuantity}
-                      onChange={handleSwitchChange('matchPreferences', 'qualityOverQuantity')}
-                    />
-                  }
-                  label="Quality Over Quantity - Prioritize better matches over more matches"
-                />
 
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={preferences.matchPreferences.communicationStyleMatch}
-                      onChange={handleSwitchChange('matchPreferences', 'communicationStyleMatch')}
-                    />
-                  }
-                  label="Communication Style Matching - Match with similar communication preferences"
-                />
-
-                <Box>
-                  <Typography gutterBottom>
-                    Mutual Interests Weight: {preferences.matchPreferences.mutualInterestsWeight}%
-                  </Typography>
-                  <Slider
-                    value={preferences.matchPreferences.mutualInterestsWeight}
-                    onChange={handleSliderChange('matchPreferences', 'mutualInterestsWeight')}
-                    valueLabelDisplay="auto"
-                    min={0}
-                    max={100}
-                    marks={[
-                      { value: 0, label: 'Not Important' },
-                      { value: 50, label: 'Moderate' },
-                      { value: 100, label: 'Very Important' },
-                    ]}
-                  />
-                  <Typography variant="body2" color="text.secondary">
-                    How important are shared interests in matching
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Typography gutterBottom>
-                    Location Importance: {preferences.matchPreferences.locationImportance}%
-                  </Typography>
-                  <Slider
-                    value={preferences.matchPreferences.locationImportance}
-                    onChange={handleSliderChange('matchPreferences', 'locationImportance')}
-                    valueLabelDisplay="auto"
-                    min={0}
-                    max={100}
-                    marks={[
-                      { value: 0, label: 'Not Important' },
-                      { value: 50, label: 'Moderate' },
-                      { value: 100, label: 'Very Important' },
-                    ]}
-                  />
-                  <Typography variant="body2" color="text.secondary">
-                    How important is proximity in matching
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Typography gutterBottom>
-                    Age Compatibility: {preferences.matchPreferences.ageImportance}%
-                  </Typography>
-                  <Slider
-                    value={preferences.matchPreferences.ageImportance}
-                    onChange={handleSliderChange('matchPreferences', 'ageImportance')}
-                    valueLabelDisplay="auto"
-                    min={0}
-                    max={100}
-                    marks={[
-                      { value: 0, label: 'Not Important' },
-                      { value: 50, label: 'Moderate' },
-                      { value: 100, label: 'Very Important' },
-                    ]}
-                  />
-                  <Typography variant="body2" color="text.secondary">
-                    How important is age similarity in matching
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Typography gutterBottom>
-                    Education Importance: {preferences.matchPreferences.educationImportance}%
-                  </Typography>
-                  <Slider
-                    value={preferences.matchPreferences.educationImportance}
-                    onChange={handleSliderChange('matchPreferences', 'educationImportance')}
-                    valueLabelDisplay="auto"
-                    min={0}
-                    max={100}
-                    marks={[
-                      { value: 0, label: 'Not Important' },
-                      { value: 50, label: 'Moderate' },
-                      { value: 100, label: 'Very Important' },
-                    ]}
-                  />
-                  <Typography variant="body2" color="text.secondary">
-                    How important is education level in matching
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Typography gutterBottom>
-                    Lifestyle Compatibility: {preferences.matchPreferences.lifestyleCompatibility}%
-                  </Typography>
-                  <Slider
-                    value={preferences.matchPreferences.lifestyleCompatibility}
-                    onChange={handleSliderChange('matchPreferences', 'lifestyleCompatibility')}
-                    valueLabelDisplay="auto"
-                    min={0}
-                    max={100}
-                    marks={[
-                      { value: 0, label: 'Not Important' },
-                      { value: 50, label: 'Moderate' },
-                      { value: 100, label: 'Very Important' },
-                    ]}
-                  />
-                  <Typography variant="body2" color="text.secondary">
-                    How important are similar lifestyle choices (smoking, drinking, fitness, etc.)
-                  </Typography>
-                </Box>
-              </Stack>
-            </Box>
-          </Collapse>
-        </Paper>
 
         {/* Data & Storage */}
         <Paper sx={{ p: 3 }}>
@@ -1486,13 +1299,6 @@ function Settings() {
           </Typography>
           
           <Stack spacing={2}>
-            <Button
-              variant="outlined"
-              startIcon={<Block />}
-              onClick={() => navigate('/blocked-users')}
-            >
-              Manage Blocked Users
-            </Button>
             
             <Button
               variant="outlined"
