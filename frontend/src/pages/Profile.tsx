@@ -1185,7 +1185,7 @@ function Profile() {
           </Grid>
         </Grid>
 
-        {/* Right Column - Profile Preview (30%) */}
+        {/* Right Column - Mini Profile (30%) */}
         <Grid item xs={12} lg={4}>
           <Box sx={{ position: 'sticky', top: 20 }}>
 
@@ -1245,7 +1245,7 @@ function Profile() {
                   petPreferences: profile.petPreferences,
                 }}
                 showPhoto={true}
-                variant="preview"
+                variant="sidebar"
               />
             )}
           </Box>
