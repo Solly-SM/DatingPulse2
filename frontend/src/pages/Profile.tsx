@@ -1187,7 +1187,12 @@ function Profile() {
 
         {/* Right Column - Mini Profile (30%) */}
         <Grid item xs={12} lg={4}>
-          <Box sx={{ position: 'sticky', top: 20 }}>
+          <Box sx={{ 
+            position: 'sticky', 
+            top: 20,
+            height: 'calc(100vh - 40px)', // Ensure adequate height for scrolling
+            minHeight: '600px', // Minimum height to match demo variants
+          }}>
 
             {profile && (
               <MiniProfile
