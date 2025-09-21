@@ -468,8 +468,8 @@ function Profile() {
 
       {/* Main Content Area - Two Column Layout */}
       <Grid container spacing={4}>
-        {/* Left Column - Profile Editing (70%) */}
-        <Grid item xs={12} lg={8}>
+        {/* Left Column - Profile Editing (58%) */}
+        <Grid item xs={12} lg={7}>
           {/* Alerts */}
           {success && (
             <Alert 
@@ -1185,8 +1185,8 @@ function Profile() {
           </Grid>
         </Grid>
 
-        {/* Right Column - Mini Profile (30%) */}
-        <Grid item xs={12} lg={4}>
+        {/* Right Column - Mini Profile (42%) */}
+        <Grid item xs={12} lg={5}>
           <Box sx={{ 
             position: 'sticky', 
             top: 20,
