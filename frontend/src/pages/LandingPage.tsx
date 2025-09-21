@@ -14,6 +14,7 @@ import {
 } from '@mui/icons-material';
 import LoginModal from '../components/LoginModal';
 import PulseLogo from '../components/PulseLogo';
+import { GRADIENTS } from '../theme';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -187,7 +188,7 @@ function LandingPage() {
                 component="h1" 
                 sx={{ 
                   fontWeight: 'bold',
-                  background: 'linear-gradient(45deg, #e91e63, #ff4081)',
+                  background: GRADIENTS.primaryAlt,
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -218,14 +219,14 @@ function LandingPage() {
                 fontSize: '1.1rem',
                 fontWeight: 'bold',
                 borderRadius: 25,
-                background: 'linear-gradient(45deg, #e91e63, #ff4081)',
+                background: GRADIENTS.primaryAlt,
                 boxShadow: '0 4px 20px rgba(233, 30, 99, 0.3)',
                 '&:hover': {
-                  background: 'linear-gradient(45deg, #c2185b, #e91e63)',
+                  background: GRADIENTS.primaryAltHover,
                   boxShadow: '0 6px 25px rgba(233, 30, 99, 0.4)',
                 },
                 '&:disabled': {
-                  background: 'linear-gradient(45deg, #e91e63, #ff4081)',
+                  background: GRADIENTS.primaryAlt,
                   opacity: 0.7,
                 },
                 mb: 3,

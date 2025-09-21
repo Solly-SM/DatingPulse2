@@ -16,6 +16,7 @@ describe('ProfileSetupStep Validation', () => {
     onComplete: mockOnComplete,
     onBack: mockOnBack,
     loading: false,
+    error: '',
   };
 
   describe('Required Field Validation', () => {
