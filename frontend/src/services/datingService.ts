@@ -209,4 +209,22 @@ export const datingService = {
       };
     }
   },
+
+  // Get likes received by the current user
+  async getReceivedLikes(userId: number): Promise<DiscoverUser[]> {
+    if (USE_MOCK_DATA) {
+      await mockDataService.delay(600);
+      // Generate mock users who liked the current user
+      return mockDataService.generateDiscoverUsers(5);
+    }
+    
+    try {
+      const response = await api.get(`/likes/user/${userId}/received`);
+      return response.data;
+    } catch (error) {
+      console.warn('API unavailable, using mock data');
+      await mockDataService.delay(600);
+      return mockDataService.generateDiscoverUsers(5);
+    }
+  },
 };
