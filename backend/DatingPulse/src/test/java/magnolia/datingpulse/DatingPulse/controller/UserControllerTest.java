@@ -60,7 +60,6 @@ class UserControllerTest extends BaseIntegrationTest {
         user.setUsername("existinguser");
         user.setEmail("existing@example.com");
         user.setPhone("0821234567");
-        user.setPassword(passwordEncoder.encode("password123"));
         user.setRole("USER");
         user.setStatus("ACTIVE");
         user.setIsVerified(false);

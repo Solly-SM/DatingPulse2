@@ -26,7 +26,7 @@ class SessionValidationTest {
                 .userID(1L)
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(true)

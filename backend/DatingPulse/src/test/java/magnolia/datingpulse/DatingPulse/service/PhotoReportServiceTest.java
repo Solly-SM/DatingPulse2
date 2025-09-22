@@ -53,7 +53,7 @@ class PhotoReportServiceTest {
                 .userID(1L)
                 .username("reporter")
                 .email("reporter@example.com")
-                .password("hashedpassword")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .build();
@@ -62,7 +62,7 @@ class PhotoReportServiceTest {
                 .userID(2L)
                 .username("reviewer")
                 .email("reviewer@example.com")
-                .password("hashedpassword")
+                
                 .role("ADMIN")
                 .status("ACTIVE")
                 .build();

@@ -187,7 +187,7 @@ class ValidationUtilTest {
         User user = User.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") // Valid BCrypt hash length
+                 // Valid BCrypt hash length
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -200,7 +200,7 @@ class ValidationUtilTest {
         RegisterRequest request = RegisterRequest.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("TestPass123!")
+                
                 .build();
         
         assertTrue(validationUtil.isValid(request), "Valid RegisterRequest DTO should be valid");
@@ -245,7 +245,7 @@ class ValidationUtilTest {
     private LoginRequest createValidLoginRequest() {
         return LoginRequest.builder()
                 .username("testuser")
-                .password("testpassword")
+                
                 .build();
     }
 }

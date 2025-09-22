@@ -39,7 +39,7 @@ class PushNotificationServiceTest {
                 .userID(1L)
                 .username("testuser")
                 .email("test@example.com")
-                .password("hashedpassword")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(true)
@@ -49,7 +49,7 @@ class PushNotificationServiceTest {
                 .userID(2L)
                 .username("liker")
                 .email("liker@example.com")
-                .password("hashedpassword")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(true)

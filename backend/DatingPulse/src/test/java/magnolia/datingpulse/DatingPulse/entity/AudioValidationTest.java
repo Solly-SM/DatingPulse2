@@ -27,7 +27,7 @@ class AudioValidationTest {
         testUser = User.builder() // Remove 'User' declaration to make it use the field
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)

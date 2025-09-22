@@ -60,7 +60,7 @@ class PushNotificationEmailOtpIntegrationTest {
         testUser = User.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$10$hashedpassword")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -72,7 +72,7 @@ class PushNotificationEmailOtpIntegrationTest {
         testLiker = User.builder()
                 .username("liker")
                 .email("liker@example.com")
-                .password("$2a$10$hashedpassword")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(true)

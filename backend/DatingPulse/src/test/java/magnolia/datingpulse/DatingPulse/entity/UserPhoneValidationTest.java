@@ -116,7 +116,7 @@ class UserPhoneValidationTest {
         return User.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") // 60+ chars BCrypt hash
+                 // 60+ chars BCrypt hash
                 .phone(phone)
                 .role("USER")
                 .status("ACTIVE")

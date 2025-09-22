@@ -26,7 +26,7 @@ public class AdminSchemaValidationTest {
         User testUser = User.builder()
                 .username("admin")
                 .email("admin@test.com")
-                .password("password")
+                
                 .role("ADMIN")
                 .status("ACTIVE")
                 .build();
@@ -72,7 +72,7 @@ public class AdminSchemaValidationTest {
         User testUser = User.builder()
                 .username("admin2")
                 .email("admin2@test.com")
-                .password("password")
+                
                 .role("ADMIN")
                 .status("ACTIVE")
                 .build();
@@ -114,7 +114,7 @@ public class AdminSchemaValidationTest {
         User testUser = User.builder()
                 .username("admin3")
                 .email("admin3@test.com")
-                .password("password")
+                
                 .role("ADMIN")
                 .status("ACTIVE")
                 .build();

@@ -39,7 +39,7 @@ class MatchSchemaValidationFixTest {
         User testUser1 = User.builder()
                 .username("user1")
                 .email("user1@test.com")
-                .password("hashedPassword")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -49,7 +49,7 @@ class MatchSchemaValidationFixTest {
         User testUser2 = User.builder()
                 .username("user2")
                 .email("user2@test.com")
-                .password("hashedPassword")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -88,7 +88,7 @@ class MatchSchemaValidationFixTest {
         User testUser1 = User.builder()
                 .username("user1")
                 .email("user1@test.com")
-                .password("hashedPassword")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -98,7 +98,7 @@ class MatchSchemaValidationFixTest {
         User testUser2 = User.builder()
                 .username("user2")
                 .email("user2@test.com")
-                .password("hashedPassword")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)

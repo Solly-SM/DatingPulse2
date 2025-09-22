@@ -26,7 +26,7 @@ class BlockedUserValidationTest {
         testBlocker = User.builder()
                 .username("blocker")
                 .email("blocker@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -36,7 +36,7 @@ class BlockedUserValidationTest {
         testBlocked = User.builder()
                 .username("blocked")
                 .email("blocked@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
