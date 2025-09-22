@@ -31,7 +31,7 @@ describe('MediaStep Validation', () => {
       fireEvent.click(submitButton);
       
       await waitFor(() => {
-        expect(screen.getByText('Please upload at least one photo')).toBeInTheDocument();
+        expect(screen.getByText('*Please upload at least one photo')).toBeInTheDocument();
       });
       expect(mockOnComplete).not.toHaveBeenCalled();
     });
@@ -65,7 +65,7 @@ describe('MediaStep Validation', () => {
       fireEvent.click(submitButton);
       
       await waitFor(() => {
-        expect(screen.getByText('Please upload at least one photo')).toBeInTheDocument();
+        expect(screen.getByText('*Please upload at least one photo')).toBeInTheDocument();
       });
       
       // Simulate photo upload
@@ -78,7 +78,7 @@ describe('MediaStep Validation', () => {
       fireEvent.change(fileInput);
       
       // Error should be cleared
-      expect(screen.queryByText('Please upload at least one photo')).not.toBeInTheDocument();
+      expect(screen.queryByText('*Please upload at least one photo')).not.toBeInTheDocument();
     });
   });
 
@@ -92,7 +92,7 @@ describe('MediaStep Validation', () => {
       render(<MediaStep {...propsWithPhotos} />);
       
       // Should show photo count or upload area
-      expect(screen.getByText(/photos/i)).toBeInTheDocument();
+      expect(screen.getByText('Photos (1-6 required)')).toBeInTheDocument();
     });
 
     test('should limit photo uploads to 6', () => {
@@ -104,15 +104,9 @@ describe('MediaStep Validation', () => {
       
       render(<MediaStep {...propsWithMaxPhotos} />);
       
-      // Photo upload input should be disabled or hidden when at max
+      // Photo upload input should be hidden when at max (6 photos)
       const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-      // If input exists, it should indicate max reached or be disabled
-      if (fileInput) {
-        expect(fileInput).toBeDisabled();
-      } else {
-        // Or upload area should show max reached message
-        expect(screen.getByText(/6 photos/i)).toBeInTheDocument();
-      }
+      expect(fileInput).toBeNull(); // Input should not exist when at max capacity
     });
   });
 
@@ -167,7 +161,7 @@ describe('MediaStep Validation', () => {
       
       render(<MediaStep {...loadingProps} />);
       
-      const submitButton = screen.getByRole('button', { name: /complete profile/i });
+      const submitButton = screen.getByRole('button', { name: /creating profile/i });
       expect(submitButton).toBeDisabled();
     });
 
@@ -220,8 +214,8 @@ describe('MediaStep Validation', () => {
     test('should display instructions to user', () => {
       render(<MediaStep {...defaultProps} />);
       
-      expect(screen.getByText(/photos/i)).toBeInTheDocument();
-      expect(screen.getByText(/audio intro/i)).toBeInTheDocument();
+      expect(screen.getByText('Photos (1-6 required)')).toBeInTheDocument();
+      expect(screen.getByText('Audio Intro (Optional)')).toBeInTheDocument();
     });
 
     test('should show photo upload area when no photos', () => {
@@ -256,7 +250,7 @@ describe('MediaStep Validation', () => {
       fireEvent.change(fileInput);
       
       // Should not crash and may show error or ignore invalid file
-      expect(screen.queryByText('Please upload at least one photo')).toBeInTheDocument();
+      expect(screen.queryByText('*Please upload at least one photo')).toBeInTheDocument();
     });
   });
 
@@ -317,7 +311,7 @@ describe('MediaStep Validation', () => {
       fireEvent.change(fileInput);
       
       // Should not crash
-      expect(screen.getByText(/photos/i)).toBeInTheDocument();
+      expect(screen.getByText('Photos (1-6 required)')).toBeInTheDocument();
     });
 
     test('should handle null files', () => {
@@ -332,7 +326,7 @@ describe('MediaStep Validation', () => {
       fireEvent.change(fileInput);
       
       // Should not crash
-      expect(screen.getByText(/photos/i)).toBeInTheDocument();
+      expect(screen.getByText('Photos (1-6 required)')).toBeInTheDocument();
     });
   });
 });

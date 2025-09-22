@@ -23,8 +23,9 @@ describe('BasicInfoStep Validation', () => {
     test('should show error for empty email', async () => {
       render(<BasicInfoStep {...defaultProps} />);
       
-      const submitButton = screen.getByRole('button', { name: /continue/i });
-      fireEvent.click(submitButton);
+      // Submit the form directly
+      const form = document.querySelector('form');
+      fireEvent.submit(form!);
       
       await waitFor(() => {
         expect(screen.getByText('Email is required')).toBeInTheDocument();
@@ -36,10 +37,12 @@ describe('BasicInfoStep Validation', () => {
       render(<BasicInfoStep {...defaultProps} />);
       
       const emailInput = screen.getByLabelText(/email address/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
       
       fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
-      fireEvent.click(submitButton);
+      
+      // Submit the form directly
+      const form = document.querySelector('form');
+      fireEvent.submit(form!);
       
       await waitFor(() => {
         expect(screen.getByText('Please enter a valid email address')).toBeInTheDocument();
@@ -62,10 +65,11 @@ describe('BasicInfoStep Validation', () => {
       render(<BasicInfoStep {...defaultProps} />);
       
       const emailInput = screen.getByLabelText(/email address/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
       
-      // Submit to show error
-      fireEvent.click(submitButton);
+      // Submit form to show error
+      const form = document.querySelector('form');
+      fireEvent.submit(form!);
+      
       await waitFor(() => {
         expect(screen.getByText('Email is required')).toBeInTheDocument();
       });
