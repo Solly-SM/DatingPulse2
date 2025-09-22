@@ -31,7 +31,7 @@ describe('MediaStep Validation', () => {
       fireEvent.click(submitButton);
       
       await waitFor(() => {
-        expect(screen.getByText('Please upload at least one photo')).toBeInTheDocument();
+        expect(screen.getByText('*Please upload at least one photo')).toBeInTheDocument();
       });
       expect(mockOnComplete).not.toHaveBeenCalled();
     });
@@ -65,7 +65,7 @@ describe('MediaStep Validation', () => {
       fireEvent.click(submitButton);
       
       await waitFor(() => {
-        expect(screen.getByText('Please upload at least one photo')).toBeInTheDocument();
+        expect(screen.getByText('*Please upload at least one photo')).toBeInTheDocument();
       });
       
       // Simulate photo upload
@@ -78,7 +78,7 @@ describe('MediaStep Validation', () => {
       fireEvent.change(fileInput);
       
       // Error should be cleared
-      expect(screen.queryByText('Please upload at least one photo')).not.toBeInTheDocument();
+      expect(screen.queryByText('*Please upload at least one photo')).not.toBeInTheDocument();
     });
   });
 
@@ -256,7 +256,7 @@ describe('MediaStep Validation', () => {
       fireEvent.change(fileInput);
       
       // Should not crash and may show error or ignore invalid file
-      expect(screen.queryByText('Please upload at least one photo')).toBeInTheDocument();
+      expect(screen.queryByText('*Please upload at least one photo')).toBeInTheDocument();
     });
   });
 
@@ -317,7 +317,7 @@ describe('MediaStep Validation', () => {
       fireEvent.change(fileInput);
       
       // Should not crash
-      expect(screen.getByText(/photos/i)).toBeInTheDocument();
+      expect(screen.getByText('Photos (1-6 required)')).toBeInTheDocument();
     });
 
     test('should handle null files', () => {
@@ -332,7 +332,7 @@ describe('MediaStep Validation', () => {
       fireEvent.change(fileInput);
       
       // Should not crash
-      expect(screen.getByText(/photos/i)).toBeInTheDocument();
+      expect(screen.getByText('Photos (1-6 required)')).toBeInTheDocument();
     });
   });
 });

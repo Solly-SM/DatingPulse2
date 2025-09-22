@@ -3,3 +3,15 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+
+// Mock URL.createObjectURL for file upload tests
+Object.defineProperty(URL, 'createObjectURL', {
+  writable: true,
+  value: (file: File | Blob) => `mock-url-${file.name || 'blob'}`
+});
+
+// Mock URL.revokeObjectURL for file upload tests
+Object.defineProperty(URL, 'revokeObjectURL', {
+  writable: true,
+  value: (url: string) => { /* no-op */ }
+});
