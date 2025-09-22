@@ -15,7 +15,7 @@ public class Audio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "audio_id")
-    private Long audioID; // Changed to match schema naming
+    private Long audioID;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
