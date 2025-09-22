@@ -27,7 +27,7 @@ class AdminValidationTest {
         testUser = User.builder()
                 .username("adminuser")
                 .email("admin@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("ADMIN")
                 .status("ACTIVE")
                 .isVerified(true)

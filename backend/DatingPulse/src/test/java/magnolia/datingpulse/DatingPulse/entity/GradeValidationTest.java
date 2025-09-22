@@ -26,7 +26,7 @@ class GradeValidationTest {
         testUserGiven = User.builder()
                 .username("grader")
                 .email("grader@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -36,7 +36,7 @@ class GradeValidationTest {
         testUserReceived = User.builder()
                 .username("gradee")
                 .email("gradee@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)

@@ -26,7 +26,7 @@ class ReportValidationTest {
         testReporter = User.builder()
                 .username("reporter")
                 .email("reporter@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -36,7 +36,7 @@ class ReportValidationTest {
         testReported = User.builder()
                 .username("reported")
                 .email("reported@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)

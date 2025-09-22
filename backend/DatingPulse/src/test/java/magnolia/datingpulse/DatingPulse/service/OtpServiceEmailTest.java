@@ -48,7 +48,7 @@ class OtpServiceEmailTest {
                 .userID(1L)
                 .username("testuser")
                 .email("test@example.com")
-                .password("hashedpassword")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)

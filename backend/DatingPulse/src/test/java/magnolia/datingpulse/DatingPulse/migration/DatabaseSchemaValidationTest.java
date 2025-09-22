@@ -43,7 +43,6 @@ class DatabaseSchemaValidationTest {
         assertTrue(columnExists("users", "phone"), "users.phone should exist");
         
         // Test required fields
-        assertTrue(columnExists("users", "password"), "users.password should exist");
         assertTrue(columnExists("users", "role"), "users.role should exist");
         assertTrue(columnExists("users", "status"), "users.status should exist");
         

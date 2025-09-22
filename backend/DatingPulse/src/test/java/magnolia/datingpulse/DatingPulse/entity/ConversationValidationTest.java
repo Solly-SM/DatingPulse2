@@ -27,7 +27,7 @@ class ConversationValidationTest {
         testUser1 = User.builder()
                 .username("user1")
                 .email("user1@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -37,7 +37,7 @@ class ConversationValidationTest {
         testUser2 = User.builder()
                 .username("user2")
                 .email("user2@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -300,7 +300,7 @@ class ConversationValidationTest {
         User user3 = User.builder()
                 .username("user3")
                 .email("user3@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)

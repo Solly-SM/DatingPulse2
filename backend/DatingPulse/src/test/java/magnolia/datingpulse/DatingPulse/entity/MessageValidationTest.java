@@ -27,7 +27,7 @@ class MessageValidationTest {
         testSender = User.builder()
                 .username("sender")
                 .email("sender@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -37,7 +37,7 @@ class MessageValidationTest {
         testReceiver = User.builder()
                 .username("receiver")
                 .email("receiver@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)

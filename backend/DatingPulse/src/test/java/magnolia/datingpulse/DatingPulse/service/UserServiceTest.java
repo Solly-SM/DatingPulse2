@@ -55,7 +55,6 @@ class UserServiceTest {
         user.setUsername("testuser");
         user.setEmail("test@example.com");
         user.setPhone("0821234567");
-        user.setPassword("encoded-password");
         user.setRole("USER");
         user.setStatus("ACTIVE");
         user.setIsVerified(false);
@@ -82,7 +81,7 @@ class UserServiceTest {
             when(userMapper.toDTO(testUser)).thenReturn(testUserDTO);
 
             // Act
-            UserDTO result = userService.createUser(testUserDTO, rawPassword);
+            UserDTO result = userService.createUser(testUserDTO);
 
             // Assert
             assertThat(result).isNotNull();
@@ -102,7 +101,7 @@ class UserServiceTest {
             when(userRepository.findByUsername(testUserDTO.getUsername())).thenReturn(Optional.of(testUser));
 
             // Act & Assert
-            assertThatThrownBy(() -> userService.createUser(testUserDTO, "password123"))
+            assertThatThrownBy(() -> userService.createUser(testUserDTO))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("Username already exists");
 
@@ -118,7 +117,7 @@ class UserServiceTest {
             when(userRepository.findByEmail(testUserDTO.getEmail())).thenReturn(Optional.of(testUser));
 
             // Act & Assert
-            assertThatThrownBy(() -> userService.createUser(testUserDTO, "password123"))
+            assertThatThrownBy(() -> userService.createUser(testUserDTO))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("Email already exists");
 

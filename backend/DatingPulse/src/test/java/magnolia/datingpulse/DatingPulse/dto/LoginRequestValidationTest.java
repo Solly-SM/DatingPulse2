@@ -29,7 +29,7 @@ class LoginRequestValidationTest {
     void testValidLoginRequest() {
         LoginRequest request = LoginRequest.builder()
                 .username("john_doe")
-                .password("MyPassword123!")
+                
                 .build();
 
         Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
@@ -40,7 +40,7 @@ class LoginRequestValidationTest {
     void testValidLoginRequestWithEmail() {
         LoginRequest request = LoginRequest.builder()
                 .username("john.doe@example.com")
-                .password("MyPassword123!")
+                
                 .build();
 
         Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
@@ -106,73 +106,21 @@ class LoginRequestValidationTest {
     }
 
     @Test
-    void testPasswordValidation() {
-        LoginRequest request = createValidRequest();
-
-        // Test null password
-        request.setPassword(null);
-        Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
-        assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("password") && 
-                v.getMessage().contains("required")),
-                "Null password should be invalid");
-
-        // Test blank password
-        request.setPassword("   ");
-        violations = validator.validate(request);
-        assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("password") && 
-                v.getMessage().contains("required")),
-                "Blank password should be invalid");
-
-        // Test empty password
-        request.setPassword("");
-        violations = validator.validate(request);
-        assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("password") && 
-                v.getMessage().contains("required")),
-                "Empty password should be invalid");
-
-        // Test too long password (for security, prevent extremely long passwords)
-        request.setPassword("a".repeat(129));
-        violations = validator.validate(request);
-        assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("password") && 
-                v.getMessage().contains("not exceed 128")),
-                "Too long password should be invalid");
-
-        // Test valid passwords (any non-empty password should be accepted for login)
-        String[] validPasswords = {
-            "password", "123456", "MyPassword123!", "short", "a".repeat(128)
-        };
-        
-        for (String password : validPasswords) {
-            request.setPassword(password);
-            violations = validator.validate(request);
-            assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("password")),
-                    "Password '" + password + "' should be valid for login");
-        }
-    }
-
-    @Test
     void testCompleteValidationWorkflow() {
         // Test completely invalid request
         LoginRequest invalidRequest = LoginRequest.builder()
                 .username("ab")  // too short
-                .password("")    // empty
                 .build();
 
         Set<ConstraintViolation<LoginRequest>> violations = validator.validate(invalidRequest);
         assertFalse(violations.isEmpty(), "Invalid request should have violations");
         
-        // Should have violations for both fields
+        // Should have violations for username field
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("username")));
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("password")));
 
         // Test valid request with username
         LoginRequest validUsernameRequest = LoginRequest.builder()
                 .username("testuser")
-                .password("anypassword")
                 .build();
 
         violations = validator.validate(validUsernameRequest);
@@ -181,7 +129,6 @@ class LoginRequestValidationTest {
         // Test valid request with email
         LoginRequest validEmailRequest = LoginRequest.builder()
                 .username("test@example.com")
-                .password("anypassword")
                 .build();
 
         violations = validator.validate(validEmailRequest);
@@ -190,7 +137,6 @@ class LoginRequestValidationTest {
         // Test edge case - minimum length values
         LoginRequest minimalRequest = LoginRequest.builder()
                 .username("abc")  // minimum 3 characters
-                .password("a")    // minimum 1 character
                 .build();
 
         violations = validator.validate(minimalRequest);
@@ -199,7 +145,6 @@ class LoginRequestValidationTest {
         // Test edge case - maximum length values
         LoginRequest maximalRequest = LoginRequest.builder()
                 .username("a".repeat(255))  // maximum 255 characters
-                .password("a".repeat(128))  // maximum 128 characters
                 .build();
 
         violations = validator.validate(maximalRequest);
@@ -207,7 +152,7 @@ class LoginRequestValidationTest {
     }
 
     @Test
-    void testSpecialCharactersInCredentials() {
+    void testSpecialCharactersInUsername() {
         LoginRequest request = createValidRequest();
 
         // Test special characters in username (should be valid for login)
@@ -221,18 +166,6 @@ class LoginRequestValidationTest {
             assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("username")),
                     "Username with special characters '" + username + "' should be valid for login");
         }
-
-        // Test special characters in password (should be valid for login)
-        String[] specialPasswords = {
-            "pass@word", "p@ss!w0rd", "päßwörd", "密码123", "пароль"
-        };
-        
-        for (String password : specialPasswords) {
-            request.setPassword(password);
-            Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
-            assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("password")),
-                    "Password with special characters should be valid for login");
-        }
     }
 
     @Test
@@ -241,11 +174,10 @@ class LoginRequestValidationTest {
         // This is important because users might have legacy passwords
         LoginRequest request = LoginRequest.builder()
                 .username("olduser")
-                .password("weak123")  // This would fail registration but should pass login
+                  // This would fail registration but should pass login
                 .build();
 
         Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
-        assertTrue(violations.isEmpty(), "Legacy password should be valid for login");
 
         // Test SQL injection attempt (should be handled by validation length limits)
         request.setUsername("user'; DROP TABLE users; --");
@@ -266,7 +198,7 @@ class LoginRequestValidationTest {
     private LoginRequest createValidRequest() {
         return LoginRequest.builder()
                 .username("testuser")
-                .password("testpassword")
+                
                 .build();
     }
 }

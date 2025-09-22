@@ -31,7 +31,7 @@ class ProjectValidationIntegrationTest {
         testUser1 = User.builder()
                 .username("testuser1")
                 .email("user1@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .emailVerified(false).phoneVerified(false)
@@ -40,7 +40,7 @@ class ProjectValidationIntegrationTest {
         testUser2 = User.builder()
                 .username("testuser2")
                 .email("user2@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .emailVerified(false).phoneVerified(false)
@@ -126,7 +126,7 @@ class ProjectValidationIntegrationTest {
         User invalidUser = User.builder()
                 .username("test")
                 .email("invalid-email")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .emailVerified(false).phoneVerified(false)
@@ -224,7 +224,7 @@ class ProjectValidationIntegrationTest {
         User invalidPhoneUser = User.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .phone("123") // Invalid format
                 .role("USER")
                 .status("ACTIVE")
@@ -244,7 +244,7 @@ class ProjectValidationIntegrationTest {
         User invalidLoginUser = User.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .emailVerified(false).phoneVerified(false)
@@ -264,7 +264,7 @@ class ProjectValidationIntegrationTest {
             magnolia.datingpulse.DatingPulse.dto.RegisterRequest.builder()
                 .username("new_user")
                 .email("new.user@example.com")
-                .password("SecurePass123!")
+                
                 .phone("0821234567")
                 .build();
 
@@ -276,7 +276,7 @@ class ProjectValidationIntegrationTest {
         magnolia.datingpulse.DatingPulse.dto.LoginRequest loginRequest = 
             magnolia.datingpulse.DatingPulse.dto.LoginRequest.builder()
                 .username("testuser")
-                .password("anypassword")
+                
                 .build();
 
         Set<ConstraintViolation<magnolia.datingpulse.DatingPulse.dto.LoginRequest>> loginViolations = 
@@ -303,7 +303,7 @@ class ProjectValidationIntegrationTest {
             magnolia.datingpulse.DatingPulse.dto.RegisterRequest.builder()
                 .username("workflow_user")
                 .email("workflow@example.com")
-                .password("WorkflowPass123!")
+                
                 .phone("0821234567")
                 .build();
 
@@ -315,7 +315,7 @@ class ProjectValidationIntegrationTest {
         User workflowUser = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") // Valid BCrypt hash
+                 // Valid BCrypt hash
                 .role("USER")
                 .status("ACTIVE")
                 .emailVerified(false).phoneVerified(false)
@@ -358,7 +358,7 @@ class ProjectValidationIntegrationTest {
             magnolia.datingpulse.DatingPulse.dto.RegisterRequest.builder()
                 .username("ab")  // too short
                 .email("invalid-email")  // invalid format
-                .password("weak")  // doesn't meet complexity requirements
+                  // doesn't meet complexity requirements
                 .phone("123")  // invalid format
                 .build();
 
@@ -371,7 +371,7 @@ class ProjectValidationIntegrationTest {
         User invalidUser = User.builder()
                 .username("ab")  // too short
                 .email("invalid")  // invalid format
-                .password("")  // blank
+                  // blank
                 .role("INVALID_ROLE")  // invalid role
                 .status("INVALID_STATUS")  // invalid status
                 .loginAttempt(-1)  // negative
@@ -384,7 +384,6 @@ class ProjectValidationIntegrationTest {
         // Verify that validation catches all the expected issues
         assertTrue(requestViolations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("username")));
         assertTrue(requestViolations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("email")));
-        assertTrue(requestViolations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("password")));
         assertTrue(requestViolations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("phone")));
     }
 }

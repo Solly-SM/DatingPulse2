@@ -56,13 +56,13 @@ class AuthControllerTest extends BaseIntegrationTest {
         validRegisterRequest = RegisterRequest.builder()
                 .username("newuser")
                 .email("newuser@example.com")
-                .password("password123")
+                
                 .phone("0821234567")
                 .build();
 
         validLoginRequest = LoginRequest.builder()
                 .username("existinguser")
-                .password("password123")
+                
                 .build();
 
         existingUser = createAndSaveTestUser();
@@ -73,7 +73,6 @@ class AuthControllerTest extends BaseIntegrationTest {
                 .username("existinguser")
                 .email("existing@example.com")
                 .phone("0821234567")
-                .password(passwordEncoder.encode("password123"))
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -110,7 +109,7 @@ class AuthControllerTest extends BaseIntegrationTest {
             RegisterRequest duplicateUsername = RegisterRequest.builder()
                     .username("existinguser") // This username already exists
                     .email("different@example.com")
-                    .password("password123")
+                    
                     .phone("0821234568")
                     .build();
 
@@ -127,7 +126,7 @@ class AuthControllerTest extends BaseIntegrationTest {
             RegisterRequest duplicateEmail = RegisterRequest.builder()
                     .username("differentuser")
                     .email("existing@example.com") // This email already exists
-                    .password("password123")
+                    
                     .phone("0821234568")
                     .build();
 
@@ -144,7 +143,7 @@ class AuthControllerTest extends BaseIntegrationTest {
             RegisterRequest invalidRequest = RegisterRequest.builder()
                     .username("") // Invalid: empty username
                     .email("invalid-email") // Invalid: malformed email
-                    .password("123") // Invalid: too short password
+                     // Invalid: too short password
                     .build();
 
             mockMvc.perform(post("/api/auth/register")
@@ -193,7 +192,7 @@ class AuthControllerTest extends BaseIntegrationTest {
         void shouldLoginWithEmailSuccessfully() throws Exception {
             LoginRequest emailLoginRequest = LoginRequest.builder()
                     .username("existing@example.com") // Using email as username
-                    .password("password123")
+                    
                     .build();
 
             mockMvc.perform(post("/api/auth/login")
@@ -211,7 +210,7 @@ class AuthControllerTest extends BaseIntegrationTest {
         void shouldReturn401WithInvalidCredentials() throws Exception {
             LoginRequest invalidCredentials = LoginRequest.builder()
                     .username("existinguser")
-                    .password("wrongpassword")
+                    
                     .build();
 
             mockMvc.perform(post("/api/auth/login")
@@ -225,7 +224,7 @@ class AuthControllerTest extends BaseIntegrationTest {
         void shouldReturn401WhenUserNotExist() throws Exception {
             LoginRequest nonExistentUser = LoginRequest.builder()
                     .username("nonexistentuser")
-                    .password("password123")
+                    
                     .build();
 
             mockMvc.perform(post("/api/auth/login")
@@ -239,7 +238,7 @@ class AuthControllerTest extends BaseIntegrationTest {
         void shouldReturn400WithInvalidLoginData() throws Exception {
             LoginRequest invalidRequest = LoginRequest.builder()
                     .username("") // Invalid: empty username
-                    .password("") // Invalid: empty password
+                     // Invalid: empty password
                     .build();
 
             mockMvc.perform(post("/api/auth/login")
@@ -301,7 +300,7 @@ class AuthControllerTest extends BaseIntegrationTest {
             RegisterRequest newUser = RegisterRequest.builder()
                     .username("flowtest")
                     .email("flowtest@example.com")
-                    .password("password123")
+                    
                     .phone("0821234569")
                     .build();
 
@@ -315,7 +314,7 @@ class AuthControllerTest extends BaseIntegrationTest {
             // Step 2: Login with the same credentials
             LoginRequest loginRequest = LoginRequest.builder()
                     .username("flowtest")
-                    .password("password123")
+                    
                     .build();
 
             mockMvc.perform(post("/api/auth/login")

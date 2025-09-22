@@ -30,7 +30,6 @@ class RegisterRequestValidationTest {
         RegisterRequest request = RegisterRequest.builder()
                 .username("john_doe")
                 .email("john.doe@example.com")
-                .password("MyPassword123!")
                 .phone("0821234567")
                 .build();
 
@@ -140,76 +139,6 @@ class RegisterRequestValidationTest {
     }
 
     @Test
-    void testPasswordValidation() {
-        RegisterRequest request = createValidRequest();
-
-        // Test null password
-        request.setPassword(null);
-        Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(request);
-        assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("password") && 
-                v.getMessage().contains("required")));
-
-        // Test blank password
-        request.setPassword("   ");
-        violations = validator.validate(request);
-        assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("password") && 
-                v.getMessage().contains("required")));
-
-        // Test too short password
-        request.setPassword("Pass1!");
-        violations = validator.validate(request);
-        assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("password") && 
-                v.getMessage().contains("between 8 and 128")));
-
-        // Test too long password
-        request.setPassword("P".repeat(129) + "1!");
-        violations = validator.validate(request);
-        assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("password") && 
-                v.getMessage().contains("between 8 and 128")));
-
-        // Test password without uppercase
-        request.setPassword("password123!");
-        violations = validator.validate(request);
-        assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("password") && 
-                v.getMessage().contains("uppercase letter")));
-
-        // Test password without lowercase
-        request.setPassword("PASSWORD123!");
-        violations = validator.validate(request);
-        assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("password") && 
-                v.getMessage().contains("lowercase letter")));
-
-        // Test password without digit
-        request.setPassword("Password!");
-        violations = validator.validate(request);
-        assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("password") && 
-                v.getMessage().contains("digit")));
-
-        // Test password without special character
-        request.setPassword("Password123");
-        violations = validator.validate(request);
-        assertTrue(violations.stream().anyMatch(v -> 
-                v.getPropertyPath().toString().equals("password") && 
-                v.getMessage().contains("special character")));
-
-        // Test valid passwords
-        String[] validPasswords = {"MyPassword123!", "SecurePass1@", "ComplexP@ss1", "Strong123$"};
-        for (String password : validPasswords) {
-            request.setPassword(password);
-            violations = validator.validate(request);
-            assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("password")),
-                    "Password '" + password + "' should be valid");
-        }
-    }
-
-    @Test
     void testPhoneValidation() {
         RegisterRequest request = createValidRequest();
 
@@ -252,7 +181,7 @@ class RegisterRequestValidationTest {
         RegisterRequest invalidRequest = RegisterRequest.builder()
                 .username("ab")  // too short
                 .email("invalid-email")  // invalid format
-                .password("weak")  // too short and weak
+                  // too short and weak
                 .phone("123")  // invalid format
                 .build();
 
@@ -262,14 +191,13 @@ class RegisterRequestValidationTest {
         // Should have violations for all fields
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("username")));
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("email")));
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("password")));
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("phone")));
 
         // Test minimal valid request (without optional phone)
         RegisterRequest minimalRequest = RegisterRequest.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("TestPass123!")
+                
                 .build();
 
         violations = validator.validate(minimalRequest);
@@ -279,7 +207,7 @@ class RegisterRequestValidationTest {
         RegisterRequest completeRequest = RegisterRequest.builder()
                 .username("test_user_123")
                 .email("test.user@example.co.za")
-                .password("MySecurePassword123!")
+                
                 .phone("+27821234567")
                 .build();
 
@@ -291,7 +219,7 @@ class RegisterRequestValidationTest {
         return RegisterRequest.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("TestPass123!")
+                
                 .phone("0821234567")
                 .build();
     }

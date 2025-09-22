@@ -27,7 +27,7 @@ class SwipeHistoryValidationTest {
         testUser = User.builder()
                 .username("swiper")
                 .email("swiper@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -37,7 +37,7 @@ class SwipeHistoryValidationTest {
         testTargetUser = User.builder()
                 .username("target")
                 .email("target@test.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
