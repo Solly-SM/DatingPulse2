@@ -66,9 +66,8 @@ function BasicInfoStep({ onComplete, onBack, loading }: BasicInfoStepProps) {
     // Generate a username from email for backend compatibility
     const username = formData.email.split('@')[0] + Math.floor(Math.random() * 1000);
     
-    const { confirmPassword, ...registerData } = formData;
     onComplete({
-      ...registerData,
+      ...formData,
       username, // Add generated username for backend compatibility
     });
   };
