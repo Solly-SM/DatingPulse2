@@ -3,6 +3,7 @@ package magnolia.datingpulse.DatingPulse.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,14 +18,19 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class FileUploadService {
+
+    @Value("${app.s3.enabled:true}")
+    private boolean s3Enabled;
 
     @Value("${app.s3.bucket-name:datingpulse-photos}")
     private String bucketName;
@@ -44,7 +50,16 @@ public class FileUploadService {
     @Value("${app.upload.resize.max-height:1024}")
     private int maxHeight;
 
+    @Value("${app.upload.path:/tmp/uploads}")
+    private String uploadPath;
+
     private final S3Client s3Client;
+    
+    // Constructor with optional S3Client
+    @Autowired
+    public FileUploadService(@Autowired(required = false) S3Client s3Client) {
+        this.s3Client = s3Client;
+    }
 
     /**
      * Upload a photo file to cloud storage with automatic resizing and optimization
@@ -56,7 +71,7 @@ public class FileUploadService {
         BufferedImage resizedImage = resizeImage(file);
         byte[] optimizedImageData = optimizeImage(resizedImage, getFileExtension(file));
         
-        return uploadToS3(fileName, optimizedImageData, file.getContentType());
+        return uploadFile(fileName, optimizedImageData, file.getContentType());
     }
 
     /**
@@ -69,7 +84,7 @@ public class FileUploadService {
         BufferedImage resizedImage = resizeImageForProfile(file);
         byte[] optimizedImageData = optimizeImage(resizedImage, getFileExtension(file));
         
-        return uploadToS3(fileName, optimizedImageData, file.getContentType());
+        return uploadFile(fileName, optimizedImageData, file.getContentType());
     }
 
     private void validateFile(MultipartFile file) throws IllegalArgumentException {
@@ -150,6 +165,14 @@ public class FileUploadService {
         return outputStream.toByteArray();
     }
 
+    private String uploadFile(String fileName, byte[] imageData, String contentType) throws IOException {
+        if (s3Enabled && s3Client != null) {
+            return uploadToS3(fileName, imageData, contentType);
+        } else {
+            return uploadToLocalStorage(fileName, imageData, contentType);
+        }
+    }
+
     private String uploadToS3(String fileName, byte[] imageData, String contentType) {
         try {
             PutObjectRequest request = PutObjectRequest.builder()
@@ -166,6 +189,27 @@ public class FileUploadService {
         } catch (Exception e) {
             log.error("Failed to upload file to S3: {}", e.getMessage());
             throw new RuntimeException("Failed to upload file to cloud storage", e);
+        }
+    }
+
+    private String uploadToLocalStorage(String fileName, byte[] imageData, String contentType) throws IOException {
+        try {
+            // Create directory structure if it doesn't exist
+            Path fullPath = Paths.get(uploadPath, fileName);
+            Path parentDir = fullPath.getParent();
+            if (parentDir != null) {
+                Files.createDirectories(parentDir);
+            }
+            
+            // Write file to local storage
+            Files.write(fullPath, imageData);
+            
+            // Return the local URL (relative to upload path)
+            return "/uploads/" + fileName;
+            
+        } catch (Exception e) {
+            log.error("Failed to upload file to local storage: {}", e.getMessage());
+            throw new IOException("Failed to upload file to local storage", e);
         }
     }
 

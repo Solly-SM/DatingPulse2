@@ -30,6 +30,8 @@ public class MessageDTO {
     private String type;
     
     private LocalDateTime sentAt;
+    private LocalDateTime deliveredAt;
+    private LocalDateTime readAt;
     
     @Pattern(regexp = "^(SENT|DELIVERED|READ|FAILED)$", 
              message = "Status must be one of: SENT, DELIVERED, READ, FAILED")
