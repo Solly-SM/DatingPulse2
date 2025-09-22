@@ -9,7 +9,6 @@ import Layout from './components/Layout';
 import LoadingScreen from './components/LoadingScreen';
 import SimpleLoadingScreen from './components/SimpleLoadingScreen';
 import LandingPage from './pages/LandingPage';
-import Login from './pages/Login';
 
 import Home from './pages/Home';
 import Explore from './pages/Explore';
@@ -93,8 +92,8 @@ function App() {
           <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Routes>
               <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<Login />} />
-              {/* Redirect old register route to landing page for popup signup */}
+              {/* Redirect old authentication routes to landing page for popup login/signup */}
+              <Route path="/login" element={<Navigate to="/" replace />} />
               <Route path="/register" element={<Navigate to="/" replace />} />
               <Route path="/demo-sidebar" element={<DemoSidebar />} />
               <Route path="/demo-notifications" element={<DemoNotifications />} />
