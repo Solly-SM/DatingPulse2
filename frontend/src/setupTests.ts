@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
 // Mock URL.createObjectURL for file upload tests
 Object.defineProperty(URL, 'createObjectURL', {
   writable: true,
-  value: (file: File | Blob) => `mock-url-${file.name || 'blob'}`
+  value: (file: File | Blob) => `mock-url-${(file instanceof File ? file.name : 'blob')}`
 });
 
 // Mock URL.revokeObjectURL for file upload tests
