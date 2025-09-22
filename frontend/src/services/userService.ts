@@ -1,7 +1,7 @@
 import api from './api';
 import { User, UserProfile, ProfileSetupRequest, ProfileResponse } from '../types/User';
 
-const USE_MOCK_DATA = process.env.NODE_ENV === 'development';
+const USE_MOCK_DATA = false; // Changed to always try real API first
 
 // Mock user profile data
 const mockProfile: UserProfile = {

@@ -13,7 +13,7 @@ public class PhotoDTO {
     private Long userID;
     
     @NotBlank(message = "Photo URL is required")
-    @Pattern(regexp = "^(https?://).*\\.(jpg|jpeg|png|gif|webp)$", 
+    @Pattern(regexp = "^(https?://.*|/uploads/.*)\\.(jpg|jpeg|png|gif|webp)$", 
              message = "URL must be a valid image file URL (jpg, jpeg, png, gif, webp)")
     private String url;
     

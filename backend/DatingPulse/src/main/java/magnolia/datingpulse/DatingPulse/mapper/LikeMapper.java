@@ -9,8 +9,11 @@ public interface LikeMapper {
     @Mapping(source = "user.userID", target = "userID")
     @Mapping(source = "likedUser.userID", target = "likedUserID")
     @Mapping(source = "type", target = "type")
+    @Mapping(source = "likedAt", target = "likedAt")
     LikeDTO toDTO(Like entity);
 
-    // For DTO→entity: set user and likedUser in service
+    @Mapping(target = "user", ignore = true) // Set in service
+    @Mapping(target = "likedUser", ignore = true) // Set in service
+    @Mapping(target = "likedAt", ignore = true) // Auto-generated timestamp
     Like toEntity(LikeDTO dto);
 }
