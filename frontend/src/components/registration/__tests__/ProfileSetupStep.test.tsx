@@ -23,7 +23,7 @@ describe('ProfileSetupStep Validation', () => {
     test('should show error for empty first name', async () => {
       render(<ProfileSetupStep {...defaultProps} />);
       
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       fireEvent.click(submitButton);
       
       await waitFor(() => {
@@ -36,7 +36,7 @@ describe('ProfileSetupStep Validation', () => {
       render(<ProfileSetupStep {...defaultProps} />);
       
       const firstNameInput = screen.getByLabelText(/first name/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       fireEvent.change(firstNameInput, { target: { value: 'John' } });
       fireEvent.click(submitButton);
@@ -52,7 +52,7 @@ describe('ProfileSetupStep Validation', () => {
       
       const firstNameInput = screen.getByLabelText(/first name/i);
       const lastNameInput = screen.getByLabelText(/last name/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       fireEvent.change(firstNameInput, { target: { value: 'John' } });
       fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
@@ -70,7 +70,7 @@ describe('ProfileSetupStep Validation', () => {
       const firstNameInput = screen.getByLabelText(/first name/i);
       const lastNameInput = screen.getByLabelText(/last name/i);
       const dobInput = screen.getByLabelText(/date of birth/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       fireEvent.change(firstNameInput, { target: { value: 'John' } });
       fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
@@ -90,7 +90,7 @@ describe('ProfileSetupStep Validation', () => {
       const lastNameInput = screen.getByLabelText(/last name/i);
       const dobInput = screen.getByLabelText(/date of birth/i);
       const locationInput = screen.getByLabelText(/location/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       fireEvent.change(firstNameInput, { target: { value: 'John' } });
       fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
@@ -112,7 +112,7 @@ describe('ProfileSetupStep Validation', () => {
       const dobInput = screen.getByLabelText(/date of birth/i);
       const locationInput = screen.getByLabelText(/location/i);
       const genderSelect = screen.getByLabelText(/gender/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       fireEvent.change(firstNameInput, { target: { value: 'John' } });
       fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
@@ -135,7 +135,7 @@ describe('ProfileSetupStep Validation', () => {
       const firstNameInput = screen.getByLabelText(/first name/i);
       const lastNameInput = screen.getByLabelText(/last name/i);
       const dobInput = screen.getByLabelText(/date of birth/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       // Set date that makes user 17 years old
       const futureDate = new Date();
@@ -159,7 +159,7 @@ describe('ProfileSetupStep Validation', () => {
       const firstNameInput = screen.getByLabelText(/first name/i);
       const lastNameInput = screen.getByLabelText(/last name/i);
       const dobInput = screen.getByLabelText(/date of birth/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       // Set date that makes user 101 years old
       const oldDate = new Date();
@@ -186,7 +186,7 @@ describe('ProfileSetupStep Validation', () => {
       const locationInput = screen.getByLabelText(/location/i);
       const genderSelect = screen.getByLabelText(/gender/i);
       const interestedInSelect = screen.getByLabelText(/interested in/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       // Set date that makes user 25 years old
       const validDate = new Date();
@@ -221,7 +221,7 @@ describe('ProfileSetupStep Validation', () => {
       render(<ProfileSetupStep {...defaultProps} />);
       
       const firstNameInput = screen.getByLabelText(/first name/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       // Submit to show error
       fireEvent.click(submitButton);
@@ -239,7 +239,7 @@ describe('ProfileSetupStep Validation', () => {
       
       const firstNameInput = screen.getByLabelText(/first name/i);
       const lastNameInput = screen.getByLabelText(/last name/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       fireEvent.change(firstNameInput, { target: { value: 'John' } });
       fireEvent.click(submitButton);
@@ -262,7 +262,7 @@ describe('ProfileSetupStep Validation', () => {
       const locationInput = screen.getByLabelText(/location/i);
       const genderSelect = screen.getByLabelText(/gender/i);
       const interestedInSelect = screen.getByLabelText(/interested in/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       const validDate = new Date();
       validDate.setFullYear(validDate.getFullYear() - 25);
@@ -308,7 +308,7 @@ describe('ProfileSetupStep Validation', () => {
       const heightInput = screen.getByLabelText(/height/i);
       const educationInput = screen.getByLabelText(/education/i);
       const occupationInput = screen.getByLabelText(/occupation/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       const validDate = new Date();
       validDate.setFullYear(validDate.getFullYear() - 25);
@@ -356,7 +356,7 @@ describe('ProfileSetupStep Validation', () => {
       
       const firstNameInput = screen.getByLabelText(/first name/i);
       const lastNameInput = screen.getByLabelText(/last name/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       expect(firstNameInput).toBeDisabled();
       expect(lastNameInput).toBeDisabled();
@@ -403,7 +403,7 @@ describe('ProfileSetupStep Validation', () => {
     test('should show multiple validation errors simultaneously', async () => {
       render(<ProfileSetupStep {...defaultProps} />);
       
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       fireEvent.click(submitButton);
       
       await waitFor(() => {
@@ -423,7 +423,7 @@ describe('ProfileSetupStep Validation', () => {
       
       const firstNameInput = screen.getByLabelText(/first name/i);
       const lastNameInput = screen.getByLabelText(/last name/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       fireEvent.change(firstNameInput, { target: { value: '   ' } });
       fireEvent.change(lastNameInput, { target: { value: '   ' } });
@@ -441,7 +441,7 @@ describe('ProfileSetupStep Validation', () => {
       const firstNameInput = screen.getByLabelText(/first name/i);
       const lastNameInput = screen.getByLabelText(/last name/i);
       const dobInput = screen.getByLabelText(/date of birth/i);
-      const submitButton = screen.getByRole('button', { name: /continue/i });
+      const submitButton = screen.getByRole('button', { name: /complete registration/i });
       
       const futureDate = new Date();
       futureDate.setFullYear(futureDate.getFullYear() + 1);
