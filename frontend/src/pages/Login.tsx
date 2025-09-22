@@ -18,7 +18,7 @@ function Login() {
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     username: '',
-    password: '',
+    // Password removed - no longer required
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -65,7 +65,7 @@ function Login() {
           </Box>
           
           <Typography component="h2" variant="h5" align="center" sx={{ mb: 3 }}>
-            Welcome Back
+            Welcome Back - No Password Needed!
           </Typography>
 
           {error && (
@@ -80,25 +80,15 @@ function Login() {
               required
               fullWidth
               id="username"
-              label="Username"
+              label="Username or Email"
               name="username"
               autoComplete="username"
               autoFocus
               value={formData.username}
               onChange={handleChange}
+              helperText="Enter your username or email - no password required!"
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={formData.password}
-              onChange={handleChange}
-            />
+            {/* Password field removed - no longer needed */}
             <Button
               type="submit"
               fullWidth

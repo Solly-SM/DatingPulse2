@@ -53,7 +53,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
               // Try to login with demo user first
               const authResponse = await authService.login({
                 username: 'demouser',
-                password: 'DemoPassword123!'
+                // Password removed
               });
               authService.storeAuth(authResponse);
               setUser(authResponse.user);
@@ -65,7 +65,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 const authResponse = await authService.register({
                   username: 'demouser',
                   email: 'demo@datingpulse.com',
-                  password: 'DemoPassword123!',
+                  // Password removed
                   phone: '0821234567'
                 });
                 authService.storeAuth(authResponse);

@@ -10,7 +10,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +22,10 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
+    // Password encoder removed since passwords are no longer used
 
     @Transactional
-    public UserDTO createUser(UserDTO userDTO, String rawPassword) {
+    public UserDTO createUser(UserDTO userDTO) {
         // Check if username or email already exists
         if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Username already exists: " + userDTO.getUsername());
@@ -38,8 +37,7 @@ public class UserService {
         // Map DTO to entity
         User user = userMapper.toEntity(userDTO);
         
-        // Set password hash
-        user.setPassword(passwordEncoder.encode(rawPassword));
+        // Password removed - no longer needed
         
         // Set default values if not provided
         if (user.getRole() == null) {
@@ -150,14 +148,11 @@ public class UserService {
         return userMapper.toDTO(updated);
     }
 
+    // Password update functionality removed since passwords are no longer used
     @Transactional
     public void updatePassword(Long userId, String newRawPassword) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
-        
-        user.setPassword(passwordEncoder.encode(newRawPassword));
-        // user.setLoginAttempt(0); // Field removed from entity
-        userRepository.save(user);
+        // This method is deprecated - passwords are no longer used
+        throw new UnsupportedOperationException("Password functionality has been removed from this application");
     }
 
     @Transactional

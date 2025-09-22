@@ -19,8 +19,5 @@ public class LoginRequest {
     @Schema(description = "Username or email address", example = "john_doe")
     private String username;
     
-    @NotBlank(message = "Password is required")
-    @Size(min = 1, max = 128, message = "Password must not exceed 128 characters")
-    @Schema(description = "User password", example = "MyPassword123!")
-    private String password;
+    // Password removed - login will be based on username/email and possibly OTP
 }

@@ -27,7 +27,7 @@ class UserValidationTest {
         User user = User.builder()
                 .username("validuser123")
                 .email("valid@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                // Password removed - no longer required
                 .phone("0821234567")
                 .role("USER")
                 .status("ACTIVE")
@@ -113,31 +113,9 @@ class UserValidationTest {
         }
     }
 
-    @Test
-    void testPasswordValidation() {
-        // Valid password (BCrypt hash format)
-        String validPassword = "$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        User user = createUserWithPassword(validPassword);
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("password")),
-                "Valid BCrypt password should be accepted");
-
-        // Invalid passwords
-        String[] invalidPasswords = {
-                "",           // Empty
-                "   ",        // Blank
-                null,         // Null
-                "short",      // Too short
-                "A".repeat(256) // Too long
-        };
-
-        for (String password : invalidPasswords) {
-            user = createUserWithPassword(password);
-            violations = validator.validate(user);
-            assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("password")),
-                    "Password '" + password + "' should be invalid");
-        }
-    }
+    // Password validation test removed since passwords are no longer used
+    // @Test
+    // void testPasswordValidation() { ... }
 
     @Test
     void testPhoneValidation() {
@@ -286,7 +264,7 @@ class UserValidationTest {
         User user = User.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                // Password removed - no longer required
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -302,7 +280,7 @@ class UserValidationTest {
         return User.builder()
                 .username(username)
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -314,7 +292,7 @@ class UserValidationTest {
         return User.builder()
                 .username("testuser")
                 .email(email)
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -322,23 +300,14 @@ class UserValidationTest {
                 .build();
     }
 
-    private User createUserWithPassword(String password) {
-        return User.builder()
-                .username("testuser")
-                .email("test@example.com")
-                .password(password)
-                .role("USER")
-                .status("ACTIVE")
-                .isVerified(false)
-                .loginAttempt(0)
-                .build();
-    }
+    // Password test helper removed since passwords are no longer used
+    // private User createUserWithPassword(String password) { ... }
 
     private User createUserWithPhone(String phone) {
         return User.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .phone(phone)
                 .role("USER")
                 .status("ACTIVE")
@@ -351,7 +320,7 @@ class UserValidationTest {
         return User.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role(role)
                 .status("ACTIVE")
                 .isVerified(false)
@@ -363,7 +332,7 @@ class UserValidationTest {
         return User.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status(status)
                 .isVerified(false)
@@ -375,7 +344,7 @@ class UserValidationTest {
         return User.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(false)
@@ -387,7 +356,7 @@ class UserValidationTest {
         return User.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("$2a$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                
                 .role("USER")
                 .status("ACTIVE")
                 .isVerified(isVerified)

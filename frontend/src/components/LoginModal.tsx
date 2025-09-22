@@ -70,7 +70,7 @@ function LoginModal({ open, onClose }: LoginModalProps) {
         // Existing user - login and go to dashboard
         const loginData = {
           username: email,
-          password: 'temp-password', // In real app, OTP would authenticate the user
+          // Password removed - OTP would authenticate the user
         };
         await login(loginData);
         onClose();

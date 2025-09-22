@@ -27,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
-                .password(user.getPassword())
+                .password("") // No password required
                 .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole())))
                 .accountExpired(false)
                 .accountLocked("BANNED".equals(user.getStatus()) || "SUSPENDED".equals(user.getStatus()))

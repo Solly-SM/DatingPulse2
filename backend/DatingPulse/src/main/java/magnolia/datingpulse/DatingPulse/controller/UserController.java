@@ -35,7 +35,7 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "Create a new user", 
-               description = "Creates a new user account with the provided information and password")
+               description = "Creates a new user account with the provided information - no password required")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "User created successfully",
                     content = @Content(mediaType = "application/json", 
@@ -45,11 +45,9 @@ public class UserController {
     })
     public ResponseEntity<UserDTO> createUser(
             @Parameter(description = "User information", required = true)
-            @Valid @RequestBody UserDTO userDTO,
-            @Parameter(description = "User password", required = true)
-            @RequestParam @NotBlank(message = "Password is required") String password) {
+            @Valid @RequestBody UserDTO userDTO) {
         try {
-            UserDTO createdUser = userService.createUser(userDTO, password);
+            UserDTO createdUser = userService.createUser(userDTO);
             return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -141,17 +139,9 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{userId}/password")
-    public ResponseEntity<Void> updatePassword(
-            @PathVariable @Positive(message = "User ID must be positive") Long userId,
-            @RequestParam @NotBlank(message = "New password is required") String newPassword) {
-        try {
-            userService.updatePassword(userId, newPassword);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+    // Password update endpoint removed since passwords are no longer used
+    // @PutMapping("/{userId}/password")
+    // public ResponseEntity<Void> updatePassword(...) { ... }
 
     @PutMapping("/{userId}/suspend")
     public ResponseEntity<Void> suspendUser(

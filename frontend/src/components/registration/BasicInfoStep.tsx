@@ -21,11 +21,9 @@ interface BasicInfoStepProps {
 function BasicInfoStep({ onComplete, onBack, loading }: BasicInfoStepProps) {
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
-    confirmPassword: '',
+    // Password fields removed - no longer required
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // Password visibility states removed
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,15 +50,7 @@ function BasicInfoStep({ onComplete, onBack, loading }: BasicInfoStepProps) {
       errors.email = 'Please enter a valid email address';
     }
 
-    if (!formData.password) {
-      errors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      errors.password = 'Password must be at least 6 characters';
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match';
-    }
+    // Password validation removed since passwords are no longer used
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -89,7 +79,7 @@ function BasicInfoStep({ onComplete, onBack, loading }: BasicInfoStepProps) {
         Create Your Account
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Enter your email and create a secure password to get started.
+        Enter your email to get started - no password required!
       </Typography>
 
       <TextField
@@ -109,62 +99,7 @@ function BasicInfoStep({ onComplete, onBack, loading }: BasicInfoStepProps) {
         disabled={loading}
       />
 
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        name="password"
-        label="Password"
-        type={showPassword ? 'text' : 'password'}
-        id="password"
-        autoComplete="new-password"
-        value={formData.password}
-        onChange={handleChange}
-        error={!!formErrors.password}
-        helperText={formErrors.password}
-        disabled={loading}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={() => setShowPassword(!showPassword)}
-                edge="end"
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        name="confirmPassword"
-        label="Confirm Password"
-        type={showConfirmPassword ? 'text' : 'password'}
-        id="confirmPassword"
-        value={formData.confirmPassword}
-        onChange={handleChange}
-        error={!!formErrors.confirmPassword}
-        helperText={formErrors.confirmPassword}
-        disabled={loading}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                edge="end"
-              >
-                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
+      {/* Password fields removed - no longer required */}
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
         <Button onClick={onBack} disabled={loading}>

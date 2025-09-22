@@ -31,10 +31,7 @@ public class User {
     @Size(max = 255, message = "Email must not exceed 255 characters")
     private String email;
 
-    @Column(nullable = false, length = 255)
-    @NotBlank(message = "Password is required")
-    @Size(min = 60, max = 255, message = "Password hash must be between 60 and 255 characters")
-    private String password; // Store as BCrypt hash
+    // Password removed - app no longer requires passwords
 
     @Column(unique = true, length = 20)
     @Pattern(regexp = "^(0[1-9][0-9]{8}|\\+27[1-9][0-9]{8})$", message = "Phone number must be in South African format (e.g., 0821234567 or +27821234567)")
@@ -71,11 +68,7 @@ public class User {
     @Builder.Default
     private Boolean phoneVerified = false;
 
-    @Column(name = "password_reset_token", length = 255)
-    private String passwordResetToken;
-
-    @Column(name = "password_reset_expires")
-    private LocalDateTime passwordResetExpires;
+    // Password reset functionality removed since passwords are no longer used
     
     @Column(name = "is_verified", nullable = false)
     @NotNull(message = "Verification status is required")
