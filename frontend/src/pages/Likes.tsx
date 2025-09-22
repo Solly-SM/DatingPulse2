@@ -13,6 +13,8 @@ import {
   Button,
   Alert,
   Badge,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import {
   Favorite,
@@ -30,6 +32,7 @@ import { datingService } from '../services/datingService';
 import { ReceivedLike } from '../types/Dating';
 import PulseLogo from '../components/PulseLogo';
 import PulseLoader from '../components/PulseLoader';
+import MiniProfile from '../components/MiniProfile';
 
 interface GroupedLikes {
   [key: string]: ReceivedLike[];
@@ -38,11 +41,15 @@ interface GroupedLikes {
 const Likes: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  
   const [likes, setLikes] = useState<ReceivedLike[]>([]);
   const [groupedLikes, setGroupedLikes] = useState<GroupedLikes>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState<'all' | 'likes' | 'super_likes'>('all');
+  const [selectedLike, setSelectedLike] = useState<ReceivedLike | null>(null);
 
   useEffect(() => {
     loadReceivedLikes();
@@ -118,17 +125,32 @@ const Likes: React.FC = () => {
     }
   };
 
+  const handleLikeSelect = (like: ReceivedLike) => {
+    setSelectedLike(like);
+  };
+
+  const handleBackToLikes = () => {
+    setSelectedLike(null);
+  };
+
   const renderLikeCard = (like: ReceivedLike) => (
     <Card
       key={like.likeID}
       sx={{
         mb: 2,
         transition: 'all 0.2s ease',
+        cursor: 'pointer',
         '&:hover': {
           transform: 'translateY(-2px)',
           boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
         },
+        ...(selectedLike?.likeID === like.likeID && {
+          border: '2px solid',
+          borderColor: 'primary.main',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+        }),
       }}
+      onClick={() => handleLikeSelect(like)}
     >
       <CardContent sx={{ p: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -195,7 +217,10 @@ const Likes: React.FC = () => {
             variant="contained"
             color="primary"
             startIcon={like.type === 'SUPER_LIKE' ? <Star /> : <Favorite />}
-            onClick={() => handleLikeBack(like)}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent card selection when clicking Like Back
+              handleLikeBack(like);
+            }}
             size="small"
             sx={{
               background: like.type === 'SUPER_LIKE' 
@@ -223,121 +248,404 @@ const Likes: React.FC = () => {
     );
   }
 
-  return (
-    <Box sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
-        <IconButton onClick={() => navigate('/explore')}>
-          <ArrowBack />
-        </IconButton>
-        <PulseLogo sx={{ fontSize: 32, color: 'primary.main' }} />
-        <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          Your Likes
-        </Typography>
-        <Badge badgeContent={likes.length} color="primary" sx={{ ml: 1 }}>
-          <Favorite color="primary" />
-        </Badge>
-      </Box>
-
-      <Typography variant="h6" color="text.secondary" gutterBottom sx={{ mb: 3 }}>
-        People who liked you ❤️
-      </Typography>
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      {/* Filter Chips */}
-      <Box sx={{ mb: 3 }}>
-        <Stack direction="row" spacing={1} alignItems="center">
-          <FilterList color="action" />
-          <Chip
-            label="All"
-            variant={filter === 'all' ? 'filled' : 'outlined'}
-            onClick={() => setFilter('all')}
-            color="primary"
-          />
-          <Chip
-            label="Likes"
-            variant={filter === 'likes' ? 'filled' : 'outlined'}
-            onClick={() => setFilter('likes')}
-            color="primary"
-            icon={<Favorite />}
-          />
-          <Chip
-            label="Super Likes"
-            variant={filter === 'super_likes' ? 'filled' : 'outlined'}
-            onClick={() => setFilter('super_likes')}
-            color="secondary"
-            icon={<Star />}
-          />
-        </Stack>
-      </Box>
-
-      {/* Likes Content */}
-      <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
-        {likes.length === 0 ? (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '300px',
-              textAlign: 'center',
-            }}
-          >
-            <Favorite sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
-            <Typography variant="h6" color="text.secondary" gutterBottom>
-              No likes yet
+  // Mobile layout - stack or single view
+  if (isMobile) {
+    if (selectedLike) {
+      return (
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', width: '100%' }}>
+          <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 2 }}>
+            <IconButton onClick={handleBackToLikes}>
+              <ArrowBack />
+            </IconButton>
+            <Typography variant="h6">
+              {selectedLike.liker.firstName} {selectedLike.liker.lastName}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Keep exploring to find your perfect match!
-            </Typography>
-            <Button
-              variant="contained"
-              onClick={() => navigate('/explore')}
-              sx={{ mt: 2 }}
-            >
-              Start Exploring
-            </Button>
           </Box>
-        ) : (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              {Object.entries(groupedLikes).map(([dateKey, dateLikes]) => {
-                const filteredDateLikes = dateLikes.filter(like => {
-                  if (filter === 'all') return true;
-                  if (filter === 'likes') return like.type === 'LIKE';
-                  if (filter === 'super_likes') return like.type === 'SUPER_LIKE';
-                  return true;
-                });
+          <Box sx={{ flex: 1, overflow: 'auto' }}>
+            <MiniProfile
+              user={selectedLike.liker}
+              showPhoto={true}
+              variant="preview"
+            />
+          </Box>
+        </Box>
+      );
+    }
 
-                if (filteredDateLikes.length === 0) return null;
+    // Full-width and full-height likes list for mobile
+    return (
+      <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
+        {/* Header */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+          <IconButton onClick={() => navigate('/explore')}>
+            <ArrowBack />
+          </IconButton>
+          <PulseLogo sx={{ fontSize: 32, color: 'primary.main' }} />
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+            Your Likes
+          </Typography>
+          <Badge badgeContent={likes.length} color="primary" sx={{ ml: 1 }}>
+            <Favorite color="primary" />
+          </Badge>
+        </Box>
 
-                return (
-                  <Box key={dateKey} sx={{ mb: 4 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                        {dateKey}
-                      </Typography>
-                      <Chip
-                        label={filteredDateLikes.length}
-                        size="small"
-                        color="primary"
-                        variant="outlined"
-                      />
-                    </Box>
-                    <Divider sx={{ mb: 2 }} />
-                    {filteredDateLikes.map(renderLikeCard)}
-                  </Box>
-                );
-              })}
-            </Grid>
-          </Grid>
+        <Typography variant="h6" color="text.secondary" gutterBottom sx={{ mb: 3 }}>
+          People who liked you ❤️
+        </Typography>
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
         )}
+
+        {/* Filter Chips */}
+        <Box sx={{ mb: 3 }}>
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ overflowX: 'auto' }}>
+            <FilterList color="action" />
+            <Chip
+              label="All"
+              variant={filter === 'all' ? 'filled' : 'outlined'}
+              onClick={() => setFilter('all')}
+              color="primary"
+            />
+            <Chip
+              label="Likes"
+              variant={filter === 'likes' ? 'filled' : 'outlined'}
+              onClick={() => setFilter('likes')}
+              color="primary"
+              icon={<Favorite />}
+            />
+            <Chip
+              label="Super Likes"
+              variant={filter === 'super_likes' ? 'filled' : 'outlined'}
+              onClick={() => setFilter('super_likes')}
+              color="secondary"
+              icon={<Star />}
+            />
+          </Stack>
+        </Box>
+
+        {/* Likes Content */}
+        <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+          {likes.length === 0 ? (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '300px',
+                textAlign: 'center',
+              }}
+            >
+              <Favorite sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
+              <Typography variant="h6" color="text.secondary" gutterBottom>
+                No likes yet
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Keep exploring to find your perfect match!
+              </Typography>
+              <Button
+                variant="contained"
+                onClick={() => navigate('/explore')}
+                sx={{ mt: 2 }}
+              >
+                Start Exploring
+              </Button>
+            </Box>
+          ) : (
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                {Object.entries(groupedLikes).map(([dateKey, dateLikes]) => {
+                  const filteredDateLikes = dateLikes.filter(like => {
+                    if (filter === 'all') return true;
+                    if (filter === 'likes') return like.type === 'LIKE';
+                    if (filter === 'super_likes') return like.type === 'SUPER_LIKE';
+                    return true;
+                  });
+
+                  if (filteredDateLikes.length === 0) return null;
+
+                  return (
+                    <Box key={dateKey} sx={{ mb: 4 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                        <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                          {dateKey}
+                        </Typography>
+                        <Chip
+                          label={filteredDateLikes.length}
+                          size="small"
+                          color="primary"
+                          variant="outlined"
+                        />
+                      </Box>
+                      <Divider sx={{ mb: 2 }} />
+                      {filteredDateLikes.map(renderLikeCard)}
+                    </Box>
+                  );
+                })}
+              </Grid>
+            </Grid>
+          )}
+        </Box>
+      </Box>
+    );
+  }
+
+  // Desktop layout
+  if (!selectedLike) {
+    // Full-width and full-height likes list when no like is selected
+    return (
+      <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
+        {/* Header */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+          <IconButton onClick={() => navigate('/explore')}>
+            <ArrowBack />
+          </IconButton>
+          <PulseLogo sx={{ fontSize: 32, color: 'primary.main' }} />
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+            Your Likes
+          </Typography>
+          <Badge badgeContent={likes.length} color="primary" sx={{ ml: 1 }}>
+            <Favorite color="primary" />
+          </Badge>
+        </Box>
+
+        <Typography variant="h6" color="text.secondary" gutterBottom sx={{ mb: 3 }}>
+          People who liked you ❤️
+        </Typography>
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
+
+        {/* Filter Chips */}
+        <Box sx={{ mb: 3 }}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <FilterList color="action" />
+            <Chip
+              label="All"
+              variant={filter === 'all' ? 'filled' : 'outlined'}
+              onClick={() => setFilter('all')}
+              color="primary"
+            />
+            <Chip
+              label="Likes"
+              variant={filter === 'likes' ? 'filled' : 'outlined'}
+              onClick={() => setFilter('likes')}
+              color="primary"
+              icon={<Favorite />}
+            />
+            <Chip
+              label="Super Likes"
+              variant={filter === 'super_likes' ? 'filled' : 'outlined'}
+              onClick={() => setFilter('super_likes')}
+              color="secondary"
+              icon={<Star />}
+            />
+          </Stack>
+        </Box>
+
+        {/* Likes Content */}
+        <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+          {likes.length === 0 ? (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '300px',
+                textAlign: 'center',
+              }}
+            >
+              <Favorite sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
+              <Typography variant="h6" color="text.secondary" gutterBottom>
+                No likes yet
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Keep exploring to find your perfect match!
+              </Typography>
+              <Button
+                variant="contained"
+                onClick={() => navigate('/explore')}
+                sx={{ mt: 2 }}
+              >
+                Start Exploring
+              </Button>
+            </Box>
+          ) : (
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                {Object.entries(groupedLikes).map(([dateKey, dateLikes]) => {
+                  const filteredDateLikes = dateLikes.filter(like => {
+                    if (filter === 'all') return true;
+                    if (filter === 'likes') return like.type === 'LIKE';
+                    if (filter === 'super_likes') return like.type === 'SUPER_LIKE';
+                    return true;
+                  });
+
+                  if (filteredDateLikes.length === 0) return null;
+
+                  return (
+                    <Box key={dateKey} sx={{ mb: 4 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                        <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                          {dateKey}
+                        </Typography>
+                        <Chip
+                          label={filteredDateLikes.length}
+                          size="small"
+                          color="primary"
+                          variant="outlined"
+                        />
+                      </Box>
+                      <Divider sx={{ mb: 2 }} />
+                      {filteredDateLikes.map(renderLikeCard)}
+                    </Box>
+                  );
+                })}
+              </Grid>
+            </Grid>
+          )}
+        </Box>
+      </Box>
+    );
+  }
+
+  // Split layout when like is selected (likes list + profile)
+  return (
+    <Box sx={{ height: '100%', display: 'flex', gap: 2, p: 2 }}>
+      {/* Left Section - Likes List (60%) */}
+      <Box sx={{ flex: 0.6 }}>
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          {/* Header */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+            <IconButton onClick={() => navigate('/explore')}>
+              <ArrowBack />
+            </IconButton>
+            <PulseLogo sx={{ fontSize: 32, color: 'primary.main' }} />
+            <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+              Your Likes
+            </Typography>
+            <Badge badgeContent={likes.length} color="primary" sx={{ ml: 1 }}>
+              <Favorite color="primary" />
+            </Badge>
+          </Box>
+
+          <Typography variant="h6" color="text.secondary" gutterBottom sx={{ mb: 3 }}>
+            People who liked you ❤️
+          </Typography>
+
+          {error && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {error}
+            </Alert>
+          )}
+
+          {/* Filter Chips */}
+          <Box sx={{ mb: 3 }}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <FilterList color="action" />
+              <Chip
+                label="All"
+                variant={filter === 'all' ? 'filled' : 'outlined'}
+                onClick={() => setFilter('all')}
+                color="primary"
+              />
+              <Chip
+                label="Likes"
+                variant={filter === 'likes' ? 'filled' : 'outlined'}
+                onClick={() => setFilter('likes')}
+                color="primary"
+                icon={<Favorite />}
+              />
+              <Chip
+                label="Super Likes"
+                variant={filter === 'super_likes' ? 'filled' : 'outlined'}
+                onClick={() => setFilter('super_likes')}
+                color="secondary"
+                icon={<Star />}
+              />
+            </Stack>
+          </Box>
+
+          {/* Likes Content */}
+          <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+            {likes.length === 0 ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '300px',
+                  textAlign: 'center',
+                }}
+              >
+                <Favorite sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
+                <Typography variant="h6" color="text.secondary" gutterBottom>
+                  No likes yet
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Keep exploring to find your perfect match!
+                </Typography>
+                <Button
+                  variant="contained"
+                  onClick={() => navigate('/explore')}
+                  sx={{ mt: 2 }}
+                >
+                  Start Exploring
+                </Button>
+              </Box>
+            ) : (
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  {Object.entries(groupedLikes).map(([dateKey, dateLikes]) => {
+                    const filteredDateLikes = dateLikes.filter(like => {
+                      if (filter === 'all') return true;
+                      if (filter === 'likes') return like.type === 'LIKE';
+                      if (filter === 'super_likes') return like.type === 'SUPER_LIKE';
+                      return true;
+                    });
+
+                    if (filteredDateLikes.length === 0) return null;
+
+                    return (
+                      <Box key={dateKey} sx={{ mb: 4 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                          <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                            {dateKey}
+                          </Typography>
+                          <Chip
+                            label={filteredDateLikes.length}
+                            size="small"
+                            color="primary"
+                            variant="outlined"
+                          />
+                        </Box>
+                        <Divider sx={{ mb: 2 }} />
+                        {filteredDateLikes.map(renderLikeCard)}
+                      </Box>
+                    );
+                  })}
+                </Grid>
+              </Grid>
+            )}
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Right Section - Mini Profile (40%) */}
+      <Box sx={{ flex: 0.4, minWidth: '300px' }}>
+        <MiniProfile
+          user={selectedLike.liker}
+          showPhoto={true}
+          variant="preview"
+        />
       </Box>
     </Box>
   );
