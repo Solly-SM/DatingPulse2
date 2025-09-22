@@ -166,18 +166,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   const sidebarContent = (
     <Box sx={{ 
       width: SIDEBAR_WIDTH, 
-      height: '100%',
+      height: '100vh',
       display: 'flex',
       flexDirection: 'column',
       background: 'linear-gradient(180deg, #667eea 0%, #764ba2 100%)',
       color: 'white',
+      overflow: 'hidden', // Prevent any scrolling
     }}>
       {/* Header with Logo */}
       <Box sx={{ 
-        p: 3, 
+        p: 2, // Reduced padding from 3 to 2
         display: 'flex', 
         alignItems: 'center', 
-        gap: 2 
+        gap: 2,
+        flexShrink: 0, // Prevent shrinking
       }}>
         <PulseLogo 
           sx={{ 
@@ -202,14 +204,14 @@ const Sidebar: React.FC<SidebarProps> = ({
       <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)' }} />
 
       {/* User Profile Section */}
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: 2, flexShrink: 0 }}> {/* Reduced padding and prevent shrinking */}
         <Box 
           sx={{ 
             display: 'flex', 
             alignItems: 'center', 
             gap: 2,
             cursor: 'pointer',
-            p: 2,
+            p: 1.5, // Reduced padding from 2 to 1.5
             borderRadius: 2,
             transition: 'background-color 0.2s',
             '&:hover': {
@@ -307,7 +309,15 @@ const Sidebar: React.FC<SidebarProps> = ({
       <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)' }} />
 
       {/* Navigation Menu */}
-      <List sx={{ flex: 1, pt: 2 }}>
+      <List sx={{ 
+        flex: 1, 
+        pt: 1, // Reduced padding from 2 to 1
+        pb: 0, // Remove bottom padding
+        overflow: 'hidden', // Prevent scrolling
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 0, // Allow shrinking
+      }}>
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
           const notificationCount = getNotificationCount(item.text);
@@ -318,7 +328,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 onClick={() => handleNavigation(item.path)}
                 sx={{
                   mx: 2,
-                  mb: 1,
+                  mb: 0.5, // Reduced margin from 1 to 0.5
                   borderRadius: 2,
                   color: 'white',
                   backgroundColor: isActive ? 'rgba(255,255,255,0.2)' : 'transparent',
@@ -345,7 +355,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       </List>
 
       {/* Logout Button */}
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ p: 1.5, flexShrink: 0 }}> {/* Reduced padding and prevent shrinking */}
         <ListItemButton
           onClick={handleLogout}
           sx={{
@@ -378,6 +388,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           boxSizing: 'border-box',
           border: 'none',
           boxShadow: '4px 0 12px rgba(0,0,0,0.1)',
+          overflow: 'hidden', // Prevent scrolling at drawer level
         },
       }}
     >
