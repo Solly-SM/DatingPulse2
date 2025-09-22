@@ -48,22 +48,50 @@ export function AuthProvider({ children }: AuthProviderProps) {
           const isProtectedRoute = protectedPaths.some(path => currentPath.startsWith(path));
           
           if (isProtectedRoute) {
-            const demoUser = {
-              userID: 1,
-              username: "demouser",
-              email: "demo@datingpulse.com", 
-              phone: "0821234567",
-              role: "USER",
-              status: "ACTIVE",
-              createdAt: "2024-01-01T00:00:00.000Z",
-              updatedAt: "2024-01-01T00:00:00.000Z",
-              lastLogin: "2024-01-01T00:00:00.000Z",
-              isVerified: true
-            };
-            localStorage.setItem('authToken', 'demo-jwt-token');
-            localStorage.setItem('user', JSON.stringify(demoUser));
-            setUser(demoUser);
-            console.log('🎭 Demo mode enabled - Auto-logged in as demo user for protected route:', currentPath);
+            console.log('🎭 Demo mode - Creating real demo user for protected route:', currentPath);
+            try {
+              // Try to login with demo user first
+              const authResponse = await authService.login({
+                username: 'demouser',
+                password: 'DemoPassword123!'
+              });
+              authService.storeAuth(authResponse);
+              setUser(authResponse.user);
+              console.log('✅ Demo user logged in successfully');
+            } catch (loginError) {
+              console.log('Demo user login failed, attempting to register:', loginError);
+              try {
+                // If login fails, register the demo user
+                const authResponse = await authService.register({
+                  username: 'demouser',
+                  email: 'demo@datingpulse.com',
+                  password: 'DemoPassword123!',
+                  phone: '0821234567'
+                });
+                authService.storeAuth(authResponse);
+                setUser(authResponse.user);
+                console.log('✅ Demo user registered and logged in successfully');
+              } catch (registerError) {
+                console.error('Failed to register demo user:', registerError);
+                // Fall back to mock demo for UI testing
+                const demoUser = {
+                  userID: 1,
+                  username: "demouser",
+                  email: "demo@datingpulse.com", 
+                  phone: "0821234567",
+                  role: "USER",
+                  status: "ACTIVE",
+                  createdAt: "2024-01-01T00:00:00.000Z",
+                  updatedAt: "2024-01-01T00:00:00.000Z",
+                  lastLogin: "2024-01-01T00:00:00.000Z",
+                  isVerified: true
+                };
+                localStorage.setItem('authToken', 'demo-jwt-token');
+                localStorage.setItem('user', JSON.stringify(demoUser));
+                setUser(demoUser);
+                console.log('⚠️ Using fallback demo mode due to backend connection issues');
+              }
+            }
           }
         }
       } catch (error) {
