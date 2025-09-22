@@ -19,8 +19,7 @@ function Register() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    password: '',
-    confirmPassword: '',
+    // Password fields removed - no longer required
     phone: '',
   });
   const [error, setError] = useState('');
@@ -39,15 +38,10 @@ function Register() {
     setLoading(true);
     setError('');
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
-      return;
-    }
+    // Password validation removed since passwords are no longer used
 
     try {
-      const { confirmPassword, ...registerData } = formData;
-      await register(registerData);
+      await register(formData);
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.error || err.response?.data?.message || 'Registration failed. Please try again.');
@@ -113,7 +107,7 @@ function Register() {
                 lineHeight: 1.6,
               }}
             >
-              Start your journey to find meaningful connections
+              Start your journey to find meaningful connections - no password required!
             </Typography>
           </Box>
 
@@ -182,45 +176,7 @@ function Register() {
                 },
               }}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="new-password"
-              value={formData.password}
-              onChange={handleChange}
-              sx={{
-                mb: 3,
-                '& .MuiOutlinedInput-root': {
-                  fontSize: '1.1rem',
-                  py: 0.5,
-                },
-              }}
-              placeholder="Create a strong password"
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              id="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              sx={{
-                mb: 4,
-                '& .MuiOutlinedInput-root': {
-                  fontSize: '1.1rem',
-                  py: 0.5,
-                },
-              }}
-              placeholder="Re-enter your password"
-            />
+            {/* Password fields removed - no longer required */}
             <Button
               type="submit"
               fullWidth

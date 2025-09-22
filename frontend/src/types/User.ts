@@ -96,13 +96,13 @@ export interface Photo {
 export interface RegisterRequest {
   username: string;
   email: string;
-  password: string;
+  // Password removed - no longer required
   phone?: string;
 }
 
 export interface LoginRequest {
   username: string;
-  password: string;
+  // Password removed - login now uses username/email only
 }
 
 export interface AuthResponse {

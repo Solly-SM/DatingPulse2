@@ -62,7 +62,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import LocationModal from '../components/LocationModal';
-import PasswordModal from '../components/PasswordModal';
+// PasswordModal removed - passwords no longer used
 import SafetyReportModal from '../components/SafetyReportModal';
 import DataDownloadModal from '../components/DataDownloadModal';
 
@@ -233,7 +233,7 @@ function Settings() {
 
   // Modal states
   const [locationModalOpen, setLocationModalOpen] = useState(false);
-  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  // Password modal removed - passwords no longer used
   const [safetyReportModalOpen, setSafetyReportModalOpen] = useState(false);
   const [dataDownloadModalOpen, setDataDownloadModalOpen] = useState(false);
 
@@ -342,9 +342,10 @@ function Settings() {
     }));
   };
 
-  const handlePasswordChange = () => {
-    setPasswordModalOpen(true);
-  };
+  // Password change functionality removed since passwords are no longer used
+  // const handlePasswordChange = () => {
+  //   setPasswordModalOpen(true);
+  // };
 
   const handleTwoFactorToggle = () => {
     if (!preferences.security.twoFactorEnabled) {
@@ -546,14 +547,7 @@ function Settings() {
           <Collapse in={expandedSections.security}>
             <Box sx={{ pt: 2 }}>
               <Stack spacing={2}>
-                <Button
-                  variant="outlined"
-                  startIcon={<Lock />}
-                  onClick={handlePasswordChange}
-                  fullWidth
-                >
-                  Change Password
-                </Button>
+                {/* Password change removed - passwords no longer used */}
                 <FormControlLabel
                   control={
                     <Switch
@@ -1381,10 +1375,7 @@ function Settings() {
         open={locationModalOpen} 
         onClose={() => setLocationModalOpen(false)} 
       />
-      <PasswordModal 
-        open={passwordModalOpen} 
-        onClose={() => setPasswordModalOpen(false)} 
-      />
+      {/* PasswordModal removed - passwords no longer used */}
       <SafetyReportModal 
         open={safetyReportModalOpen} 
         onClose={() => setSafetyReportModalOpen(false)} 

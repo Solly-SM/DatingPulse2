@@ -121,7 +121,7 @@ function MultiStepRegister() {
       // Simulate auto-login after successful registration
       const loginData = {
         username: email,
-        password: 'temp-password', // In real app, would use proper authentication
+        // Password removed - would use proper authentication without passwords
       };
       
       await login(loginData);
