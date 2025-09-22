@@ -61,6 +61,10 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import LocationModal from '../components/LocationModal';
+import PasswordModal from '../components/PasswordModal';
+import SafetyReportModal from '../components/SafetyReportModal';
+import DataDownloadModal from '../components/DataDownloadModal';
 
 interface UserPreferences {
   notifications: {
@@ -227,6 +231,12 @@ function Settings() {
     enhancedVerification: false,
   });
 
+  // Modal states
+  const [locationModalOpen, setLocationModalOpen] = useState(false);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [safetyReportModalOpen, setSafetyReportModalOpen] = useState(false);
+  const [dataDownloadModalOpen, setDataDownloadModalOpen] = useState(false);
+
   useEffect(() => {
     // Load user preferences from localStorage or API
     const savedPreferences = localStorage.getItem('userPreferences');
@@ -333,7 +343,7 @@ function Settings() {
   };
 
   const handlePasswordChange = () => {
-    alert('Password change functionality would open a secure modal in a real app.');
+    setPasswordModalOpen(true);
   };
 
   const handleTwoFactorToggle = () => {
@@ -350,7 +360,22 @@ function Settings() {
   };
 
   const handleDataDownload = () => {
-    alert('Data download would generate a secure download link in a real app.');
+    setDataDownloadModalOpen(true);
+  };
+
+  const handleClearCache = () => {
+    // Clear localStorage data (except auth)
+    const authToken = localStorage.getItem('authToken');
+    const user = localStorage.getItem('user');
+    
+    localStorage.clear();
+    
+    // Restore auth data
+    if (authToken) localStorage.setItem('authToken', authToken);
+    if (user) localStorage.setItem('user', user);
+    
+    setSuccess('Cache cleared successfully!');
+    setTimeout(() => setSuccess(''), 3000);
   };
 
   // Helper function for handling multi-select arrays
@@ -494,7 +519,7 @@ function Settings() {
                 <Button
                   variant="outlined"
                   startIcon={<PersonPin />}
-                  onClick={() => alert('Location settings would be managed here.')}
+                  onClick={() => setLocationModalOpen(true)}
                   fullWidth
                 >
                   Manage Location
@@ -858,7 +883,7 @@ function Settings() {
                 <Button
                   variant="outlined"
                   startIcon={<Report />}
-                  onClick={() => alert('Report user functionality would open here')}
+                  onClick={() => setSafetyReportModalOpen(true)}
                   fullWidth
                 >
                   Report Safety Concerns
@@ -1276,7 +1301,7 @@ function Settings() {
                 
                 <Button
                   variant="outlined"
-                  onClick={() => alert('Cache would be cleared in a real app.')}
+                  onClick={handleClearCache}
                   fullWidth
                 >
                   Clear Cache
@@ -1350,6 +1375,24 @@ function Settings() {
           </Button>
         </Box>
       </Stack>
+
+      {/* Modals */}
+      <LocationModal 
+        open={locationModalOpen} 
+        onClose={() => setLocationModalOpen(false)} 
+      />
+      <PasswordModal 
+        open={passwordModalOpen} 
+        onClose={() => setPasswordModalOpen(false)} 
+      />
+      <SafetyReportModal 
+        open={safetyReportModalOpen} 
+        onClose={() => setSafetyReportModalOpen(false)} 
+      />
+      <DataDownloadModal 
+        open={dataDownloadModalOpen} 
+        onClose={() => setDataDownloadModalOpen(false)} 
+      />
     </Container>
   );
 }

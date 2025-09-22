@@ -22,6 +22,8 @@ import Messages from './pages/Messages';
 import Notifications from './pages/Notifications';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
+import Help from './pages/Help';
+import About from './pages/About';
 import DemoSidebar from './pages/DemoSidebar';
 import DemoNotifications from './pages/DemoNotifications';
 import DiscoverDemo from './pages/DiscoverDemo';
@@ -167,6 +169,20 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <Settings />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/help" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Help />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/about" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <About />
                   </Layout>
                 </ProtectedRoute>
               } />
