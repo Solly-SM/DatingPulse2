@@ -118,8 +118,8 @@ public class UserController {
             @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Page size", example = "20")
             @RequestParam(defaultValue = "20") int size,
-            @Parameter(description = "Sort field", example = "userId")
-            @RequestParam(defaultValue = "userId") String sortBy,
+            @Parameter(description = "Sort field", example = "userID")
+            @RequestParam(defaultValue = "userID") String sortBy,
             @Parameter(description = "Sort direction", example = "asc")
             @RequestParam(defaultValue = "asc") String sortDir) {
         

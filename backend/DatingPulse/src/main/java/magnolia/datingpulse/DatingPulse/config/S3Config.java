@@ -15,7 +15,7 @@ public class S3Config {
     private String region;
 
     @Bean
-    @ConditionalOnProperty(name = "app.s3.enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "app.s3.enabled", havingValue = "true", matchIfMissing = false)
     public S3Client s3Client() {
         return S3Client.builder()
                 .region(Region.of(region))
