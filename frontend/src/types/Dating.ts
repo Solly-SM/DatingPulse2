@@ -88,6 +88,15 @@ export interface Like {
   isMatch: boolean;
 }
 
+export interface ReceivedLike {
+  likeID: number;
+  likerID: number;
+  likedID: number;
+  type: 'LIKE' | 'SUPER_LIKE' | 'PASS';
+  createdAt: string;
+  liker: DiscoverUser;
+}
+
 export interface Message {
   messageID: number;
   conversationID: number;

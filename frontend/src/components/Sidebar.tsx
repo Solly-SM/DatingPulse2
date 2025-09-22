@@ -24,6 +24,7 @@ import {
   Home,
   Notifications,
   Verified,
+  Groups,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -124,8 +125,13 @@ const Sidebar: React.FC<SidebarProps> = ({
       path: '/explore',
     },
     {
-      text: 'Matches',
+      text: 'Likes',
       icon: <Favorite />,
+      path: '/likes',
+    },
+    {
+      text: 'Matches',
+      icon: <Groups />,
       path: '/matches',
     },
     {

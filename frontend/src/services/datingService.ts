@@ -1,5 +1,5 @@
 import api from './api';
-import { Match, Like, Message, Conversation, DiscoverUser } from '../types/Dating';
+import { Match, Like, ReceivedLike, Message, Conversation, DiscoverUser } from '../types/Dating';
 import { mockDataService } from './mockDataService';
 
 const USE_MOCK_DATA = process.env.NODE_ENV === 'development';
@@ -207,6 +207,30 @@ export const datingService = {
         createdAt: new Date().toISOString(),
         isMatch: Math.random() > 0.4,
       };
+    }
+  },
+
+  // Get likes received by current user
+  async getReceivedLikes(userId: number): Promise<ReceivedLike[]> {
+    if (USE_MOCK_DATA) {
+      await mockDataService.delay(800);
+      return mockDataService.generateReceivedLikes(12);
+    }
+    
+    try {
+      const response = await api.get(`/likes/user/${userId}/received`);
+      return response.data.map((like: any) => ({
+        likeID: like.likeID,
+        likerID: like.userID,
+        likedID: like.likedUserID,
+        type: like.type,
+        createdAt: like.likedAt,
+        liker: mockDataService.generateDiscoverUsers(1)[0] // This would come from the API
+      }));
+    } catch (error) {
+      console.warn('API unavailable, using mock data');
+      await mockDataService.delay(800);
+      return mockDataService.generateReceivedLikes(12);
     }
   },
 };
