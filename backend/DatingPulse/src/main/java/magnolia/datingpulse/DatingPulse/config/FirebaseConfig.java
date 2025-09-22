@@ -39,7 +39,8 @@ public class FirebaseConfig {
                 ClassPathResource resource = new ClassPathResource(firebaseConfigPath);
                 
                 if (!resource.exists()) {
-                    log.warn("Firebase configuration file not found at {}, skipping Firebase initialization", firebaseConfigPath);
+                    log.warn("Firebase configuration file not found at {}, disabling push notifications", firebaseConfigPath);
+                    pushNotificationsEnabled = false;
                     return;
                 }
                 
@@ -55,11 +56,9 @@ public class FirebaseConfig {
             } else {
                 log.info("Firebase Admin SDK already initialized");
             }
-        } catch (IOException e) {
-            log.error("Failed to initialize Firebase Admin SDK", e);
-            if (pushNotificationsEnabled) {
-                throw new RuntimeException("Failed to initialize Firebase", e);
-            }
+        } catch (Exception e) {
+            log.warn("Failed to initialize Firebase Admin SDK, disabling push notifications: {}", e.getMessage());
+            pushNotificationsEnabled = false;
         }
     }
 
