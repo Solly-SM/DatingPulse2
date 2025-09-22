@@ -26,12 +26,7 @@ public class RegisterRequest {
     @Schema(description = "Email address", example = "john.doe@example.com", format = "email")
     private String email;
     
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, max = 128, message = "Password must be between 8 and 128 characters")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$", 
-             message = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character")
-    @Schema(description = "Account password (minimum 8 characters with complexity requirements)", example = "MyPassword123!")
-    private String password;
+    // Password removed - app no longer requires passwords
     
     @Pattern(regexp = "^$|^(0[1-9][0-9]{8}|\\+27[1-9][0-9]{8})$", 
              message = "Phone number must be in South African format (e.g., 0821234567 or +27821234567)")

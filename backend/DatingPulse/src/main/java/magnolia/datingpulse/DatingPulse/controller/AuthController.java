@@ -12,12 +12,6 @@ import magnolia.datingpulse.DatingPulse.service.UserService;
 import magnolia.datingpulse.DatingPulse.mapper.UserMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -34,12 +28,11 @@ public class AuthController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
-    private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
+    // Password-based authentication components removed
     private final UserMapper userMapper;
     
     @PostMapping("/register")
-    @Operation(summary = "Register new user", description = "Create a new user account with email and password")
+    @Operation(summary = "Register new user", description = "Create a new user account with email - no password required")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
         try {
             // Check if username or email already exists
@@ -52,11 +45,11 @@ public class AuthController {
                         .body(Map.of("error", "Email already exists"));
             }
             
-            // Create user
+            // Create user without password
             User user = User.builder()
                     .username(registerRequest.getUsername())
                     .email(registerRequest.getEmail())
-                    .password(passwordEncoder.encode(registerRequest.getPassword()))
+                    // Password removed
                     .phone(registerRequest.getPhone())
                     .role("USER")
                     .status("ACTIVE")
@@ -66,7 +59,7 @@ public class AuthController {
             
             User savedUser = userRepository.save(user);
             
-            // Generate JWT token
+            // Generate JWT token immediately - no password verification needed
             String token = jwtUtil.generateToken(savedUser.getUsername());
             
             // Calculate expiration time
@@ -95,29 +88,19 @@ public class AuthController {
     }
     
     @PostMapping("/login")
-    @Operation(summary = "User login", description = "Authenticate user with email/username and password")
+    @Operation(summary = "User login", description = "Authenticate user with email/username - no password required")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
-            // Authenticate user
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getUsername(),
-                            loginRequest.getPassword()
-                    )
-            );
-            
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            
-            // Find user in database
-            User user = userRepository.findByUsername(userDetails.getUsername())
-                    .or(() -> userRepository.findByEmail(userDetails.getUsername()))
+            // Find user by username or email - no password verification
+            User user = userRepository.findByUsername(loginRequest.getUsername())
+                    .or(() -> userRepository.findByEmail(loginRequest.getUsername()))
                     .orElseThrow(() -> new RuntimeException("User not found"));
             
             // Update last login
             user.setLastLogin(java.time.LocalDateTime.now());
             userRepository.save(user);
             
-            // Generate JWT token - use consistent method
+            // Generate JWT token - no password verification needed
             String token = jwtUtil.generateToken(user.getUsername());
             
             // Calculate expiration time
@@ -139,11 +122,8 @@ public class AuthController {
             
             return ResponseEntity.ok(authResponse);
             
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid username or password"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Login failed: " + e.getMessage()));
         }
     }
