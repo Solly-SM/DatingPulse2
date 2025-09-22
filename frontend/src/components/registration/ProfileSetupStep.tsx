@@ -118,9 +118,21 @@ function ProfileSetupStep({ onComplete, onBack, loading }: ProfileSetupStepProps
     if (!formData.dateOfBirth) {
       errors.dateOfBirth = 'Date of birth is required';
     } else {
-      const age = calculateAge(formData.dateOfBirth);
-      if (age < 18) {
-        errors.dateOfBirth = 'You must be at least 18 years old';
+      const today = new Date();
+      const birthDate = new Date(formData.dateOfBirth + 'T00:00:00.000Z'); // Ensure UTC parsing
+      
+      // Set both dates to midnight UTC to avoid timezone issues
+      const todayUTC = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const birthDateUTC = new Date(birthDate.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+      
+      // Check if the date is in the future
+      if (birthDateUTC > todayUTC) {
+        errors.dateOfBirth = 'Date of birth cannot be in the future';
+      } else {
+        const age = calculateAge(formData.dateOfBirth);
+        if (age < 18) {
+          errors.dateOfBirth = 'You must be at least 18 years old';
+        }
       }
     }
 
