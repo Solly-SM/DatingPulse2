@@ -36,13 +36,26 @@ function MediaStep({ data, onComplete, onBack, loading, hideNavigation = false }
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length > 0 && formData.photos.length < 6) {
+      // Filter only image files
+      const imageFiles = files.filter(file => file.type.startsWith('image/'));
       const remainingSlots = 6 - formData.photos.length;
-      const newPhotos = files.slice(0, remainingSlots);
-      setFormData(prev => ({
-        ...prev,
-        photos: [...prev.photos, ...newPhotos]
-      }));
-      setFormErrors(prev => ({ ...prev, photos: '' }));
+      const newPhotos = imageFiles.slice(0, remainingSlots);
+      
+      if (newPhotos.length > 0) {
+        setFormData(prev => ({
+          ...prev,
+          photos: [...prev.photos, ...newPhotos]
+        }));
+        setFormErrors(prev => ({ ...prev, photos: '' }));
+      }
+      
+      // If no valid images were selected but files were provided, user still has no photos
+      if (imageFiles.length === 0 && formData.photos.length === 0) {
+        // Keep the existing error state if no photos exist
+        if (!formErrors.photos) {
+          setFormErrors(prev => ({ ...prev, photos: 'Please upload at least one photo' }));
+        }
+      }
     }
   };
 
@@ -124,7 +137,15 @@ function MediaStep({ data, onComplete, onBack, loading, hideNavigation = false }
       return;
     }
 
-    onComplete(formData);
+    // If there are photos but no profile photo index is set, default to first photo
+    const finalData = {
+      ...formData,
+      profilePhotoIndex: formData.profilePhotoIndex !== undefined 
+        ? formData.profilePhotoIndex 
+        : (formData.photos.length > 0 ? 0 : undefined)
+    };
+
+    onComplete(finalData);
   };
 
   return (
@@ -307,6 +328,7 @@ function MediaStep({ data, onComplete, onBack, loading, hideNavigation = false }
                 multiple
                 type="file"
                 onChange={handlePhotoUpload}
+                disabled={loading}
               />
               <label htmlFor="photo-upload">
                 <Paper
