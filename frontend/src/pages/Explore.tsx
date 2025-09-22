@@ -54,9 +54,8 @@ interface ExploreCategory {
   icon: React.ReactNode;
   color: string;
   filterCriteria: {
-    relationshipGoal?: string;
-    lifestyle?: string;
-    interests?: string[];
+    relationshipGoal?: string; // CASUAL, SERIOUS, MARRIAGE, FRIENDSHIP, HOOKUP
+    interests?: string[]; // Array of interest names that match backend seeded interests
     ageRange?: { min: number; max: number };
   };
 }
@@ -64,149 +63,142 @@ interface ExploreCategory {
 const exploreCategories: ExploreCategory[] = [
   {
     id: 'serious-dating',
-    title: 'Serious Dating',
-    description: 'People looking for long-term relationships',
+    title: 'Serious Relationships',
+    description: 'People looking for long-term commitment',
     icon: <FavoriteBorder sx={{ fontSize: 40 }} />,
     color: '#e91e63',
     filterCriteria: {
-      relationshipGoal: 'Long-term relationship',
+      relationshipGoal: 'SERIOUS',
     },
   },
   {
-    id: 'casual-fun',
-    title: 'Casual & Fun',
+    id: 'casual-dating',
+    title: 'Casual Dating',
     description: 'Relaxed dating and new connections',
     icon: <HomeIcon sx={{ fontSize: 40 }} />,
     color: '#ff4081',
     filterCriteria: {
-      relationshipGoal: 'Casual dating',
+      relationshipGoal: 'CASUAL',
     },
   },
   {
-    id: 'fitness-active',
+    id: 'marriage-minded',
+    title: 'Marriage & Family',
+    description: 'People seeking marriage and family life',
+    icon: <ChildCare sx={{ fontSize: 40 }} />,
+    color: '#795548',
+    filterCriteria: {
+      relationshipGoal: 'MARRIAGE',
+    },
+  },
+  {
+    id: 'friendship',
+    title: 'Friends First',
+    description: 'Building friendship before romance',
+    icon: <Psychology sx={{ fontSize: 40 }} />,
+    color: '#9c27b0',
+    filterCriteria: {
+      relationshipGoal: 'FRIENDSHIP',
+    },
+  },
+  {
+    id: 'fitness-lovers',
     title: 'Fitness & Active',
     description: 'Sports enthusiasts and fitness lovers',
     icon: <DirectionsRun sx={{ fontSize: 40 }} />,
     color: '#4caf50',
     filterCriteria: {
-      lifestyle: 'Active/Fitness focused',
-      interests: ['Sports', 'Hiking', 'Yoga'],
+      interests: ['Fitness', 'Sports', 'Hiking', 'Yoga', 'Running', 'Swimming', 'Cycling'],
     },
   },
   {
-    id: 'career-focused',
-    title: 'Career Focused',
-    description: 'Ambitious professionals and entrepreneurs',
-    icon: <Work sx={{ fontSize: 40 }} />,
-    color: '#2196f3',
-    filterCriteria: {
-      lifestyle: 'Career focused',
-      interests: ['Business', 'Technology'],
-    },
-  },
-  {
-    id: 'creative-artistic',
+    id: 'creative-minds',
     title: 'Creative & Artistic',
-    description: 'Artists, musicians, and creative minds',
+    description: 'Artists, musicians, and creative souls',
     icon: <MusicNote sx={{ fontSize: 40 }} />,
     color: '#9c27b0',
     filterCriteria: {
-      lifestyle: 'Artistic/Creative',
-      interests: ['Art', 'Music', 'Photography'],
+      interests: ['Art', 'Music', 'Photography', 'Dancing', 'Writing', 'Fashion'],
     },
   },
   {
-    id: 'foodie-culture',
-    title: 'Foodie & Culture',
+    id: 'food-culture',
+    title: 'Food & Culture',
     description: 'Food lovers and culture enthusiasts',
     icon: <Restaurant sx={{ fontSize: 40 }} />,
     color: '#ff9800',
     filterCriteria: {
-      interests: ['Cooking', 'Travel', 'Art'],
+      interests: ['Cooking', 'Food', 'Wine', 'Coffee', 'Travel', 'Culture'],
     },
   },
   {
-    id: 'family-oriented',
-    title: 'Family Oriented',
-    description: 'People who want or have children',
-    icon: <ChildCare sx={{ fontSize: 40 }} />,
-    color: '#795548',
-    filterCriteria: {
-      relationshipGoal: 'Marriage',
-    },
-  },
-  {
-    id: 'intellectual',
-    title: 'Intellectual',
+    id: 'intellectuals',
+    title: 'Intellectuals',
     description: 'Book lovers and deep thinkers',
     icon: <School sx={{ fontSize: 40 }} />,
     color: '#607d8b',
     filterCriteria: {
-      interests: ['Reading', 'Technology', 'Business'],
+      interests: ['Reading', 'Education', 'Science', 'History', 'Politics'],
+    },
+  },
+  {
+    id: 'tech-professionals',
+    title: 'Tech & Business',
+    description: 'Technology professionals and entrepreneurs',
+    icon: <Work sx={{ fontSize: 40 }} />,
+    color: '#2196f3',
+    filterCriteria: {
+      interests: ['Technology', 'Business', 'Entrepreneurship'],
     },
   },
   {
     id: 'pet-lovers',
     title: 'Pet Lovers',
-    description: 'Dog and cat enthusiasts',
+    description: 'Animal lovers and pet parents',
     icon: <Pets sx={{ fontSize: 40 }} />,
     color: '#8bc34a',
     filterCriteria: {
-      interests: ['Pets', 'Animals', 'Dog Walking'],
+      interests: ['Pets'],
     },
   },
   {
-    id: 'nightlife-social',
-    title: 'Nightlife & Social',
-    description: 'Party lovers and social butterflies',
-    icon: <LocalBar sx={{ fontSize: 40 }} />,
-    color: '#ff5722',
-    filterCriteria: {
-      lifestyle: 'Social/Party focused',
-      interests: ['Nightlife', 'Dancing', 'Socializing'],
-    },
-  },
-  {
-    id: 'gaming-tech',
-    title: 'Gaming & Tech',
-    description: 'Gamers and tech enthusiasts',
+    id: 'gamers',
+    title: 'Gaming Community',
+    description: 'Gamers and esports enthusiasts',
     icon: <SportsEsports sx={{ fontSize: 40 }} />,
     color: '#3f51b5',
     filterCriteria: {
-      interests: ['Gaming', 'Technology', 'Esports'],
+      interests: ['Gaming'],
     },
   },
   {
-    id: 'mindful-spiritual',
-    title: 'Mindful & Spiritual',
+    id: 'wellness-minded',
+    title: 'Wellness & Mindfulness',
     description: 'Meditation and spiritual growth seekers',
     icon: <Psychology sx={{ fontSize: 40 }} />,
     color: '#9c27b0',
     filterCriteria: {
-      lifestyle: 'Mindful/Spiritual',
-      interests: ['Meditation', 'Yoga', 'Spirituality'],
+      interests: ['Meditation', 'Spirituality', 'Health'],
     },
   },
   {
-    id: 'eco-conscious',
-    title: 'Eco-Conscious',
-    description: 'Environmentally aware individuals',
+    id: 'nature-lovers',
+    title: 'Nature & Adventure',
+    description: 'Outdoor enthusiasts and nature lovers',
     icon: <Nature sx={{ fontSize: 40 }} />,
     color: '#4caf50',
     filterCriteria: {
-      lifestyle: 'Eco-conscious',
-      interests: ['Environment', 'Sustainability', 'Nature'],
+      interests: ['Nature', 'Adventure', 'Environment'],
     },
   },
   {
-    id: 'luxury-lifestyle',
-    title: 'Luxury Lifestyle',
-    description: 'Fine dining and luxury experiences',
-    icon: <AutoAwesome sx={{ fontSize: 40 }} />,
-    color: '#ffd700',
+    id: 'social-butterflies',
+    title: 'Social & Nightlife',
+    description: 'Social people who love nightlife',
+    icon: <LocalBar sx={{ fontSize: 40 }} />,
+    color: '#ff5722',
     filterCriteria: {
-      lifestyle: 'Luxury focused',
-      interests: ['Fine Dining', 'Luxury Travel', 'Fashion'],
+      interests: ['Dancing'],
     },
   },
 ];
