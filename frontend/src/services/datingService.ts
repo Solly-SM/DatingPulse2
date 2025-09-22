@@ -2,7 +2,7 @@ import api from './api';
 import { Match, Like, ReceivedLike, Message, Conversation, DiscoverUser } from '../types/Dating';
 import { mockDataService } from './mockDataService';
 
-const USE_MOCK_DATA = process.env.NODE_ENV === 'development';
+const USE_MOCK_DATA = false; // Changed to always try real API first
 
 export const datingService = {
   // Likes and Matches

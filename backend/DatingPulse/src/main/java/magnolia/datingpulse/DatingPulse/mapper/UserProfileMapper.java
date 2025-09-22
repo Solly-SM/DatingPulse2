@@ -11,6 +11,13 @@ public interface UserProfileMapper {
     @Mapping(source = "preference.id", target = "preferenceID")
     UserProfileDTO toDTO(UserProfile userProfile);
 
-    // For DTO→entity: set user, interests, preference in service
+    @Mapping(target = "user", ignore = true) // Set in service
+    @Mapping(target = "maxDistance", ignore = true) // Not in DTO
+    @Mapping(target = "showDistance", ignore = true) // Not in DTO
+    @Mapping(target = "isProfileComplete", ignore = true) // Calculated field
+    @Mapping(target = "createdAt", ignore = true) // Auto-generated
+    @Mapping(target = "updatedAt", ignore = true) // Auto-generated
+    @Mapping(target = "interests", ignore = true) // Set in service
+    @Mapping(target = "preference", ignore = true) // Set in service
     UserProfile toEntity(UserProfileDTO dto);
 }
