@@ -42,7 +42,8 @@ public class UserProfile {
 
     @Column(name = "gender", nullable = false, length = 20)
     @NotBlank(message = "Gender is required")
-    @Pattern(regexp = "^(MALE|FEMALE|OTHER|NON_BINARY)$", message = "Gender must be MALE, FEMALE, OTHER, or NON_BINARY")
+    @Pattern(regexp = "^(male|female|other|non_binary|MALE|FEMALE|OTHER|NON_BINARY)$", 
+             message = "Gender must be male, female, other, or non_binary")
     private String gender;
 
     @Column(name = "dob")
@@ -143,4 +144,149 @@ public class UserProfile {
     @Column(name = "privacy", nullable = false)
     @NotNull(message = "Privacy level is required")
     private PrivacyLevel privacy = PrivacyLevel.PUBLIC; // Who can view profile as per schema
+    
+    // Physical Attributes (additional)
+    @Column(name = "height")
+    @Min(value = 100, message = "Height must be at least 100 cm")
+    @Max(value = 250, message = "Height must not exceed 250 cm")
+    private Integer height;
+    
+    @Column(name = "weight")
+    @Min(value = 30, message = "Weight must be at least 30 kg")
+    @Max(value = 300, message = "Weight must not exceed 300 kg")
+    private Integer weight;
+    
+    @Column(name = "body_type", length = 50)
+    @Size(max = 50, message = "Body type must not exceed 50 characters")
+    private String bodyType;
+    
+    @Column(name = "ethnicity", length = 100)
+    @Size(max = 100, message = "Ethnicity must not exceed 100 characters")
+    private String ethnicity;
+    
+    // Lifestyle Data
+    @Column(name = "pets", length = 100)
+    @Size(max = 100, message = "Pets information must not exceed 100 characters")
+    private String pets;
+    
+    @Column(name = "drinking", length = 50)
+    @Size(max = 50, message = "Drinking preference must not exceed 50 characters")
+    private String drinking;
+    
+    @Column(name = "smoking", length = 50)
+    @Size(max = 50, message = "Smoking preference must not exceed 50 characters")
+    private String smoking;
+    
+    @Column(name = "workout", length = 50)
+    @Size(max = 50, message = "Workout preference must not exceed 50 characters")
+    private String workout;
+    
+    @Column(name = "dietary_preference", length = 100)
+    @Size(max = 100, message = "Dietary preference must not exceed 100 characters")
+    private String dietaryPreference;
+    
+    @Column(name = "social_media", length = 50)
+    @Size(max = 50, message = "Social media preference must not exceed 50 characters")
+    private String socialMedia;
+    
+    @Column(name = "sleeping_habits", length = 100)
+    @Size(max = 100, message = "Sleeping habits must not exceed 100 characters")
+    private String sleepingHabits;
+    
+    @ElementCollection
+    @CollectionTable(name = "user_languages", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "language")
+    private Set<String> languages;
+    
+    // Preferences
+    @Column(name = "relationship_goal", length = 100)
+    @Size(max = 100, message = "Relationship goal must not exceed 100 characters")
+    private String relationshipGoal;
+    
+    @Column(name = "sexual_orientation", length = 50)
+    @Size(max = 50, message = "Sexual orientation must not exceed 50 characters")
+    private String sexualOrientation;
+    
+    @Column(name = "looking_for", length = 500)
+    @Size(max = 500, message = "Looking for must not exceed 500 characters")
+    private String lookingFor;
+    
+    @Column(name = "interested_in", length = 20)
+    @Pattern(regexp = "^(male|female|both|all|MALE|FEMALE|BOTH|ALL)$", 
+             message = "Interested in must be male, female, both, or all")
+    private String interestedIn;
+    
+    // Personality
+    @Column(name = "communication_style", length = 100)
+    @Size(max = 100, message = "Communication style must not exceed 100 characters")
+    private String communicationStyle;
+    
+    @Column(name = "love_language", length = 50)
+    @Size(max = 50, message = "Love language must not exceed 50 characters")
+    private String loveLanguage;
+    
+    @Column(name = "zodiac_sign", length = 20)
+    @Size(max = 20, message = "Zodiac sign must not exceed 20 characters")
+    private String zodiacSign;
+    
+    // Media
+    @Column(name = "audio_intro_url", length = 500)
+    @Size(max = 500, message = "Audio intro URL must not exceed 500 characters")
+    private String audioIntroUrl;
+    
+    // Additional visibility controls
+    @Column(name = "show_orientation")
+    private Boolean showOrientation = false;
+    
+    // Additional Optional Profile Fields
+    @Column(name = "religion", length = 100)
+    @Size(max = 100, message = "Religion must not exceed 100 characters")
+    private String religion;
+    
+    @Column(name = "political_views", length = 100)
+    @Size(max = 100, message = "Political views must not exceed 100 characters")
+    private String politicalViews;
+    
+    @Column(name = "family_plans", length = 100)
+    @Size(max = 100, message = "Family plans must not exceed 100 characters")
+    private String familyPlans;
+    
+    @Column(name = "fitness_level", length = 50)
+    @Size(max = 50, message = "Fitness level must not exceed 50 characters")
+    private String fitnessLevel;
+    
+    @Column(name = "travel_frequency", length = 50)
+    @Size(max = 50, message = "Travel frequency must not exceed 50 characters")
+    private String travelFrequency;
+    
+    @Column(name = "industry", length = 100)
+    @Size(max = 100, message = "Industry must not exceed 100 characters")
+    private String industry;
+    
+    @ElementCollection
+    @CollectionTable(name = "user_music_preferences", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "preference")
+    private Set<String> musicPreferences;
+    
+    @ElementCollection
+    @CollectionTable(name = "user_food_preferences", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "preference")
+    private Set<String> foodPreferences;
+    
+    @ElementCollection
+    @CollectionTable(name = "user_entertainment_preferences", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "preference")
+    private Set<String> entertainmentPreferences;
+    
+    @Column(name = "currently_reading", length = 200)
+    @Size(max = 200, message = "Currently reading must not exceed 200 characters")
+    private String currentlyReading;
+    
+    @Column(name = "life_goals", length = 500)
+    @Size(max = 500, message = "Life goals must not exceed 500 characters")
+    private String lifeGoals;
+    
+    @Column(name = "pet_preferences", length = 100)
+    @Size(max = 100, message = "Pet preferences must not exceed 100 characters")
+    private String petPreferences;
 }

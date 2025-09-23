@@ -14,11 +14,11 @@ public class UserProfileDTO {
     
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
-    private String firstname;
+    private String firstName;
     
     @NotBlank(message = "Last name is required")
     @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
-    private String lastname;
+    private String lastName;
     
     @NotNull(message = "Age is required")
     @Min(value = 18, message = "Age must be at least 18")
@@ -26,8 +26,8 @@ public class UserProfileDTO {
     private Integer age;
     
     @NotBlank(message = "Gender is required")
-    @Pattern(regexp = "^(MALE|FEMALE|NON_BINARY|OTHER)$", 
-             message = "Gender must be one of: MALE, FEMALE, NON_BINARY, OTHER")
+    @Pattern(regexp = "^(male|female|other|non_binary|MALE|FEMALE|OTHER|NON_BINARY)$", 
+             message = "Gender must be one of: male, female, other, non_binary")
     private String gender;
     
     @NotNull(message = "Date of birth is required")
@@ -62,10 +62,55 @@ public class UserProfileDTO {
     private String relationship;
     private String privacy;
     
+    // Physical Attributes  
+    private Integer height;
+    private Integer weight;
+    private String bodyType;
+    private String ethnicity;
+    
+    // Lifestyle Data
+    private String pets;
+    private String drinking;
+    private String smoking;
+    private String workout;
+    private String dietaryPreference;
+    private String socialMedia;
+    private String sleepingHabits;
+    private Set<String> languages;
+    
+    // Preferences
+    private String relationshipGoal;
+    private String sexualOrientation;
+    private String lookingFor;
+    private String interestedIn;
+    
+    // Personality
+    private String communicationStyle;
+    private String loveLanguage;
+    private String zodiacSign;
+    
+    // Media
+    private String audioIntroUrl;
+    
     // Field visibility controls
     private Boolean showGender;
     private Boolean showAge;
     private Boolean showLocation;
+    private Boolean showOrientation;
+    
+    // Additional Optional Profile Fields
+    private String religion;
+    private String politicalViews;
+    private String familyPlans;
+    private String fitnessLevel;
+    private String travelFrequency;
+    private String industry;
+    private Set<String> musicPreferences;
+    private Set<String> foodPreferences;
+    private Set<String> entertainmentPreferences;
+    private String currentlyReading;
+    private String lifeGoals;
+    private String petPreferences;
     
     // Compatibility score for matching purposes (not persisted)
     private Double compatibilityScore;

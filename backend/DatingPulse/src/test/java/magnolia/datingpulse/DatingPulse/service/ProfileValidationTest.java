@@ -18,8 +18,8 @@ class ProfileValidationTest {
         // Test that ProfileResponseDTO can be created with all required fields
         UserProfileDTO profile = new UserProfileDTO();
         profile.setUserID(1L);
-        profile.setFirstname("Test");
-        profile.setLastname("User");
+        profile.setFirstName("Test");
+        profile.setLastName("User");
 
         ProfileResponseDTO response = ProfileResponseDTO.builder()
                 .profile(profile)
@@ -44,8 +44,8 @@ class ProfileValidationTest {
         // Create a sample complete profile
         UserProfileDTO profile = new UserProfileDTO();
         profile.setUserID(1L);
-        profile.setFirstname("John");
-        profile.setLastname("Doe");
+        profile.setFirstName("John");
+        profile.setLastName("Doe");
         profile.setAge(25);
         profile.setGender("MALE");
         profile.setDob(LocalDate.of(1998, 1, 1));
@@ -56,8 +56,8 @@ class ProfileValidationTest {
         profile.setCity("Test City");
 
         // Verify all fields are populated (would be 100% complete)
-        assertNotNull(profile.getFirstname());
-        assertNotNull(profile.getLastname());
+        assertNotNull(profile.getFirstName());
+        assertNotNull(profile.getLastName());
         assertNotNull(profile.getAge());
         assertNotNull(profile.getGender());
         assertNotNull(profile.getDob());
@@ -73,16 +73,16 @@ class ProfileValidationTest {
         // Create a sample incomplete profile
         UserProfileDTO profile = new UserProfileDTO();
         profile.setUserID(1L);
-        profile.setFirstname("Jane");
-        profile.setLastname("Smith");
+        profile.setFirstName("Jane");
+        profile.setLastName("Smith");
         profile.setAge(30);
         profile.setGender("FEMALE");
         profile.setDob(LocalDate.of(1993, 5, 15));
         // Missing: bio, pp, education, jobTitle, city
 
         // Verify required fields are populated
-        assertNotNull(profile.getFirstname());
-        assertNotNull(profile.getLastname());
+        assertNotNull(profile.getFirstName());
+        assertNotNull(profile.getLastName());
         assertNotNull(profile.getAge());
         assertNotNull(profile.getGender());
         assertNotNull(profile.getDob());
