@@ -5,7 +5,6 @@ import magnolia.datingpulse.DatingPulse.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +21,7 @@ public class JwtAuthenticationTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    // PasswordEncoder removed since passwords are no longer used
 
     @Test
     public void testJwtTokenGeneration() {
@@ -45,18 +43,7 @@ public class JwtAuthenticationTest {
         assertEquals(username, extractedUsername);
     }
 
-    @Test
-    public void testPasswordEncoding() {
-        // Given
-        String rawPassword = "testpassword123";
-        
-        // When
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-        
-        // Then
-        assertNotNull(encodedPassword);
-        assertNotEquals(rawPassword, encodedPassword);
-    }
+    // Password encoding test removed since passwords are no longer used
 
     @Test
     public void testUserCreationWithHashedPassword() {
