@@ -72,11 +72,9 @@ class UserServiceTest {
         @DisplayName("Should create user successfully with valid data")
         void shouldCreateUserSuccessfully() {
             // Arrange
-            String rawPassword = "password123";
             when(userRepository.findByUsername(testUserDTO.getUsername())).thenReturn(Optional.empty());
             when(userRepository.findByEmail(testUserDTO.getEmail())).thenReturn(Optional.empty());
             when(userMapper.toEntity(testUserDTO)).thenReturn(testUser);
-            when(passwordEncoder.encode(rawPassword)).thenReturn("encoded-password");
             when(userRepository.save(any(User.class))).thenReturn(testUser);
             when(userMapper.toDTO(testUser)).thenReturn(testUserDTO);
 
@@ -90,7 +88,7 @@ class UserServiceTest {
 
             verify(userRepository).findByUsername(testUserDTO.getUsername());
             verify(userRepository).findByEmail(testUserDTO.getEmail());
-            verify(passwordEncoder).encode(rawPassword);
+            // passwordEncoder.encode() is no longer called since passwords are removed
             verify(userRepository).save(any(User.class));
         }
 
@@ -242,24 +240,16 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("Should update password successfully")
-        void shouldUpdatePasswordSuccessfully() {
+        @DisplayName("Should throw UnsupportedOperationException when updating password")
+        void shouldThrowExceptionWhenUpdatingPassword() {
             // Arrange
             Long userId = 1L;
             String newPassword = "newpassword123";
-            String encodedPassword = "encoded-new-password";
 
-            when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-            when(passwordEncoder.encode(newPassword)).thenReturn(encodedPassword);
-            when(userRepository.save(any(User.class))).thenReturn(testUser);
-
-            // Act
-            userService.updatePassword(userId, newPassword);
-
-            // Assert
-            verify(userRepository).findById(userId);
-            verify(passwordEncoder).encode(newPassword);
-            verify(userRepository).save(any(User.class));
+            // Act & Assert
+            assertThatThrownBy(() -> userService.updatePassword(userId, newPassword))
+                    .isInstanceOf(UnsupportedOperationException.class)
+                    .hasMessage("Password functionality has been removed from this application");
         }
     }
 
