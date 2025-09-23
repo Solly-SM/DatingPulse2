@@ -128,11 +128,11 @@ public class UserProfileService {
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found for user ID: " + userId));
 
         // Update basic fields
-        if (profileDTO.getFirstname() != null) {
-            existing.setFirstname(profileDTO.getFirstname());
+        if (profileDTO.getFirstName() != null) {
+            existing.setFirstname(profileDTO.getFirstName());
         }
-        if (profileDTO.getLastname() != null) {
-            existing.setLastname(profileDTO.getLastname());
+        if (profileDTO.getLastName() != null) {
+            existing.setLastname(profileDTO.getLastName());
         }
         if (profileDTO.getAge() != null) {
             existing.setAge(profileDTO.getAge());
@@ -374,8 +374,8 @@ public class UserProfileService {
         
         // Required fields (must be completed)
         totalFields += 5; // firstname, lastname, age, gender, dob
-        if (profile.getFirstname() != null && !profile.getFirstname().trim().isEmpty()) completedFields++;
-        if (profile.getLastname() != null && !profile.getLastname().trim().isEmpty()) completedFields++;
+        if (profile.getFirstName() != null && !profile.getFirstName().trim().isEmpty()) completedFields++;
+        if (profile.getLastName() != null && !profile.getLastName().trim().isEmpty()) completedFields++;
         if (profile.getAge() != null) completedFields++;
         if (profile.getGender() != null && !profile.getGender().trim().isEmpty()) completedFields++;
         if (profile.getDob() != null) completedFields++;
@@ -395,8 +395,8 @@ public class UserProfileService {
         List<String> missing = new java.util.ArrayList<>();
         
         // Check required fields
-        if (profile.getFirstname() == null || profile.getFirstname().trim().isEmpty()) missing.add("firstname");
-        if (profile.getLastname() == null || profile.getLastname().trim().isEmpty()) missing.add("lastname");
+        if (profile.getFirstName() == null || profile.getFirstName().trim().isEmpty()) missing.add("firstName");
+        if (profile.getLastName() == null || profile.getLastName().trim().isEmpty()) missing.add("lastName");
         if (profile.getAge() == null) missing.add("age");
         if (profile.getGender() == null || profile.getGender().trim().isEmpty()) missing.add("gender");
         if (profile.getDob() == null) missing.add("dateOfBirth");
